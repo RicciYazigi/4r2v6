@@ -967,7 +967,7 @@ class MasterOrchestrator:
                                     "weights": {k: float(v) for k, v in breakdown.get("weights", {}).items()} if isinstance(breakdown.get("weights"), dict) else {},
                                     "path": "direct-canonical-no-mock",
                                     "passes_gate": bool(passes_gate),
-                                    "active_domain_weights": {k: float(v) for k, v in self._kernel.domain_weights.items()} if hasattr(self._kernel, 'domain_weights') else {"w_NR": 1/21, "w_RI": 4/21, "w_IF": 16/21}
+                                    "active_domain_weights": {k: float(v) for k, v in self._kernel.domain_weights.items()} if hasattr(self._kernel, 'domain_weights') else {"w_NR": 1/3, "w_RI": 1/3, "w_IF": 1/3}
                                 }
                             )
 

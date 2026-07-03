@@ -112,3 +112,18 @@ Este documento detalla cronológica y técnicamente todas las acciones ejecutada
 - **Despacho del Operador Dual**: Se implementaron los despachos correspondientes a `RED_CRITICAL` y `GRAY_WARNING` en `dual_runtime.py` para evaluar el score de distancia del coseno del servidor ($C_{total}$) en lugar de depender de parámetros ficticios del cliente.
 - **Tipos de Control en Generador**: Se actualizaron las firmas generadas en `generator.py` para utilizar `GRAY_WARNING` y `RED_CRITICAL` para las zonas gris y roja respectivamente, erradicando el uso del tipo genérico `threshold`.
 - **Git Tag Disciplinado**: Cambios commiteados y etiquetados como `v5.3.1-final` de manera incremental.
+
+---
+
+## 14. Consolidación de Seguridad de Pesos — ADR-0005 (v5.3.2 - 2026-07-03)
+
+- **Auditoría de Riesgo P0 Detectado**: Se identificó y documentó una vulnerabilidad crítica de tipo "punto ciego normativo" en el vector de pesos `1/21:4/21:16/21` (introducido en v5.3) como default del Hard-Gate. El análisis matemático demostró que una violación normativa total (`C_NR=1.0`) junto con eficiencia física óptima generaba `C_total=0.1428` — dentro de la Zona Verde — permitiendo brechas de seguridad silenciosas en producción.
+- **KERNEL_VERSIONS_LEDGER.md**: Se creó el registro comparativo de las 5 variantes históricas del kernel (`docs/KERNEL_VERSIONS_LEDGER.md`), documentando las propiedades, rangos y riesgos operacionales de cada versión.
+- **ADR-0005 Emitido**: Se creó `docs/ADRs/0005-weights-consolidation.md` declarando la **Política de Perfiles de Pesos**, que establece:
+  - `balanced` (`1/3:1/3:1/3`) como el default obligatorio del Hard-Gate de producción.
+  - `physics_priority` (`1/21:4/21:16/21`) como un perfil experimental registrado en la clase como `CoherenceKernel.PHYSICS_PRIORITY_PROFILE` — activación solo por opt-in explícito.
+- **Parche Quirúrgico al Kernel**: Se modificó `core/kernel_1240421.py` (línea 79) para restaurar `weights = {'w_NR': 1/3, 'w_RI': 1/3, 'w_IF': 1/3}` como default del constructor. Se añadieron tres constantes de clase (`BALANCED_PROFILE`, `PHYSICS_PRIORITY_PROFILE`, `NORMATIVE_PRIORITY_PROFILE`) para gobernar todos los perfiles de forma auditables.
+- **Sincronización de Documentos**: Se actualizaron `CANON_SPEC.md`, `RUNBOOK.md`, `technical_deck_buyers.md` y `Funcionamiento completo.md` para reflejar el peso por defecto `1/3` y referenciar el perfil físico como opt-in.
+- **Verificación del Invariante**: Se confirmó que con el nuevo default, un escenario de violación normativa total produce `C_total=0.5269` (Zona Gris/Roja) — el Hard-Gate bloquea correctamente.
+- **Suite de Pruebas**: **60/60 tests pasan al 100%** sin regresiones. El selftest del kernel mantiene `loss_correct_direction: True` con los nuevos pesos.
+- **Git Commit**: Cambios commiteados bajo el mensaje `feat(security): ADR-0005 — restore balanced default weights, register physics_priority profile`.

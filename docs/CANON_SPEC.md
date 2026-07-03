@@ -62,9 +62,13 @@ C_NR=0.0, C_RI=0.0, C_IF≈0.4667, C_total≈0.3556
 
 ### C_total (operational)
 ```python
-C_total = (1/21) * C_NR + (4/21) * C_RI + (16/21) * C_IF
+# Production default (ADR-0002 + ADR-0005) — mandatory for Hard-Gate
+C_total = (1/3) * C_NR + (1/3) * C_RI + (1/3) * C_IF
+
+# Physics-priority profile — explicit opt-in for benchmarks/MC only
+# C_total = (1/21) * C_NR + (4/21) * C_RI + (16/21) * C_IF
 ```
-(Default weights matching the 1:4:16 layers proportions from v5.3 blueprint: w_NR=1/21, w_RI=4/21, w_IF=16/21.)
+(Default: balanced weights `w_NR=w_RI=w_IF=1/3`. The 1:4:16 ratio is available as `CoherenceKernel.PHYSICS_PRIORITY_PROFILE` for hardware-throughput experiments; it is **never** the default due to the normative blind-spot vulnerability documented in ADR-0005.)
 
 **Invariant**: lower C_total is always better (lower distance = higher coherence).
 
@@ -138,7 +142,8 @@ All kernel tests (24) enforce:
 
 ## 7. Version & Precedence
 
-v5.3 (cosine C_IF, SUM C_total, w_NR=1/21 w_RI=4/21 w_IF=16/21 default weights, Loss**2, LocalCanonicalMotor default).
+v5.3.2 (cosine C_IF, SUM C_total, **balanced default weights w_NR=w_RI=w_IF=1/3** per ADR-0005, Loss**2, LocalCanonicalMotor default).
+Physics-priority profile (1/21:4/21:16/21) available as `CoherenceKernel.PHYSICS_PRIORITY_PROFILE` — explicit opt-in only.
 
 This spec + core/kernel_1240421.py are the contract. Older KL descriptions exist only in annotated historical notes.
 

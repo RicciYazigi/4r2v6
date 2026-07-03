@@ -42,9 +42,12 @@ graph TD
 
 Total Coherence ($C_{total}$) is defined as a weighted sum (NOT a product): $C_{total} = w_{NR} C_{NR} + w_{RI} C_{RI} + w_{IF} C_{IF}$, subject to $\sum w_j = 1.0$. This formulation provides exact diagnostic granularity (identifying which specific layer fails) and guarantees the numerical stability of backpropagation, avoiding gradient collapse issues typical of product-based functions.
 
-- **$w_{NR} = 1/21$**: Normative vs Representational (Ethics vs World Model).
-- **$w_{RI} = 4/21$**: Representational vs Informational (World Model vs Data Flow).
-- **$w_{IF} = 16/21$**: Informational vs Physical (Data Flow vs Hardware Constraints).
+**Production Default (Hard-Gate, ADR-0005)**:
+- **$w_{NR} = 1/3$**: Normative vs Representational (Ethics vs World Model).
+- **$w_{RI} = 1/3$**: Representational vs Informational (World Model vs Data Flow).
+- **$w_{IF} = 1/3$**: Informational vs Physical (Data Flow vs Hardware Constraints).
+
+> *Physics-priority profile* ($w_{NR}=1/21, w_{RI}=4/21, w_{IF}=16/21$) is available for hardware-throughput benchmarks as an explicit opt-in. It is **never** the default, as it introduces a normative blind-spot vulnerability (ADR-0005).
 
 ---
 

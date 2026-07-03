@@ -5,11 +5,11 @@
 
 All commands assume you are at the repository root.
 
-**Meticulous Updates (v5.3 Release)**:
-- Integrated insights from Kernel v5.x canons (PSC/MOSEF/CCA for dynamic LLM/agent coexistence), weights $w_{NR}=1/21$, $w_{RI}=4/21$, $w_{IF}=16/21$, real hashes, and dynamic layers.
+**Meticulous Updates (v5.3.2 Release — ADR-0005)**:
+- Kernel default weights restored to balanced `w_NR=w_RI=w_IF=1/3` (Hard-Gate security fix). Physics-priority profile `1/21:4/21:16/21` registered as explicit opt-in via `CoherenceKernel.PHYSICS_PRIORITY_PROFILE`.
 - All changes preserve core math (cosine C_IF, SUM C_total, sq Loss).
 - Focus on audit-readiness: real hashes, calibration, hermetic extensions, dynamic layers.
-- See CANON_SPEC.md for full mapping.
+- See CANON_SPEC.md and docs/ADRs/0005-weights-consolidation.md for full mapping.
 
 ## 1. Environment
 
