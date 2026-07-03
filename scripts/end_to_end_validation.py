@@ -70,31 +70,27 @@ def main():
     print(f"    I = {evidence.informational}")
     print(f"    F = {evidence.physical}")
 
-    if HAS_NUMPY:
-        # 3. Run through canonical kernel
-        kernel = create_kernel()
-        state = LayerState(
-            normative=np.array(evidence.normative, dtype=float),
-            representational=np.array(evidence.representational, dtype=float),
-            informational=np.array(evidence.informational, dtype=float),
-            physical=np.array(evidence.physical, dtype=float)
-        )
+    # 3. Run through canonical kernel
+    kernel = create_kernel()
+    state = LayerState(
+        normative=np.array(evidence.normative, dtype=float),
+        representational=np.array(evidence.representational, dtype=float),
+        informational=np.array(evidence.informational, dtype=float),
+        physical=np.array(evidence.physical, dtype=float)
+    )
 
-        C_total, breakdown = kernel.compute_coherence_total(state)
-        loss = kernel.compute_loss_4R2(base_loss=0.4, coherence_total=C_total, decision_changes=2)
+    C_total, breakdown = kernel.compute_coherence_total(state)
+    loss = kernel.compute_loss_4R2(base_loss=0.4, coherence_total=C_total, decision_changes=2)
 
-        print("\n[2] Canonical Kernel Results:")
-        print(f"    C_NR  = {breakdown['C_NR']:.4f}")
-        print(f"    C_RI  = {breakdown['C_RI']:.4f}")
-        print(f"    C_IF  = {breakdown['C_IF']:.4f}")
-        print(f"    C_total = {C_total:.4f}")
-        print(f"    L_4R2   = {loss:.4f}")
+    print("\n[2] Canonical Kernel Results:")
+    print(f"    C_NR  = {breakdown['C_NR']:.4f}")
+    print(f"    C_RI  = {breakdown['C_RI']:.4f}")
+    print(f"    C_IF  = {breakdown['C_IF']:.4f}")
+    print(f"    C_total = {C_total:.4f}")
+    print(f"    L_4R2   = {loss:.4f}")
 
-        decision = "GO" if C_total < 0.65 else "NO_GO / DEGRADE"
-        print(f"\n[3] Example Gate Decision: {decision}")
-    else:
-        print("\n[2] Kernel execution skipped (numpy required for full math).")
-        print("    Structural pipeline validated successfully.")
+    decision = "GO" if C_total < 0.65 else "NO_GO / DEGRADE"
+    print(f"\n[3] Example Gate Decision: {decision}")
 
     print("\n" + "=" * 60)
     print("End-to-end validation completed successfully.")

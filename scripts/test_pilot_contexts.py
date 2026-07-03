@@ -9,7 +9,7 @@ Validates C_total control, guards, etc.
 from antigravity_wings.fuses.fuses_4r2 import get_fuse
 from antigravity_wings.fuse_config.generator import FuseConfigGenerator
 from antigravity_wings.api.models import MotorOutput
-from core.kernel_1240421 import create_kernel, LayerState
+from kernel_1240421 import create_kernel, LayerState
 import numpy as np
 
 def test_pilot(pilot_name, risk, action, coherence_val):

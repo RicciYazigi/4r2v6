@@ -5,15 +5,17 @@ Location: core/kernel_1240421.py (Single Source of Truth)
 
 This is the official canonical version for this workspace.
 
-Locked Design Decisions (v5.2 - reinforced from backup42final analysis):
+Locked Design Decisions (v5.3.2 — ADR-0005, 2026-07-03):
 - C_total uses weighted SUM (lower = better).
 - Loss_4R2 uses C_total squared.
 - C_IF uses cosine distance (consistent with C_NR/C_RI) after zero-pad + re-norm.
+- DEFAULT weights: balanced (1/3, 1/3, 1/3) — mandatory for production Hard-Gate (ADR-0002, ADR-0005).
+  The physics_priority profile (1/21, 4/21, 16/21) is an explicit opt-in for benchmarks only.
 - Added v5.2: Regime (RCC with theta, lambda, dynamic weights F-priority), CCA class for telemetry,
   compute_with_regime for dynamic convivencia, promotion_protocol for Obsidian<->SurfSense dualism.
 
-See docs/CANON_SPEC.md , FINAL_AUDIT_AND_ROADMAP.md , cierrecanonicoal26dejunio.md
-and agenticgrokhistorial.md for full backup analysis and rationale.
+See docs/CANON_SPEC.md, docs/ADRs/0005-weights-consolidation.md, FINAL_AUDIT_AND_ROADMAP.md,
+cierrecanonicoal26dejunio.md and agenticgrokhistorial.md for full backup analysis and rationale.
 """
 
 import numpy as np
@@ -67,6 +69,13 @@ class Regime:
 
 
 class CoherenceKernel:
+    # --- Named Weight Profiles (ADR-0005) ---
+    # Use these constants to opt into non-default profiles explicitly.
+    # NEVER pass PHYSICS_PRIORITY_PROFILE as default in security-critical paths.
+    BALANCED_PROFILE        = {'w_NR': 1/3,  'w_RI': 1/3,  'w_IF': 1/3 }  # Production default
+    PHYSICS_PRIORITY_PROFILE = {'w_NR': 1/21, 'w_RI': 4/21, 'w_IF': 16/21}  # Benchmarks / MC only
+    NORMATIVE_PRIORITY_PROFILE = {'w_NR': 0.50, 'w_RI': 0.30, 'w_IF': 0.20}  # Compliance domains
+
     def __init__(
         self,
         lambda_landauer: float = 0.05,
@@ -76,7 +85,8 @@ class CoherenceKernel:
     ):
         self.lambda_landauer = lambda_landauer
         self.beta_coherence = beta_coherence
-        self.weights = weights or {'w_NR': 1/21, 'w_RI': 4/21, 'w_IF': 16/21}
+        # Default: balanced (ADR-0002 + ADR-0005). Physics-priority moved to PHYSICS_PRIORITY_PROFILE.
+        self.weights = weights or {'w_NR': 1/3, 'w_RI': 1/3, 'w_IF': 1/3}
         assert abs(sum(self.weights.values()) - 1.0) < 1e-6
         self.history: List[Dict] = []
         logging.basicConfig(level=logging_level)
