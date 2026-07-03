@@ -1,0 +1,7 @@
+﻿
+Algorithm       Hash                                                                   Path                                                                     
+---------       ----                                                                   ----                                                                     
+SHA256          AA4D10B6A00CD89A0FB8494844217707138DAED043C690ECB25A038782D759A8       C:\Users\USER\Downloads\files (34)\4R2-MASTER-DELIVERY\systems\basic\p...
+SHA256          446685935A8308ADBCD5987047E1FC9899A1B377C87C3E406FF752D94AE70BC6       C:\Users\USER\Downloads\files (34)\4R2-MASTER-DELIVERY\systems\basic\p...
+
+

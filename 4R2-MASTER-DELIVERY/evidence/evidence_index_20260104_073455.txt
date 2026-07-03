@@ -1,0 +1,7 @@
+------------------------------------------
+4R2 LLM AUDIT INDEX - Sun Jan  4 07:34:55 -05 2026
+TRACE: det_mock_001
+------------------------------------------
+[ERROR] JSONL file not found
+[OPS] Docker State:
+NAME      IMAGE     COMMAND   SERVICE   CREATED   STATUS    PORTS

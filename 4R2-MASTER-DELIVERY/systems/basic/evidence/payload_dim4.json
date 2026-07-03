@@ -1,0 +1,7 @@
+{
+  "trace_id": "canon_dim4",
+  "normative": [0.85, 0.92, 0.77, 0.81],
+  "representational": [0.78, 0.88, 0.70, 0.74],
+  "informational": [0.95, 0.91, 0.89, 0.90],
+  "physical": [1200, 8, 55, 12]
+}

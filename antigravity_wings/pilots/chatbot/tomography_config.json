@@ -1,0 +1,75 @@
+{
+    "client_id": "chatbot_abc",
+    "nodes": [
+        {
+            "id": "entry",
+            "label": "User Message",
+            "node_type": "entry",
+            "metadata": {}
+        },
+        {
+            "id": "intent_classifier",
+            "label": "Intent Classifier",
+            "node_type": "decision",
+            "metadata": {
+                "criticality": "medium",
+                "reversible": true
+            }
+        },
+        {
+            "id": "policy_filter",
+            "label": "Policy Filter",
+            "node_type": "decision",
+            "metadata": {
+                "criticality": "high",
+                "reversible": true
+            }
+        },
+        {
+            "id": "llm_response",
+            "label": "LLM Response (decision_1)",
+            "node_type": "decision",
+            "metadata": {
+                "criticality": "high",
+                "reversible": false,
+                "irreversible_reason": "User sees content; cannot be unseen"
+            }
+        },
+        {
+            "id": "exit",
+            "label": "User Output",
+            "node_type": "exit",
+            "metadata": {}
+        }
+    ],
+    "edges": [
+        {
+            "id": "e1",
+            "from_id": "entry",
+            "to_id": "intent_classifier",
+            "edge_type": "sync_call",
+            "metadata": {}
+        },
+        {
+            "id": "e2",
+            "from_id": "intent_classifier",
+            "to_id": "policy_filter",
+            "edge_type": "sync_call",
+            "metadata": {}
+        },
+        {
+            "id": "e3",
+            "from_id": "policy_filter",
+            "to_id": "llm_response",
+            "edge_type": "sync_call",
+            "metadata": {}
+        },
+        {
+            "id": "e4",
+            "from_id": "llm_response",
+            "to_id": "exit",
+            "edge_type": "sync_call",
+            "metadata": {}
+        }
+    ]
+}

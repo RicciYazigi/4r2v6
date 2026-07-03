@@ -1,0 +1,59 @@
+[
+    {
+        "id": "fuse_disallowed_intent",
+        "node_id": "policy_filter",
+        "type": "threshold",
+        "enabled": true,
+        "severity": "high",
+        "enforcement_hint": "prefer_escalate",
+        "mode_scope": [
+            "shadow",
+            "soft",
+            "hard"
+        ],
+        "owner": "compliance",
+        "parameters": {
+            "field": "intent_risk_score",
+            "threshold": 0.7,
+            "description": "High-risk intents require ESCALATE or STOP"
+        }
+    },
+    {
+        "id": "fuse_max_tokens",
+        "node_id": "llm_response",
+        "type": "range",
+        "enabled": true,
+        "severity": "medium",
+        "enforcement_hint": "prefer_degrade",
+        "mode_scope": [
+            "shadow",
+            "soft",
+            "hard"
+        ],
+        "owner": "ops",
+        "parameters": {
+            "field": "response_tokens",
+            "min": 0,
+            "max": 512,
+            "description": "Cap response length to avoid rambling/hallucination"
+        }
+    },
+    {
+        "id": "fuse_sensitive_topic",
+        "node_id": "llm_response",
+        "type": "threshold",
+        "enabled": true,
+        "severity": "high",
+        "enforcement_hint": "hard_stop",
+        "mode_scope": [
+            "soft",
+            "hard"
+        ],
+        "owner": "safety",
+        "parameters": {
+            "field": "sensitive_topic_score",
+            "threshold": 0.2,
+            "description": "Any sensitive topic (score > 0.2) should escalate"
+        }
+    }
+]

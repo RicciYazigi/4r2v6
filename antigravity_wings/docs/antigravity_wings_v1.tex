@@ -1,0 +1,164 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{authblk}
+
+\geometry{margin=1in}
+
+\title{Antigravity Wings: A Thermodynamic Dual-Agent Exoskeleton for Coherence Enforcement and Auditable Decision Control}
+
+\author[1]{Ricci Yazigi}
+\affil[1]{Independent Research}
+\date{January 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Modern decision systems increasingly rely on opaque and proprietary engines whose internal reasoning is inaccessible, non-auditable, and prone to instability under operational stress. This work introduces \textit{Antigravity Wings}, a system-level exoskeleton that enforces coherence, mitigates risk, and produces cryptographically auditable evidence around an arbitrary black-box decision engine.
+
+The system does not modify nor interpret the internal logic of the engine. Instead, it governs the decision process through a tetradimensional coherence model (Normative, Representational, Informational, Physical), an adversarial dual-agent structural analysis, and entropy-based enforcement gates inspired by the thermodynamics of information. We formalize the coherence metrics, entropy loss function, arbitration policy, and enforcement modes, and we report results from controlled scenario-preset simulations.
+
+The contribution of this work is a reproducible, conservative, and auditable framework for decision governance applicable to AI systems, financial engines, and safety-critical software pipelines.
+\end{abstract}
+
+\section{Introduction}
+
+As decision-making systems grow in scale and responsibility, they increasingly rely on complex models whose internal logic is opaque, proprietary, or unverifiable. While these systems may achieve high predictive performance, they frequently lack guarantees regarding process coherence, auditability, and structural stability.
+
+Failure modes such as unjustified state oscillations, divergence between predicted and observed outcomes, and subsystem desynchronization introduce operational risk that is not addressed by accuracy metrics alone. Antigravity Wings addresses this gap by reframing decision-making as a constrained transformation process subject to coherence and entropy limits.
+
+The system does not attempt to reason semantically, generate content, or emulate cognition. Instead, it provides a conservative control layer that enforces structural integrity and records auditable evidence independently of the decision engine's internal logic.
+
+\section{Design Philosophy}
+
+\subsection{The Exoskeleton Paradigm}
+
+Let $M$ be an arbitrary decision engine with unknown internal function $f_M$. Antigravity Wings introduces an external system $E$ such that:
+
+\[
+E : (X, C) \rightarrow (D, A)
+\]
+
+where $X$ is contextual evidence, $C$ is structural context, $D$ is an enforced decision outcome, and $A$ is a set of auditable artifacts.
+
+The exoskeleton $E$ does not modify $f_M$ and does not access its internal state. All guarantees apply strictly to the decision process, not to the decision logic.
+
+\subsection{Separation of Responsibilities}
+
+The architecture enforces a strict separation between:
+\begin{itemize}
+\item Decision logic (Motor)
+\item Process governance (Exoskeleton)
+\item Human oversight (Operator)
+\end{itemize}
+
+This separation enables independent verification of the process even when the engine remains a black box.
+
+\section{The 4R2 Coherence Model}
+
+\subsection{Tetradimensional Representation}
+
+Each decision cycle is represented across four normalized dimensions:
+
+\begin{itemize}
+\item Normative ($N \in [0,1]^n$): expected rules and constraints
+\item Representational ($R \in [0,1]^n$): internal model or embedding
+\item Informational ($I \in [0,1]^n$): observed data and outputs
+\item Physical ($F \in \mathbb{R}^k$): computational metrics
+\end{itemize}
+
+\subsection{Inter-Layer Coherence}
+
+Pairwise coherence is defined using cosine similarity:
+
+\[
+C_{AB} = \frac{A \cdot B}{\|A\|\|B\|}, \quad A,B \in \{N,R,I\}
+\]
+
+with $C_{AB} \in [0,1]$.
+
+\subsection{Total Coherence}
+
+Total coherence is defined as a strict multiplicative product:
+
+\[
+C_{total} = C_{NR} \times C_{RI} \times C_{IF}
+\]
+
+This formulation ensures that failure in any transition collapses global coherence.
+
+\section{Entropy Loss and Instability}
+
+\subsection{Entropy Loss Function}
+
+We define entropy loss as:
+
+\[
+entropy\_loss = \frac{(1 - C_{NR}) + (1 - C_{RI}) + (1 - C_{IF})}{3}
+\]
+
+Values near zero indicate near-lossless transformations, while values near one indicate severe degradation and instability.
+
+\subsection{Thermodynamic Interpretation}
+
+Inspired by Landauer's principle, unnecessary logical state changes are treated as proxies for entropy generation. No claim is made regarding direct physical energy measurement unless explicitly instrumented.
+
+\section{Dual-Agent Structural Analysis}
+
+\subsection{Agents}
+
+Two agents analyze the same tomographic graph $G$:
+
+\begin{itemize}
+\item Mario (Forward Scan): identifies capabilities and redundancies
+\item Luigi (Backward Scan): identifies risks and no-return points
+\end{itemize}
+
+\subsection{Arbitration Rule}
+
+Given reports $R_M$ and $R_L$, arbitration follows:
+
+\[
+A(R_M, R_L) =
+\begin{cases}
+R_L, & \text{if severity}(R_L) \ge \text{HIGH} \\
+merge(R_M, R_L), & \text{otherwise}
+\end{cases}
+\]
+
+This enforces conservative dominance.
+
+\section{Enforcement Policy}
+
+The system supports three execution modes: SHADOW, SOFT, and HARD. Enforcement decisions follow a canonical severity matrix governing GO, DEGRADE, ESCALATE, and STOP outcomes.
+
+\section{Auditability}
+
+Each decision produces an immutable evidence set sealed using SHA-256 hashes. Any post-hoc modification invalidates the audit trail.
+
+\section{Simulation Results}
+
+Scenario-preset simulations demonstrate reductions in instability, recomputation cycles, and error execution. These results are theoretical and not production benchmarks.
+
+\section{Limitations}
+
+The system does not guarantee semantic correctness, model accuracy, or physical energy measurement. Cloud-scale validation remains future work.
+
+\section{Conclusion}
+
+Antigravity Wings provides a conservative, auditable, and physics-inspired framework for governing decision processes around black-box engines, prioritizing structural integrity over opaque optimization.
+
+\section*{References}
+
+\begin{itemize}
+\item R. Landauer, IBM J. Res. Dev., 1961.
+\item K. Friston, Nature Reviews Neuroscience, 2010.
+\item G. Tononi, BMC Neuroscience, 2004.
+\end{itemize}
+
+\end{document}

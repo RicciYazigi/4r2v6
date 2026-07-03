@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db-bridge:
+    build: ./db-bridge
+    ports:
+      - "4001:4001"
+    volumes:
+      - ./db-bridge/storage:/app/data
+    environment:
+      - DB_PATH=/app/data/runs.db
+    restart: unless-stopped
+
+  runner:
+    build: ./runner
+    depends_on:
+      - db-bridge
+    environment:
+      - LLM_PROVIDER=${LLM_PROVIDER:-mock}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - BASIC_KERNEL_URL=${BASIC_KERNEL_URL:-http://host.docker.internal:8000}
+      - BASIC_BACKEND_URL=${BASIC_BACKEND_URL:-http://host.docker.internal:4000}
+      - DB_BRIDGE_URL=http://db-bridge:4001
+      - TEMPERATURE=0
+      - TOP_P=1
+      - EVIDENCE_DIR=/app/evidence
+    volumes:
+      - ./evidence:/app/evidence
+    restart: unless-stopped

@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+dist/
+build/
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+env/
+venv/
+.venv/
+.pytest_cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Evidence and Logs
+logs/
+*.log
+
+# Retired Assets
+retired/
+retired_legacy_systems/
+
+# Evidence stubs
+4R2_MASTER_CONSOLIDATED.md
+4R2_RADIOGRAFIA_FINAL_DIOS_MODE.md
+PILOT_AUDIT_HANDOVER.md
+RESUMEN_EJECUTIVO_DIOS_MODE.md
+SYSTEM_DIAGNOSTIC_TOMOGRAPHY.md
+adversarial_attack.py
+test_req.json
+test.ps1
+universal.sh
+
+# Temp / Work files
+verify_engine.mjs
+tests/ablation_study/
+
+systems/llm/evidence/*.jsonl
+systems/llm/db-bridge/storage/runs.db
+.env

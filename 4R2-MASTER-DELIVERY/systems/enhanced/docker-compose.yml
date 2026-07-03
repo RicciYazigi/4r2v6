@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  kernel:
+    build: ./packages/kernel
+    ports: [ "8000:8000" ]
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  backend:
+    build: ./packages/backend
+    ports: [ "4000:4000" ]
+    environment:
+      - KERNEL_URL=http://kernel:8000
+      - REQUIRE_ARMING=true
+    depends_on:
+      - kernel
+    restart: unless-stopped
+
+  frontend:
+    build: ./packages/frontend
+    ports: [ "5173:80" ]
+    environment:
+      - VITE_API_URL=http://localhost:4000
+    depends_on:
+      - backend
+    restart: unless-stopped

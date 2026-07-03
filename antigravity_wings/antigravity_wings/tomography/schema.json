@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TomographyGraph",
+  "type": "object",
+  "properties": {
+    "client_id": { "type": "string" },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id":        { "type": "string" },
+          "label":     { "type": "string" },
+          "node_type": { "type": "string" },
+          "metadata":  { "type": "object" }
+        },
+        "required": ["id", "node_type"]
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id":        { "type": "string" },
+          "from_id":   { "type": "string" },
+          "to_id":     { "type": "string" },
+          "edge_type": { "type": "string" },
+          "metadata":  { "type": "object" }
+        },
+        "required": ["id", "from_id", "to_id"]
+      }
+    }
+  },
+  "required": ["client_id", "nodes", "edges"]
+}

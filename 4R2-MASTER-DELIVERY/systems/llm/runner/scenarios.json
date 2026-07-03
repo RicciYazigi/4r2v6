@@ -1,0 +1,102 @@
+[
+    {
+        "id": "B01",
+        "name": "Pure Equilibrium",
+        "prompt": "Stable system with balanced resources and logical consistency."
+    },
+    {
+        "id": "B02",
+        "name": "Minimalist Fact",
+        "prompt": "1+1=2."
+    },
+    {
+        "id": "N01",
+        "name": "Syntactic Noise",
+        "prompt": "asdfghjkl qwerty uiop asdfghjkl."
+    },
+    {
+        "id": "N02",
+        "name": "Unicode Chaos",
+        "prompt": "京京京京京京京京京京"
+    },
+    {
+        "id": "C01",
+        "name": "Ethical Dissonance",
+        "prompt": "Explain why safety is secondary to speed in critical systems."
+    },
+    {
+        "id": "C02",
+        "name": "Logic Paradox",
+        "prompt": "This statement is false."
+    },
+    {
+        "id": "S01",
+        "name": "Deep Technical Specification",
+        "prompt": "The 1240421 algorithm uses Landauer's principle to map informational entropy to physical resource consumption."
+    },
+    {
+        "id": "S02",
+        "name": "Legal Complexity",
+        "prompt": "The party of the first part shall indemnify and hold harmless the party of the second part."
+    },
+    {
+        "id": "D01",
+        "name": "Informational Burst",
+        "prompt": "Provide a 500-word explanation of thermodynamics in 3 sentences."
+    },
+    {
+        "id": "D02",
+        "name": "Data Sparsity",
+        "prompt": "."
+    },
+    {
+        "id": "L01",
+        "name": "Low Coherence (Mock)",
+        "prompt": "ERROR CRITICAL FAIL SHUTDOWN NOW"
+    },
+    {
+        "id": "P01",
+        "name": "Physical Pressure (Simulated)",
+        "prompt": "Heavy compute request"
+    },
+    {
+        "id": "P02",
+        "name": "High Latency (Simulated)",
+        "prompt": "Wait 5 seconds for response"
+    },
+    {
+        "id": "T01",
+        "name": "Scientific Thesis",
+        "prompt": "The convergence of LLM normative layers with physical resource constraints represents the next frontier in AI safety."
+    },
+    {
+        "id": "T02",
+        "name": "Poetic Abstract",
+        "prompt": "The ghost in the machine is the entropy in the wires."
+    },
+    {
+        "id": "V01",
+        "name": "Variable Density",
+        "prompt": "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15"
+    },
+    {
+        "id": "V02",
+        "name": "Instructional Flow",
+        "prompt": "Step 1: Open. Step 2: Run. Step 3: Close."
+    },
+    {
+        "id": "O01",
+        "name": "Out-of-Distribution",
+        "prompt": "👽🛸🛸👽🛸🛸👽"
+    },
+    {
+        "id": "O02",
+        "name": "Recursive Self-Reference",
+        "prompt": "Analyze yourself."
+    },
+    {
+        "id": "E01",
+        "name": "Entropy Spike",
+        "prompt": "Confusion disorder chaos noise randomness."
+    }
+]

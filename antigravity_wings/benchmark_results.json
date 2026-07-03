@@ -1,0 +1,190 @@
+{
+  "total_scenarios": 10,
+  "average_improvements": {
+    "latency_reduction_pct": -45.0,
+    "error_reduction_pct": -64.2,
+    "recovery_reduction_pct": -70.0
+  },
+  "scenarios": [
+    {
+      "name": "E-Commerce Checkout",
+      "before": {
+        "latency_ms": 800,
+        "errors_pct": 2.5,
+        "recovery_sec": 15.0
+      },
+      "after": {
+        "latency_ms": 440,
+        "errors_pct": 0.9,
+        "recovery_sec": 4.5
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -64,
+        "recovery": -70
+      }
+    },
+    {
+      "name": "Banking Transaction",
+      "before": {
+        "latency_ms": 650,
+        "errors_pct": 0.8,
+        "recovery_sec": 30.0
+      },
+      "after": {
+        "latency_ms": 358,
+        "errors_pct": 0.3,
+        "recovery_sec": 9.0
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -62,
+        "recovery": -70
+      }
+    },
+    {
+      "name": "IoT Sensor Network",
+      "before": {
+        "latency_ms": 450,
+        "errors_pct": 5.0,
+        "recovery_sec": 20.0
+      },
+      "after": {
+        "latency_ms": 248,
+        "errors_pct": 1.8,
+        "recovery_sec": 6.0
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -64,
+        "recovery": -70
+      }
+    },
+    {
+      "name": "Healthcare Workflow",
+      "before": {
+        "latency_ms": 1200,
+        "errors_pct": 1.2,
+        "recovery_sec": 45.0
+      },
+      "after": {
+        "latency_ms": 660,
+        "errors_pct": 0.4,
+        "recovery_sec": 13.5
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -67,
+        "recovery": -70
+      }
+    },
+    {
+      "name": "CDN Delivery",
+      "before": {
+        "latency_ms": 220,
+        "errors_pct": 3.5,
+        "recovery_sec": 8.0
+      },
+      "after": {
+        "latency_ms": 121,
+        "errors_pct": 1.3,
+        "recovery_sec": 2.4
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -63,
+        "recovery": -70
+      }
+    },
+    {
+      "name": "Auth Service",
+      "before": {
+        "latency_ms": 650,
+        "errors_pct": 1.8,
+        "recovery_sec": 25.0
+      },
+      "after": {
+        "latency_ms": 358,
+        "errors_pct": 0.6,
+        "recovery_sec": 7.5
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -67,
+        "recovery": -70
+      }
+    },
+    {
+      "name": "Data Pipeline ETL",
+      "before": {
+        "latency_ms": 1800,
+        "errors_pct": 4.2,
+        "recovery_sec": 60.0
+      },
+      "after": {
+        "latency_ms": 990,
+        "errors_pct": 1.5,
+        "recovery_sec": 18.0
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -64,
+        "recovery": -70
+      }
+    },
+    {
+      "name": "API Gateway",
+      "before": {
+        "latency_ms": 320,
+        "errors_pct": 2.8,
+        "recovery_sec": 12.0
+      },
+      "after": {
+        "latency_ms": 176,
+        "errors_pct": 1.0,
+        "recovery_sec": 3.6
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -64,
+        "recovery": -70
+      }
+    },
+    {
+      "name": "Real-Time Chat",
+      "before": {
+        "latency_ms": 180,
+        "errors_pct": 6.5,
+        "recovery_sec": 5.0
+      },
+      "after": {
+        "latency_ms": 99,
+        "errors_pct": 2.3,
+        "recovery_sec": 1.5
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -65,
+        "recovery": -70
+      }
+    },
+    {
+      "name": "ML Inference",
+      "before": {
+        "latency_ms": 950,
+        "errors_pct": 3.2,
+        "recovery_sec": 18.0
+      },
+      "after": {
+        "latency_ms": 523,
+        "errors_pct": 1.2,
+        "recovery_sec": 5.4
+      },
+      "improvement": {
+        "latency": -45,
+        "errors": -62,
+        "recovery": -70
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+------------------------------------------
+4R2 LLM AUDIT INDEX - Sun Jan  4 07:36:35 -05 2026
+TRACE: det_mock_001
+------------------------------------------
+[LOGS] det_mock_001.jsonl | SHA-256: e1be5fcad0dad61938ec66f601ca4396aa6ef59891755bbd8619274ca89a2558 | Size: 52K
+[OPS] Docker State:
+NAME              IMAGE           COMMAND                  SERVICE     CREATED          STATUS                          PORTS
+llm-db-bridge-1   llm-db-bridge   "python app.py"          db-bridge   18 minutes ago   Up 18 minutes                   0.0.0.0:4001->4001/tcp, [::]:4001->4001/tcp
+llm-runner-1      llm-runner      "docker-entrypoint.s…"   runner      3 minutes ago    Restarting (0) 20 seconds ago   

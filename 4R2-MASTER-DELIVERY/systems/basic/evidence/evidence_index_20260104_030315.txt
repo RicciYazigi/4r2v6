@@ -1,0 +1,75 @@
+==========================================
+  4R2 PILOT: EVIDENCE TRACEABILITY INDEX
+==========================================
+TRACE_ID   : ARS-20260104-0001
+CREATED_UTC: 2026-01-04T08:03:15+00:00
+PROJECT    : systems/basic
+DEPLOY_ID  : basic_1240421_pilot
+------------------------------------------
+
+[SECTION 1: FILE LISTING]
+-rwxrwxrwx 1 ricciyazigi ricciyazigi  1350 Jan  4 02:15 audit_performance.sh
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   406 Jan  4 02:35 audit_summary_20260104_023535.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   473 Jan  4 02:18 check_determinism.sh
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   807 Jan  4 02:15 check_parity.sh
+-rwxrwxrwx 1 ricciyazigi ricciyazigi  1327 Jan  4 02:22 defense_canon_part1.sh
+-rwxrwxrwx 1 ricciyazigi ricciyazigi  1082 Jan  4 02:23 defense_canon_part2.sh
+-rwxrwxrwx 1 ricciyazigi ricciyazigi  1179 Jan  4 02:23 defense_canon_part3.sh
+-rwxrwxrwx 1 ricciyazigi ricciyazigi  5082 Jan  4 02:35 defense_suite.sh
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   400 Jan  4 02:35 det_samples_20260104_023535.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   400 Jan  4 02:15 determinism_20260104_021526.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi 28293 Jan  4 02:14 docker_stats_20260104_004208.csv
+-rwxrwxrwx 1 ricciyazigi ricciyazigi  5342 Jan  4 02:47 evidence_index_20260104_024731.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   327 Jan  4 03:03 evidence_index_20260104_030315.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   450 Jan  4 02:15 latency_20260104_021551.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   450 Jan  4 02:23 latency_canon.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   800 Jan  4 02:15 load_codes_20260104_021551.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   800 Jan  4 02:35 load_codes_20260104_023535.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi     0 Jan  4 02:15 load_err_20260104_021551.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   800 Jan  4 02:15 load_ok_20260104_021551.txt
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   750 Jan  4 02:16 negative_tests.sh
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   308 Jan  4 02:15 parity_backend_20260104_021550.json
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   308 Jan  4 02:22 parity_backend_canon.json
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   310 Jan  4 02:15 parity_kernel_20260104_021550.json
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   310 Jan  4 02:22 parity_kernel_canon.json
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   198 Jan  4 02:35 payload_dim4.json
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   308 Jan  4 02:35 pb_20260104_023535.json
+-rwxrwxrwx 1 ricciyazigi ricciyazigi   310 Jan  4 02:35 pk_20260104_023535.json
+-rwxrwxrwx 1 ricciyazigi ricciyazigi  1292 Jan  4 02:47 seal_evidence.sh
+-rwxrwxrwx 1 ricciyazigi ricciyazigi  1685 Jan  4 02:23 soak_canon_proof.jsonl
+
+[SECTION 2: SHA256 HASHES]
+103e52e5e5791f6417bf840c9020b94a07d79fb7979ce91fadc6865756a48bf3  check_parity.sh
+286da014b9bb70293e656aa8388a167ed98e5a64b0cde770de7c4be4f1a23200  parity_backend_canon.json
+2ad7ea28c580c8811efb14ab7199b9d9f6c3bd0c0864762ed0c330bb91c744bd  pk_20260104_023535.json
+2e95e435888a3b4872ad8201c15d0182908bbfdae40122448e611a7210e671c8  audit_summary_20260104_023535.txt
+3178b18589952324c9f39e007ecfec0ffc6a01cbb4392e99dc54b5f599e7b0c5  seal_evidence.sh
+52d83b0cb4e73d9207273fe625217c76a614acdf9b56f2a965288a127837ba74  docker_stats_20260104_004208.csv
+72ec03894db947ca3d6d86ee25c263709572fb420dcb4c67e88d068c591a8afb  audit_performance.sh
+8279fb8a25347ef376079ec0fae2b604ea628487da8083e15f92825c77a0ca58  defense_suite.sh
+9373dec9da7630f376d612110d4c0ce9ef02a1e3591d23c2db44cc75b81ae81e  latency_20260104_021551.txt
+955d1201da7be5728e9a3be4952f979e40d97e7e45d0ec10993d1bd36292ae25  defense_canon_part2.sh
+a43c899f3ad2e9b5a37e041693f994f50e5389a310036f129d251950eee45012  load_codes_20260104_021551.txt
+a43c899f3ad2e9b5a37e041693f994f50e5389a310036f129d251950eee45012  load_codes_20260104_023535.txt
+a43c899f3ad2e9b5a37e041693f994f50e5389a310036f129d251950eee45012  load_ok_20260104_021551.txt
+b5e75ae2d76e0079724bde6e7570914b28720642247e6af3479de77091dae6e4  pb_20260104_023535.json
+bb192b9d3754cc949e4377f266d1d5aabee3d97f2b4045ac6e3f76a23c217305  parity_kernel_canon.json
+bc95a78f7936dca7bfee54f00a77ead8c0b1c3c700959d7cd2dee2b67db1dc22  soak_canon_proof.jsonl
+bede3342c9b69e6521a3e12727743e57efb9d84cae879fedf1c7cd241ec7b153  parity_kernel_20260104_021550.json
+c703ddc8548c361074c04a3e1c27d3eeeb71d24ed93026da53657c4db996c8de  latency_canon.txt
+cacee740f2901f2520a54e155da9ede172a110efb12b3c88c3f732f1d78e68c4  check_determinism.sh
+db3ee9a735efd1bd601303664441cbb42da392050503ed29fa8a0ee4783430b4  payload_dim4.json
+dbabba0ff10911fb2159f39fd6b3e31c14e618858b20b8f0657ddc020f4fa8ab  parity_backend_20260104_021550.json
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  load_err_20260104_021551.txt
+e503ce9bd558fe875887b1a18e8d21849c7442ff4ef70cfc2aa228256fc05aee  negative_tests.sh
+e64db3cfa5d89f40c8999d67853b1edf8fea1ef948da3a73c3888370ff26e4b3  defense_canon_part1.sh
+e9b110314b4fcc06ab788a81dbdd7710d9fd38e69f0b57c0aa1080082b93a9c4  defense_canon_part3.sh
+f7734d3650bcfaf1c41a243df090970f675d37a524d19e1b2665c35d14a860e3  det_samples_20260104_023535.txt
+f7734d3650bcfaf1c41a243df090970f675d37a524d19e1b2665c35d14a860e3  determinism_20260104_021526.txt
+
+[SECTION 3: SYSTEM SNAPSHOT]
+/basic-frontend-1 RestartCount=0 OOMKilled=false
+/basic-backend-1 RestartCount=0 OOMKilled=false
+/basic-kernel-1 RestartCount=0 OOMKilled=false
+------------------------------------------
+END OF INDEX

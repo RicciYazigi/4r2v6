@@ -1,0 +1,25 @@
+{
+    "name": "llm-runner",
+    "version": "1.0.0",
+    "description": "4R2 LLM Audit Runner",
+    "main": "dist/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node dist/index.js",
+        "dev": "tsx src/index.ts",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.1.0",
+        "axios": "^1.6.0",
+        "dotenv": "^16.3.0",
+        "uuid": "^9.0.1"
+    },
+    "devDependencies": {
+        "@types/dotenv": "^8.2.3",
+        "@types/node": "^20.19.27",
+        "@types/uuid": "^9.0.8",
+        "tsx": "^4.0.0",
+        "typescript": "^5.2.0"
+    }
+}

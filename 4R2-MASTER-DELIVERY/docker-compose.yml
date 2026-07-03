@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  kernel:
+    build: ./packages/kernel
+    ports: [ "8000:8000" ]
+    restart: unless-stopped
+
+  backend:
+    build: ./packages/backend
+    ports: [ "4000:4000" ]
+    environment: [ KERNEL_URL=http://kernel:8000 ]
+    depends_on: [ kernel ]
+    restart: unless-stopped
+
+  frontend:
+    build: ./packages/frontend
+    ports: [ "5173:80" ]
+    depends_on: [ backend ]
+    restart: unless-stopped

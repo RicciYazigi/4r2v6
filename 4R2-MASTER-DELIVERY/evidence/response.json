@@ -1,0 +1,11 @@
+﻿{
+    "c_nr":  5.4092547679074343E-05,
+    "c_ri":  7.1498860486962634E-05,
+    "c_if":  1.0,
+    "total_coherence":  0.33337519713605535,
+    "landauer_cost":  0.2,
+    "entropy_loss":  0.5,
+    "quality_score":  0.6666248028639447,
+    "trace_id":  "canon-demo-1240421-v1",
+    "timestamp":  "2026-01-16T07:04:58.234768"
+}

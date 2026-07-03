@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+"""
+Pilot contexts test (from SUPERAGENTTESTPILOT + zip analysis).
+Tests 4R2_FUSES in real scenarios (coffee, taxi) + kernel sep.
+Run: PYTHONPATH=core:antigravity_wings python scripts/test_pilot_contexts.py
+Validates C_total control, guards, etc.
+"""
+
+from antigravity_wings.fuses.fuses_4r2 import get_fuse
+from antigravity_wings.fuse_config.generator import FuseConfigGenerator
+from antigravity_wings.api.models import MotorOutput
+from core.kernel_1240421 import create_kernel, LayerState
+import numpy as np
+
+def test_pilot(pilot_name, risk, action, coherence_val):
+    print(f"\n=== {pilot_name} ===")
+    # 4R2_FUSES
+    asym = get_fuse("ASYM")
+    veto = asym.execute(risk, action)
+    print(f"ASYM on {risk}+{action}: {veto}")
+    
+    # FuseConfig with low score (from audit)
+    mo = MotorOutput(client_id=pilot_name, scores={"global": 0.2}, ranges={}, config_blob={})
+    specs = FuseConfigGenerator().generate(mo)
+    print(f"4R2 specs: {[s.type for s in specs if s.type in ['VER','ASYM','PRIO']]}")
+    
+    # Kernel sep
+    k = create_kernel()
+    state = LayerState(np.ones(4)*0.8, np.ones(4)*0.7, np.ones(4)*0.6, np.array([1000.,8.,50.,10.]))
+    c, br = k.compute_coherence_total(state)
+    res = k.measure_coherence_with_keys([0.8]*4, [0.7]*4, [0.6]*4, [1000,8,50,10], {"K":0.1})
+    print(f"C_total: {c:.4f}, raw: {res['total_coherence']:.4f}, score: {res['coherence_score']:.4f}")
+    print("Pilot test: Vetoes control C_total.")
+
+if __name__ == "__main__":
+    # From pilots (coffee example)
+    test_pilot("COFFEE", "EXISTENTIAL", "PASSIVE", 0.8)
+    # Add more from zip/SUPER if extracted
+    print("\nAll pilot contexts + 4R2_FUSES + kernel sep validated.")

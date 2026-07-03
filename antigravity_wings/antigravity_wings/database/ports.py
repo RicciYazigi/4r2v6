@@ -1,0 +1,6 @@
+from typing import Protocol, Any
+
+class AuditPersistencePort(Protocol):
+    """Interfaz para persistencia inmutable de evidencias de auditoría."""
+    def append_evidence(self, trace_id: str, evidence_payload: dict) -> bool: ...
+    def get_session_history(self, client_id: str) -> list[dict]: ...

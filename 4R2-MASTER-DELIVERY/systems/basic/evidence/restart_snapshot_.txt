@@ -1,0 +1,3 @@
+/basic-frontend-1 RestartCount=0 OOMKilled=false
+/basic-backend-1 RestartCount=0 OOMKilled=false
+/basic-kernel-1 RestartCount=0 OOMKilled=false

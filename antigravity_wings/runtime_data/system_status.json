@@ -1,0 +1,59 @@
+{
+  "timestamp_utc": "2026-01-08T23:34:10Z",
+  "steps": {
+    "observation": {
+      "call_count": 1,
+      "error_count": 0,
+      "avg_latency_ms": 0.29689999064430594,
+      "last_latency_ms": 0.29689999064430594,
+      "last_error": null
+    },
+    "tomography": {
+      "call_count": 1,
+      "error_count": 0,
+      "avg_latency_ms": 0.019700004486367106,
+      "last_latency_ms": 0.019700004486367106,
+      "last_error": null
+    },
+    "light": {
+      "call_count": 1,
+      "error_count": 0,
+      "avg_latency_ms": 0.005599998985417187,
+      "last_latency_ms": 0.005599998985417187,
+      "last_error": null
+    },
+    "shadow": {
+      "call_count": 1,
+      "error_count": 0,
+      "avg_latency_ms": 0.0040000013541430235,
+      "last_latency_ms": 0.0040000013541430235,
+      "last_error": null
+    },
+    "arbiter": {
+      "call_count": 1,
+      "error_count": 0,
+      "avg_latency_ms": 0.005299996701069176,
+      "last_latency_ms": 0.005299996701069176,
+      "last_error": null
+    },
+    "notebook": {
+      "call_count": 1,
+      "error_count": 1,
+      "avg_latency_ms": 2.913099990109913,
+      "last_latency_ms": 2.913099990109913,
+      "last_error": "name 'logger' is not defined"
+    },
+    "numeric": {
+      "call_count": 1,
+      "error_count": 0,
+      "avg_latency_ms": 0.008400005754083395,
+      "last_latency_ms": 0.008400005754083395,
+      "last_error": null
+    }
+  },
+  "circuits": {},
+  "decisions": {
+    "total_decisions": 1,
+    "total_fallbacks": 1
+  }
+}

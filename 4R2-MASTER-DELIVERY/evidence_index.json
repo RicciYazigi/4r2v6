@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "audit_index": "RICCI-AUDIT-20260125",
+  "generated_utc": "2026-02-02T09:57:00.475801Z",
+  "generator": "generate_evidence_index.py v1.0",
+  "evidence_directory": "C:\\Users\\USER\\Downloads\\files (34)\\4R2-MASTER-DELIVERY\\evidence",
+  "statistics": {
+    "total_files": 17,
+    "total_size_bytes": 688195,
+    "extensions_included": [
+      ".json",
+      ".jsonl",
+      ".csv",
+      ".txt",
+      ".log",
+      ".md",
+      ".py"
+    ]
+  },
+  "files": {
+    "ablation_results.json": {
+      "sha256": "fafc465949c27a005ce2c34d822714745861f74aa35f33cf27f13af3aab0e53a",
+      "size_bytes": 456,
+      "modified_utc": "2026-01-01T01:37:14.052902Z"
+    },
+    "C__Users_USER_Documents_LLMsuperEngine_evidence_fuzz_2000.json": {
+      "sha256": "d9b0276f68cb7a4aa4b6b3583f94c5637f59e521ba61f8b119db071281cda49d",
+      "size_bytes": 661875,
+      "modified_utc": "2025-12-31T02:54:26.370759Z"
+    },
+    "DEMO_RUN.md": {
+      "sha256": "9fbace720e0aa05dc4db9da17a2024a468ed58e1027d966977b3b8b691b7ecb9",
+      "size_bytes": 1194,
+      "modified_utc": "2026-01-16T07:06:33.618889Z"
+    },
+    "evidence_index_20260104_073404.txt": {
+      "sha256": "b27524d1cbdb6260b5a8967a66e520b1f29430d4047d2ac2cb968f02beb46c76",
+      "size_bytes": 272,
+      "modified_utc": "2026-01-04T12:34:04.631174Z"
+    },
+    "evidence_index_20260104_073422.txt": {
+      "sha256": "dbad6e4be273de84a9a9eb142eff83e6985999b118a2ea37e7cfd0877a0d03ac",
+      "size_bytes": 272,
+      "modified_utc": "2026-01-04T12:34:22.247765Z"
+    },
+    "evidence_index_20260104_073455.txt": {
+      "sha256": "d4bc9c8126824e7f2bf526006e7da67cae27c18c690e6653be76e2a32a37b321",
+      "size_bytes": 272,
+      "modified_utc": "2026-01-04T12:34:55.805951Z"
+    },
+    "evidence_index_canonical.json": {
+      "sha256": "3162cba552a64e1a10d6f502263228aa99f5d5ef96b7552ec2288fba27025b58",
+      "size_bytes": 4043,
+      "modified_utc": "2026-01-25T11:52:04.027322Z"
+    },
+    "FUZZING_RESULTS.md": {
+      "sha256": "1fa3b001110633df2e794ad5cc7b6755d6038e4b341ae07a1b06339a1ca6d647",
+      "size_bytes": 838,
+      "modified_utc": "2025-12-31T02:54:26.365294Z"
+    },
+    "generate_evidence_index.py": {
+      "sha256": "690d34ca90338db9b10002109d512143e661e5abad9dd3f33b7109434f599be7",
+      "size_bytes": 8125,
+      "modified_utc": "2026-01-25T10:36:14.903867Z"
+    },
+    "HASH.txt": {
+      "sha256": "09f81465729615f580124318cf72f524378efb46d20c23705362458c2322852f",
+      "size_bytes": 657,
+      "modified_utc": "2026-01-16T07:04:58.356020Z"
+    },
+    "healthcheck_results.md": {
+      "sha256": "2394ac4c3f34c2ced609c16493bfb7b4a90dfeeb4019952a8280d1789f83070b",
+      "size_bytes": 1909,
+      "modified_utc": "2026-01-15T19:32:10.217335Z"
+    },
+    "LOCK_STATUS.md": {
+      "sha256": "1bc952688639f6128862b63b9a43c5f80f5a2554bedf321cc3521075092e4e53",
+      "size_bytes": 573,
+      "modified_utc": "2026-01-25T11:20:51.788922Z"
+    },
+    "measure_soak_20260104_020458.jsonl": {
+      "sha256": "10688e20780f80f4e9e6f74d5c50d99a5600d68a396a232300ddba30505529a6",
+      "size_bytes": 1041,
+      "modified_utc": "2026-01-04T07:05:02.173505Z"
+    },
+    "RealEngineReport.md": {
+      "sha256": "b7c58c404560c3a257d3f826c5b60257c676dedb7d90408b875ba069c8b8c180",
+      "size_bytes": 4582,
+      "modified_utc": "2026-01-15T19:32:13.519478Z"
+    },
+    "request.json": {
+      "sha256": "aa4d10b6a00cd89a0fb8494844217707138daed043c690ecb25a038782d759a8",
+      "size_bytes": 172,
+      "modified_utc": "2026-01-16T07:04:58.178565Z"
+    },
+    "response.json": {
+      "sha256": "446685935a8308adbcd5987047e1fc9899a1b377c87c3e406ff752d94ae70bc6",
+      "size_bytes": 339,
+      "modified_utc": "2026-01-16T07:04:58.322036Z"
+    },
+    "RUNBOOK_DEMO.md": {
+      "sha256": "920bd6e7bd37de4891564ed4a801f7393939f35b2513cfd952d61abdc06b35fc",
+      "size_bytes": 1575,
+      "modified_utc": "2026-01-15T19:32:15.568788Z"
+    }
+  }
+}

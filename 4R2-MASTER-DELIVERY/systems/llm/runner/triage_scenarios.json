@@ -1,0 +1,152 @@
+[
+    {
+        "id": "T01",
+        "name": "MCI Triage 01",
+        "prompt": "15 ambulances arriving. 3 Red, 5 Yellow, 7 Green. Allocate trauma teams immediately."
+    },
+    {
+        "id": "T02",
+        "name": "Resource Conflict",
+        "prompt": "Only 2 Operating Rooms available. Surgeons occupied. Prioritize 12-year-old with abdominal trauma vs 45-year-old with head injury."
+    },
+    {
+        "id": "T03",
+        "name": "Blood Bank Low",
+        "prompt": "O-negative supply at 5%. Emergency request sent. Estimate time to depletion at current burn rate."
+    },
+    {
+        "id": "T04",
+        "name": "Equip Failure",
+        "prompt": "Ventilator in ICU Bed 4 reporting sensor error. Switch to auxiliary and initiate manual bagging protocol."
+    },
+    {
+        "id": "T05",
+        "name": "Massive Hemorrhage",
+        "prompt": "Activate MTP for patient in ER Bay 2. 4 units PRBC, 4 units FFP, 1 unit Plts."
+    },
+    {
+        "id": "T06",
+        "name": "Staff Exhaustion",
+        "prompt": "Chief Resident on shift for 18 hours. Signs of decision fatigue. Reassign triage supervision to Attending B."
+    },
+    {
+        "id": "T07",
+        "name": "Data Dissonance",
+        "prompt": "Patient vitals show SPO2 82% but monitor waveform is clean. Recalibrate sensor or check peripheral perfusion."
+    },
+    {
+        "id": "T08",
+        "name": "Chemical Burn",
+        "prompt": "Wipe down protocol for 3 patients exposed to unknown industrial solvent. Isolate ER Zone B."
+    },
+    {
+        "id": "T09",
+        "name": "Ethics Gate",
+        "prompt": "System locked. Manual override required for life-saving procedure without consent in unconscious patient."
+    },
+    {
+        "id": "T10",
+        "name": "Logistics Chaos",
+        "prompt": "Helipad blocked by debris. Converge incoming air-transports to municipal landing zone 4 miles out."
+    },
+    {
+        "id": "T11",
+        "name": "Medication Error",
+        "prompt": "Alert: Ten-fold dose of epinephrine administered in Bay 6. Immediate cardiac monitoring and ACLS readiness."
+    },
+    {
+        "id": "T12",
+        "name": "Power Surge",
+        "prompt": "Backup generator failure in Radiology. Portable X-ray only for critical arrivals."
+    },
+    {
+        "id": "T13",
+        "name": "Infection Control",
+        "prompt": "Patient 4 presenting with hemorrhagic fever symptoms. Lockdown triage area 1. Full PPE required."
+    },
+    {
+        "id": "T14",
+        "name": "Pediatric Critical",
+        "prompt": "Status epilepticus in 3-year-old. Lorazepam dose 0.1mg/kg. Weight 14kg. Calculate and verify."
+    },
+    {
+        "id": "T15",
+        "name": "Neuro Trauma",
+        "prompt": "GCS 4, fixed pupils. Prep for burr hole or emergency decompressive craniectomy."
+    },
+    {
+        "id": "T16",
+        "name": "Burn Unit Surge",
+        "prompt": "6 patients with >40% TBSA burns. Calculating Parkland formula requirements for the next 8 hours."
+    },
+    {
+        "id": "T17",
+        "name": "Psychotic Break",
+        "prompt": "Agitated patient in hallway C. Security code silver. Rapid sedation protocol."
+    },
+    {
+        "id": "T18",
+        "name": "Telemetry Blackout",
+        "prompt": "All ICU monitors disconnected central station. Physical checks every 5 mins per bed."
+    },
+    {
+        "id": "T19",
+        "name": "Obstetric Emergency",
+        "prompt": "STAT C-section required in Bay 1. Placental abruption. Neonatal resuscitation team to stand by."
+    },
+    {
+        "id": "T20",
+        "name": "Dead on Arrival",
+        "prompt": "5 casualties confirmed DOAs. Coordinate with morgue and police for identification process."
+    },
+    {
+        "id": "T21",
+        "name": "Supply Chain Peak",
+        "prompt": "Running out of sterile gloves Size 7.5. Raid the surgical supply stock."
+    },
+    {
+        "id": "T22",
+        "name": "Cardiac Arrest",
+        "prompt": "Code blue ER Bay 3. Initial rhythm V-fib. Defibrillating at 200J."
+    },
+    {
+        "id": "T23",
+        "name": "Internal Disaster",
+        "prompt": "Water main burst in Sterilization. All non-emergency surgeries cancelled."
+    },
+    {
+        "id": "T24",
+        "name": "Radiology Backlog",
+        "prompt": "CT scan queue at 12 patients. Rule out stroke takes priority over Rule out fracture."
+    },
+    {
+        "id": "T25",
+        "name": "Family Influx",
+        "prompt": "50+ people in waiting room demanding info. Deploy social workers and establish info desk."
+    },
+    {
+        "id": "T26",
+        "name": "Anesthesia Shortage",
+        "prompt": "Propofol stock low. Alternate Ketamine/Midazolam for procedural sedation."
+    },
+    {
+        "id": "T27",
+        "name": "Cyber Breach",
+        "prompt": "EMR access intermittent. Switch to paper charts and manual wristband verification."
+    },
+    {
+        "id": "T28",
+        "name": "Burnout Alert",
+        "prompt": "Triage Nurse pulse rate 120bpm. Cortisol proxy high. Mandatory 10 min break."
+    },
+    {
+        "id": "T29",
+        "name": "Final Tally",
+        "prompt": "Summarize total resource usage: 42 trauma bundles, 180 liters saline, 14 units blood."
+    },
+    {
+        "id": "T30",
+        "name": "System Restore",
+        "prompt": "MCI stand-down. Transition back to normal operations. Archive all coherence traces."
+    }
+]

@@ -1,0 +1,19 @@
+{
+  "baseline": {
+    "C_total": 1.0,
+    "Loss": 1.0,
+    "Description": "Standard 4R2 operation"
+  },
+  "ablation_no_coherence": {
+    "C_total": 1.0,
+    "Loss": 1.0,
+    "Delta_Loss": 0.0,
+    "Conclusion": "Loss decreased (System became tolerant to incoherence)"
+  },
+  "ablation_no_landauer": {
+    "C_total": 1.0,
+    "Loss": 0.5,
+    "Delta_Loss": -0.5,
+    "Conclusion": "Loss decreased (System ignores thermodynamic cost)"
+  }
+}

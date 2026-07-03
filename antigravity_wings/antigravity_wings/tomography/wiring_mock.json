@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Wiring Mock Example",
+  "description": "Ejemplo de tomografía de un sistema simple (3 nodos, 2 aristas)",
+  "client_id": "client_mock_001",
+  "nodes": [
+    {
+      "id": "entry",
+      "label": "Entry Point",
+      "node_type": "entry",
+      "metadata": {
+        "description": "Sistema recibe request inicial",
+        "criticality": "low",
+        "reversible": true
+      }
+    },
+    {
+      "id": "decision_1",
+      "label": "Decision Point 1",
+      "node_type": "decision",
+      "metadata": {
+        "description": "Punto crítico de decisión del flujo",
+        "criticality": "high",
+        "reversible": false,
+        "observed_flows_count": 0,
+        "notes": "MARIO: zona de capacidad. LUIGI: punto sin retorno."
+      }
+    },
+    {
+      "id": "exit",
+      "label": "Exit Point",
+      "node_type": "exit",
+      "metadata": {
+        "description": "Sistema devuelve respuesta",
+        "criticality": "low",
+        "reversible": true
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_1",
+      "from_id": "entry",
+      "to_id": "decision_1",
+      "edge_type": "sync_call",
+      "metadata": {
+        "latency_ms": 10,
+        "failure_mode": "retry_3x"
+      }
+    },
+    {
+      "id": "edge_2",
+      "from_id": "decision_1",
+      "to_id": "exit",
+      "edge_type": "sync_call",
+      "metadata": {
+        "latency_ms": 5,
+        "failure_mode": "none"
+      }
+    }
+  ]
+}
