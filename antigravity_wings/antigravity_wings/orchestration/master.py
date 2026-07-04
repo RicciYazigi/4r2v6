@@ -94,7 +94,7 @@ class MasterOrchestrator:
                             regime_dict = evidence.metadata.get("regime") if evidence.metadata else None
                             if regime_dict:
                                 regime = Regime(
-                                    theta=regime_dict.get("theta", 0.75),
+                                    theta=regime_dict.get("theta", 0.35),  # ADR-0006 angular scale
                                     lambda_landauer=regime_dict.get("lambda_landauer", 0.05),
                                     mode=regime_dict.get("mode", "B"),
                                     criticality=regime_dict.get("criticality", 0.0),

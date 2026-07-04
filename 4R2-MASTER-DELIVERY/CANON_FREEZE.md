@@ -1,3 +1,5 @@
+> **SUPERSEDED 2026-07-03**: ver `4r2_definitive_blueprint.md` / masterfile v6.0 (ARS-20260703-4R2H). Kernel canonico ahora es `core/kernel_1240421.py` (wrapper sobre `core/kernel_v6.py`, metrica angular + JS-divergence). theta default 0.75 -> 0.35 pendiente de confirmacion (decision D-B). Este archivo se conserva como registro historico v1.1.
+
 # CANON FREEZE: Red Bull Wings / 4R2 Motor (v1.1)
 **State**: PILOT-READY / LOCKED
 **Trace ID**: RICCI-LOCK-20260116

@@ -1,184 +1,127 @@
-# 4R2 Canonical Specification (v5.3 - Clean Workspace)
+# 4R2 Canonical Specification (v6.0.1)
 
-**Single Source of Truth**: `core/kernel_1240421.py` (algorithm 1240421).  
-**Date**: 2026-07-03 (post v5.3 weights alignment).  
-**Status**: Authoritative for this workspace. All evidence, tests, and orchestration reference these definitions.
-
-This document is the mathematical and implementation contract. It takes precedence over any older or flat documents.
+**Single Source of Truth**: `core/kernel_v6.py` (math) + `core/kernel_1240421.py` (canonical wrapper, algorithm 1240421).
+**Date**: 2026-07-04 (ADR-0006 — angular metric canon).
+**Status**: Authoritative. Supersedes v5.3 spec entirely. All evidence, tests and orchestration reference these definitions.
 
 ## 1. Layer State (NRIF Tetrad)
 
 ```python
 @dataclass
 class LayerState:
-    normative: np.ndarray      # N: goals, constraints, declared policy
+    normative: np.ndarray         # N: goals, constraints, declared policy
     representational: np.ndarray  # R: internal model / embeddings
     informational: np.ndarray     # I: outputs, tokens, actions (variable dim)
-    physical: np.ndarray          # F: [FLOPS, mem_GB, energy_J, latency_ms] (always 4)
+    physical: np.ndarray          # F: EITHER verifiability [0,1]^4
+                                  #    (f_ground, f_num, f_cite, f_exec)
+                                  #    OR legacy raw telemetry (len 4)
 ```
 
-Validation: physical must have len==4. All are np.ndarray.
+Validation: `len(physical) == 4`. All np.ndarray. N, R, I must share
+embedding dimension for angular comparison (v6 enforces; wrapper pads I↔F).
 
-## 2. Core Coherence Metrics (exact)
+## 2. Core Coherence Metrics (exact, locked)
 
-All use the same primitive:
-
+### Angular distance (canonical primitive — ADR-0006)
 ```python
-def _safe_norm(self, vec: np.ndarray, epsilon: float = 1e-8) -> np.ndarray:
-    norm = np.linalg.norm(vec)
-    return vec / (norm + epsilon)
+d(a, b) = arccos( clip( dot(â, b̂), -1, 1 ) ) / π    # ∈ [0, 1]
 ```
+True metric; identical → 0, orthogonal → 0.5, antipodal → 1.0.
+Zero-norm input ⇒ ValueError ⇒ gate fail-closed (BLOCK).
 
-### C_NR (Normative-Representational)
+### C_NR, C_RI
 ```python
-C_NR = 1.0 - dot( _safe_norm(N), _safe_norm(R) )
+C_NR = d(N, R)
+C_RI = d(R, I)
 ```
-Range [0, 2]. 0 = identical direction after norm.
 
-### C_RI (Representational-Informational)
+### C_IF — dual path (ADR-0006)
 ```python
-C_RI = 1.0 - dot( _safe_norm(R), _safe_norm(I) )
+if all(0 <= F_k <= 1):            # Path A: verifiability semantics (v6 D3)
+    C_IF = 1 - mean(F)
+else:                             # Path B: legacy raw telemetry
+    C_IF = d( pad_renorm(Î), pad_renorm(F̂) )   # zero-pad to common size
 ```
-
-### C_IF (Informational-Physical) — cosine formulation (locked)
-```python
-i = _safe_norm(informational)
-p = _safe_norm(physical)
-size = max(len(i), len(p))
-ia = zeros(size); ia[:len(i)] = i
-pa = zeros(size); pa[:len(p)] = p
-ia = _safe_norm(ia); pa = _safe_norm(pa)
-C_IF = 1.0 - dot(ia, pa)
-```
-- Zero-pad shorter + re-norm ensures fair comparison when I (often ~3-4 from translator) vs F (fixed 4).
-- Consistent math with C_NR / C_RI.
-- **Rationale (historical)**: Prior KL (capped) gave C_IF=1.0 on perfect-scale cases and was asymmetric. Cosine + pad gives uniform semantics across NRIF. Lower = better I↔F alignment (resource efficiency proxy).
-- Limitation: proxy metric (different layer semantics); documented.
-
-**Docker-validated example** (perfect aligned ones(4) vs physical [1000,8,50,10]):
-```
-C_NR=0.0, C_RI=0.0, C_IF≈0.4667, C_total≈0.3556
-```
+Both paths ∈ [0, 1]. The silent-clip blind spot (raw F ⇒ C_IF=0) is removed.
 
 ### C_total (operational)
 ```python
-# Production default (ADR-0002 + ADR-0005) — mandatory for Hard-Gate
-C_total = (1/3) * C_NR + (1/3) * C_RI + (1/3) * C_IF
-
-# Physics-priority profile — explicit opt-in for benchmarks/MC only
-# C_total = (1/21) * C_NR + (4/21) * C_RI + (16/21) * C_IF
+C_total = w_NR·C_NR + w_RI·C_RI + w_IF·C_IF          # ∈ [0,1] by convexity
+# Production default (ADR-0002 + ADR-0005): w = (1/3, 1/3, 1/3)
 ```
-(Default: balanced weights `w_NR=w_RI=w_IF=1/3`. The 1:4:16 ratio is available as `CoherenceKernel.PHYSICS_PRIORITY_PROFILE` for hardware-throughput experiments; it is **never** the default due to the normative blind-spot vulnerability documented in ADR-0005.)
+Named profiles in `CoherenceKernel.WEIGHT_PROFILES`:
+`balanced` (default) | `physics_priority` (1/21, 4/21, 16/21 — explicit opt-in
+only) | `normative_priority` (0.5, 0.3, 0.2) | `regime_default` (0.25, 0.25, 0.5).
 
-**Invariant**: lower C_total is always better (lower distance = higher coherence).
+**Invariant**: lower C_total = higher coherence. Antipodal normative breach
+contributes ≥ 1/3 under balanced weights ⇒ can never land GREEN.
 
-## 3. Thermodynamic Components
+## 3. Irreversibility & Loss
 
-### Landauer Cost
+### R_irr (v6 D4 — replaces physical Landauer)
 ```python
-# physical
-LANDAUER_MIN = k_B * T * ln(2)   # ~2.87e-21 J/bit at 300K
-raw = decision_changes * LANDAUER_MIN
-
-# normalized (default in kernel)
-cost = lambda_landauer * decision_changes   # lambda=0.05 typical
+R_irr = JS(π_t ‖ π_{t−1})     # Jensen-Shannon over {ALLOW, FLAG, BLOCK}, ∈ [0, ln 2]
 ```
+Legacy normalized form retained in wrapper: `cost = λ·decision_changes` (λ=0.05).
+Landauer (`k_B·T·ln2·N`) is a conceptual analogy only — never a hardware reading.
 
-> [!NOTE]
-> **Audit and Scientific Validity Note (v5.3 Release)**: 
-> - The Landauer cost implemented in this system is an **operational ANALOGY** designed to model and incentivize stability in logical decision making for multi-agent systems.
-> - It **DOES NOT** represent a direct reading of thermal dissipation from physical processor transistors (silicon).
-> - The logical changes variable (`decision_changes` / `bits_erased`) is an external input provided by the agent's environment, not a hardware metric captured via real-time physical instrumentation.
-
-
-### Loss_4R2 (corrected formulation)
+### Loss_4R2
 ```python
-coherence_penalty = alpha * (C_total ** 2)           # higher C → higher penalty
-irreversibility_penalty = gamma * landauer_cost
-L_4R2 = base_loss + coherence_penalty + irreversibility_penalty
+L_4R2 = base + α·max(0, C_total)² + γ·R_irr + δ·K_contra
 ```
-**Key correction (2026-06-23)**: Previously used (1 - C_total)**2 which inverted the objective. Now monotonic with C_total.
+Monotone in C_total (correction of 2026-06-23 stands). Invariant:
+`L(bad) > L(perfect)` — enforced by selftest.
 
-## 4. Canonical Evidence (Docker selftest)
+## 4. Gate & Operational Zones (angular scale — ADR-0006)
 
-Command: `PYTHONPATH=core python -c 'from kernel_1240421 import CoherenceKernel; print(CoherenceKernel.selftest())'`
-
-```
-{
-  "perfect_c": 0.3556,
-  "perfect_loss": 0.5342,
-  "bad_c": 0.5865,
-  "bad_loss": 0.944,
-  "loss_correct_direction": true
-}
+```python
+verdict = ALLOW  if C_total <= θ
+        = FLAG   if C_total <= θ + 0.15
+        = BLOCK  otherwise            # and BLOCK on any exception (fail-closed)
 ```
 
-Loss direction test always passes: bad state produces strictly higher Loss_4R2.
+| Parameter | Value | Note |
+|:----------|:-----:|:-----|
+| θ default | **0.35** | `Regime.theta`; matches kernel_v6 |
+| θ critical (CCA crit > 0.7) | 0.25 → 0.15 effective | CRITICAL always TIGHTENS |
+| GREEN | C_total < 0.28 | old 0.35 mapped via arccos(1−x)/π |
+| GRAY (GRAY_WARNING fuse) | 0.28 – 0.39 | old 0.35–0.65 |
+| RED (RED_CRITICAL fuse) | > 0.39 | severity critical > 0.55 |
 
-Loss direction test always passes: bad state produces strictly higher Loss_4R2.
+## 5. Canonical Evidence (selftest, 2026-07-04)
 
-## 5. Bounds & Thresholds (from kernel tests + production)
-
-- C_* ∈ [0, 2] (cosine distance after unit norm)
-- C_total ∈ [0, 2] (convex)
-- Excellent (pilot): C_total < 0.15
-- Acceptable: < 0.35
-- Concerning: > 0.5
-- Gate / fuse trigger: > 0.65 (common)
-
-All kernel tests (24) enforce:
-- perfect alignment → C_NR/C_RI ≈ 0
-- weight sum == 1.0
-- Loss increases with C_total
-- C_IF after pad is in [0,2]
-- determinism on fixed input
+```
+PYTHONPATH=core python -c "from kernel_1240421 import CoherenceKernel; print(CoherenceKernel.selftest())"
+{'perfect_c': 0.0, 'perfect_loss': 0.5, 'bad_c': 0.5833, 'bad_loss': 0.9403,
+ 'loss_correct_direction': True}
+```
+Legacy example (ones(4) vs raw F [1000,8,50,10]): `C_IF=0.3210, C_total=0.1070`.
 
 ## 6. Determinism & Reproducibility
 
-- No np.random anywhere in core path.
-- Fixed input vectors → bit-identical C_total / breakdown (within float64; harness uses 1e-12 tolerance on numeric fields).
-- History list is append-only audit trail (reset optional).
-- All fresh evidence runs (generate_fresh_evidence.py) and determinism_harness produce sealed SHA256 on numeric results.
+- No RNG in the scoring path. Fixed inputs ⇒ bit-identical outputs
+  (harness: 20 runs, tolerance 1e-12, SHA-256 sealed).
+- `history` is an append-only audit trail.
+- Kernel replicas (core + basic + enhanced + tests) must share ONE SHA-256;
+  CI/verification: `sha256sum` over the four copies.
 
-## 7. Version & Precedence
+## 7. Extensions (unchanged semantics)
 
-v5.3.2 (cosine C_IF, SUM C_total, **balanced default weights w_NR=w_RI=w_IF=1/3** per ADR-0005, Loss**2, LocalCanonicalMotor default).
-Physics-priority profile (1/21:4/21:16/21) available as `CoherenceKernel.PHYSICS_PRIORITY_PROFILE` — explicit opt-in only.
+- `measure_coherence_with_keys` — frozen API contract: `total_coherence`
+  (raw, may be < 0) vs `coherence_score` (clamped [0,1]).
+- **BeliefTracker** — log-odds pooling (κ=0.7 trusted / 0.4 untrusted) +
+  Ebbinghaus decay on episodic facts (τ = 20 min default).
+- **CalibratedEvaluator** — centered Platt σ((raw−b)/T).
+- **DomainKernel / CCA / Regime** — contextual weight adjustment per ADR-0005 §3.
+- **4R2_FUSES** — VER / ASYM / PRIO / GRAY_WARNING / RED_CRITICAL; fail-closed
+  dispatch in `operators/dual_runtime.py`; zones per §4.
 
-This spec + core/kernel_1240421.py are the contract. Older KL descriptions exist only in annotated historical notes.
+## 8. Version & Precedence
 
----
+v6.0.1 = angular metric (D1) + dual-path C_IF (ADR-0006 D2) + simplex weights
+(D2) + JS irreversibility (D4) + fail-closed gate (D6) + balanced default
+weights (ADR-0005) + gate/zone recalibration (ADR-0006 D3/D4).
 
-**End of authoritative spec.** Any code, test or doc claiming different formulas for C_IF / Loss direction / aggregation is stale.
-
-## 8. Hardening and Core Extensions
-**Kernel Separation (from LLMsuperEngine/kernel variants):**
-- Added `measure_coherence_with_keys` for `total_coherence` (raw, can be <0) vs `coherence_score` (clamped to [0,1]).
-- Separates raw mathematical analysis from operational enforcement. Tested and verified in all test harnesses.
-- Impact: Prevents negative scores in production, enhancing audit traceability.
-
-**4R2_FUSES (from dynamic pilot governance):**
-- Concrete safety guards: VerificationGuard (blocks <0.9 on high), AsymmetryBreaker (vetoes EXISTENTIAL+PASSIVE risk actions), and PriorityBreaker (vetoes high execution ranks).
-- Integrated across:
-  - `fuses/fuses_4r2.py` (definition registry)
-  - `operators/dual_runtime.py` (runtime dispatch and evaluation)
-  - `fuse_config/generator.py` (dynamic generation from engine scores)
-- Impact: Strict fail-closed execution, halting logical drift and protecting physical resources when coherence drops below critical thresholds.
-
-**AGW / Dual / LLM Harness Integration:**
-- Orchestration runtime defaults to real execution (`LocalCanonicalMotor`), showing correct coherence progression (C_total rises as misalignment increases).
-
----
-
-## 9. Architectural Integration Insights (backup42final extraction)
-**Kernel Coexistence Modes:**
-- **Mode A (Static/Auditor)**: Fixed configurations, rigid safety fuses, representing strict external auditor constraints.
-- **Mode B (Dynamic/Conviviente)**: Adaptive thresholds, dynamic context prioritization (`CCA`), enabling coexistence in shared agent environments.
-
-**Belief and Coherence Coexistence:**
-- Dynamic regimes adapt NRIF weights based on criticality. For example, high-criticality contexts dynamically shift weights to prioritize physical constraints ($w_{IF}$).
-- The "Incoherency Tax" provides an economic narrative linking software failures and logical hallucinations directly to operational downtime, making C_total a proxy for physical execution cost.
-
----
-
-**End of authoritative spec. All core definitions strictly locked.**
+**Any code, test or doc claiming `1 - cos` formulas, ranges [0,2], zone bounds
+0.35/0.65, or θ default 0.65–0.75 is stale.** See `historiafable5.md` for the
+migration log and sealed hashes.

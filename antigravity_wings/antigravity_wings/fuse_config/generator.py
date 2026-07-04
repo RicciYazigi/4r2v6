@@ -35,8 +35,10 @@ class FuseConfigGenerator:
                 },
                 severity="high"
             ))
-        elif 0.35 <= global_score <= 0.65:
-            # ZONA GRIS: Incertidumbre / Riesgo moderado (0.35 <= C_total <= 0.65)
+        elif 0.28 <= global_score <= 0.39:
+            # ZONA GRIS (escala angular ADR-0006): 0.28 <= C_total <= 0.39
+            # (equivalente a 0.35-0.65 en la escala 1-cos anterior:
+            #  d_new = arccos(1 - d_old) / pi)
             severity = "medium"
             specs.append(FuseSpec(
                 id="fuse_4r2_gray_warning",
@@ -48,8 +50,8 @@ class FuseConfigGenerator:
                 severity="medium"
             ))
         else:
-            # ZONA ROJA: Degradación crítica (C_total > 0.65)
-            severity = "critical" if global_score > 0.80 else "high"
+            # ZONA ROJA (escala angular ADR-0006): C_total > 0.39
+            severity = "critical" if global_score > 0.55 else "high"
             specs.append(FuseSpec(
                 id="fuse_4r2_red_critical",
                 node_id=node_id,

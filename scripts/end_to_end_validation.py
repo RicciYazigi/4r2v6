@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT / "antigravity_wings"))
 
 from kernel_1240421 import create_kernel, LayerState
 from antigravity_wings.api.models import (
-    ConsolidatedReport, MarioReport, LuigiReport, NotebookSummary, 
+    ConsolidatedReport, MarioReport, LuigiReport, NotebookSummary,
     TomographyGraph, TomographyNode, TomographyEdge, NodeType, EdgeType
 )
 from antigravity_wings.numeric.translator import NumericTranslator
@@ -89,7 +89,7 @@ def main():
     print(f"    C_total = {C_total:.4f}")
     print(f"    L_4R2   = {loss:.4f}")
 
-    decision = "GO" if C_total < 0.65 else "NO_GO / DEGRADE"
+    decision = "GO" if C_total < 0.39 else "NO_GO / DEGRADE"  # ADR-0006 angular scale
     print(f"\n[3] Example Gate Decision: {decision}")
 
     print("\n" + "=" * 60)

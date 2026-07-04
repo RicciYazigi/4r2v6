@@ -2,9 +2,21 @@
 4R2 Coherence Kernel - Canonical Implementation of Algorithm 1240421
 
 Location: core/kernel_1240421.py (Single Source of Truth)
+Version: v6.0.1 (ADR-0006 — angular metric canon + F-layer dual-path semantics)
 
 This file wraps the core v6.0 mathematical logic from kernel_v6.py to maintain
 strict backward compatibility with all v5 interfaces.
+
+v6.0.1 changes (2026-07-04, ADR-0006):
+  - C_IF dual-path: F in [0,1]^4 => verifiability semantics (1 - mean);
+    F outside [0,1] (raw telemetry) => angular distance on zero-padded unit
+    vectors. Removes the silent-clip blind spot where raw hardware magnitudes
+    scored C_IF = 0 (false perfect physical coherence).
+  - Regime.theta default recalibrated 0.75 -> 0.35 for the angular scale
+    (old 1-cos thresholds map via d_new = arccos(1 - d_old)/pi).
+  - CRITICAL intent now TIGHTENS the gate (theta - 0.10), fixing a
+    directional inversion (previously theta + 0.10 relaxed it).
+  - Weight-profile registry added per ADR-0005 (PHYSICS_PRIORITY_PROFILE etc.).
 """
 
 import numpy as np
@@ -36,7 +48,9 @@ class LayerState:
 
 @dataclass
 class Regime:
-    theta: float = 0.75
+    # v6 angular scale: gate passes iff C_total <= theta. 0.35 == v6 canonical
+    # default (old 1-cos threshold 0.65 maps to arccos(0.35)/pi ~= 0.386).
+    theta: float = 0.35
     lambda_landauer: float = 0.25
     weights: dict = None
     mode: str = "B"
@@ -49,9 +63,24 @@ class Regime:
         self.theta = max(0.0, min(1.0, self.theta))
         self.lambda_landauer = max(0.01, min(1.0, self.lambda_landauer))
         if self.intent_level == "CRITICAL":
-            self.theta = min(0.98, self.theta + 0.1)
+            # ADR-0006: critical intent TIGHTENS the gate (fail-closed).
+            self.theta = max(0.15, self.theta - 0.10)
 
 class CoherenceKernel:
+    # ADR-0005 named weight-profile registry. BALANCED is the mandatory
+    # production default for Hard-Gate evaluation. PHYSICS_PRIORITY is
+    # explicit opt-in only (normative blind-spot vulnerability documented).
+    BALANCED_PROFILE = {'w_NR': 1/3, 'w_RI': 1/3, 'w_IF': 1/3}
+    PHYSICS_PRIORITY_PROFILE = {'w_NR': 1/21, 'w_RI': 4/21, 'w_IF': 16/21}
+    NORMATIVE_PRIORITY_PROFILE = {'w_NR': 0.50, 'w_RI': 0.30, 'w_IF': 0.20}
+    REGIME_DEFAULT_PROFILE = {'w_NR': 0.25, 'w_RI': 0.25, 'w_IF': 0.50}
+    WEIGHT_PROFILES = {
+        'balanced': BALANCED_PROFILE,
+        'physics_priority': PHYSICS_PRIORITY_PROFILE,
+        'normative_priority': NORMATIVE_PRIORITY_PROFILE,
+        'regime_default': REGIME_DEFAULT_PROFILE,
+    }
+
     def __init__(
         self,
         lambda_landauer: float = 0.05,
@@ -82,8 +111,36 @@ class CoherenceKernel:
         return kernel_v6.angular_distance(representational, informational)
 
     def compute_C_IF(self, informational: np.ndarray, physical: np.ndarray) -> float:
-        verifiability = np.clip(physical, 0.0, 1.0)
-        return 1.0 - float(np.mean(verifiability))
+        """Dual-path C_IF (ADR-0006).
+
+        Path A (canonical v6): F in [0,1]^4 is a verifiability vector
+        (f_ground, f_num, f_cite, f_exec) => C_IF = 1 - mean(F).
+        Path B (legacy raw telemetry): any component outside [0,1] means F is
+        raw hardware magnitudes => angular distance between zero-padded,
+        re-normalized I and F (ADR-0001 geometry, angular scale). This removes
+        the silent-clip blind spot where clip([1000,8,50,10]) -> [1,1,1,1]
+        yielded C_IF = 0 (false perfect physical coherence).
+        Both paths return values in [0, 1].
+        """
+        p = np.asarray(physical, dtype=float)
+        if np.all((p >= 0.0) & (p <= 1.0)):
+            return 1.0 - float(np.mean(p))
+        i = self._safe_norm(np.asarray(informational, dtype=float))
+        pn = self._safe_norm(p)
+        size = max(len(i), len(pn))
+        ia = np.zeros(size); ia[:len(i)] = i
+        pa = np.zeros(size); pa[:len(pn)] = pn
+        return kernel_v6.angular_distance(ia, pa)
+
+    def _verifiability_proxy(self, state: 'LayerState') -> np.ndarray:
+        """Map F to a valid v6 verifiability vector. If F is already in
+        [0,1]^4 use it as-is; otherwise inject the legacy angular C_IF so the
+        v6 pipeline (1 - mean) reproduces the dual-path value exactly."""
+        p = np.asarray(state.physical, dtype=float)
+        if np.all((p >= 0.0) & (p <= 1.0)):
+            return p
+        c_if = self.compute_C_IF(state.informational, state.physical)
+        return np.full(4, float(np.clip(1.0 - c_if, 0.0, 1.0)))
 
     def compute_coherence_total(self, state: LayerState, weights: Optional[Dict[str, float]] = None) -> Tuple[float, Dict]:
         state.validate()
@@ -109,12 +166,12 @@ class CoherenceKernel:
             normative=state.normative,
             representational=state.representational,
             informational=state.informational,
-            verifiability=np.clip(state.physical, 0.0, 1.0)
+            verifiability=self._verifiability_proxy(state)
         )
         res = self._v6_kernel.gate(v6_state, v6_regime)
         c_total = res["C_total"]
         breakdown = res["breakdown"]
-        
+
         result = {
             'C_total': c_total,
             'passes_gate': res["verdict"] == "ALLOW",
@@ -144,10 +201,7 @@ class CoherenceKernel:
         raw_quality = (1.0 - c_total) - (K * entropy_loss)
         coherence_score = max(0.0, min(1.0, raw_quality))
 
-        bits = len(normative) + len(representational) + len(informational)
-        kT = 4.11e-21
-        ln2 = 0.693147
-        landauer_cost = bits * kT * ln2 * (1 + entropy_loss)
+        landauer_cost = K * entropy_loss
 
         return {
             'c_nr': breakdown['C_NR'],
@@ -231,7 +285,8 @@ class CCA:
     def to_regime(self, tel: dict) -> Regime:
         crit = tel.get("criticality", 0.0)
         irr = 1.0 if tel.get("action_verb_detected") else 0.0
-        theta = 0.95 if crit > 0.7 else 0.75
+        # ADR-0006 (angular scale): high criticality => stricter gate.
+        theta = 0.25 if crit > 0.7 else 0.35
         lam = max(0.05, 0.25 - irr * 0.15)
         w = {'w_NR': 0.25, 'w_RI': 0.25, 'w_IF': 0.50}
         if crit > 0.6:
@@ -267,6 +322,12 @@ class Fact:
     source: str = "unknown"
 
 class BeliefTracker:
+    """Log-odds (logarithmic) opinion pooling with Ebbinghaus decay on episodic facts.
+
+    v6 fix (F7): existing facts are now updated via log-odds pooling, not
+    exponential smoothing. Log-odds pooling is the formally correct,
+    defensible version of the original intuition.
+    """
     def __init__(
         self,
         decay_tau_episodic: float = 20.0,
@@ -277,15 +338,21 @@ class BeliefTracker:
         self._decay_episodic = decay_tau_episodic
         self._decay_semantic = decay_tau_semantic
         self._threshold = threshold
-    
+
     def update(self, facts: list[tuple[str, float, str, str]]) -> None:
         for content, prob, tag, source in facts:
             prob = max(0.0, min(1.0, prob))
             existing = self._find_fact(content)
-            
+
             if existing is not None:
-                confidence = 0.7 if source == "trusted" else 0.4
-                existing.probability = confidence * prob + (1 - confidence) * existing.probability
+                kappa = 0.7 if source == "trusted" else 0.4
+                eps = 1e-9
+                p_old = min(max(existing.probability, eps), 1 - eps)
+                p_obs = min(max(prob, eps), 1 - eps)
+                logit_old = math.log(p_old / (1 - p_old))
+                logit_obs = math.log(p_obs / (1 - p_obs))
+                logit_new = logit_old + kappa * logit_obs
+                existing.probability = 1.0 / (1.0 + math.exp(-logit_new))
                 existing.timestamp = time.time()
             else:
                 self._facts.append(Fact(
@@ -295,45 +362,45 @@ class BeliefTracker:
                     tag=tag,
                     source=source,
                 ))
-    
+
     def _find_fact(self, content: str) -> Fact | None:
         for f in self._facts:
             if f.content.lower() == content.lower():
                 return f
         return None
-    
+
     def query(self, fact: str) -> tuple[float, str, float]:
         found = self._find_fact(fact)
         if found is None:
             return 0.0, "unknown", 0.0
-        
+
         decayed_prob = self._apply_decay(found)
         return decayed_prob, found.tag, found.timestamp
-    
+
     def _apply_decay(self, fact: Fact) -> float:
         if fact.tag == "semantic":
             return fact.probability
-        
+
         elapsed = (time.time() - fact.timestamp) / 60.0
         decay = math.exp(-elapsed / self._decay_episodic)
         return fact.probability * decay
-    
+
     def get_contradiction_cost(self, facts: list[str]) -> float:
         costs = []
         for i, f1 in enumerate(facts):
             for f2 in facts[i+1:]:
                 p1, _, _ = self.query(f1)
                 p2, _, _ = self.query(f2)
-                
+
                 if p1 < self._threshold or p2 < self._threshold:
                     continue
-                
+
                 if (p1 > 0.5 and p2 < 0.5) or (p2 > 0.5 and p1 < 0.5):
                     cost = 0.5 * abs(p1 - p2)
                     costs.append(cost)
-        
+
         return sum(costs) if costs else 0.0
-    
+
     def get_all_facts(self) -> list[dict]:
         return [
             {
@@ -345,7 +412,7 @@ class BeliefTracker:
             }
             for f in self._facts
         ]
-    
+
     def clear(self) -> None:
         self._facts.clear()
 
@@ -354,23 +421,23 @@ class CalibratedEvaluator:
         "c1": 1.0, "c2": 1.0, "c3": 1.1, "c4": 1.2,
         "c5": 1.0, "c6": 1.0, "c7": 1.1,
     }
-    
+
     SEVERITY_LEVELS = {
         "hard": 1.0, "soft": 0.6, "temporal": 0.3,
         "modal": 0.5, "pragmatic": 0.2,
     }
-    
+
     def __init__(self, temperatures: dict[str, float] | None = None):
         self._temperatures = temperatures or self.DEFAULT_TEMPERATURES.copy()
-    
-    def calibrate(self, c_id: str, raw_score: float) -> float:
+
+    def calibrate(self, c_id: str, raw_score: float, center: float = 0.5) -> float:
         T = self._temperatures.get(c_id, 1.0)
-        calibrated = 1 / (1 + math.exp(-raw_score / T))
+        calibrated = 1 / (1 + math.exp(-(raw_score - center) / T))
         return max(0.0, min(1.0, calibrated))
-    
+
     def get_severity(self, fact: str) -> float:
         fact_lower = fact.lower()
-        
+
         if any(kw in fact_lower for kw in ["error", "wrong", "false", "illegal", "harmful"]):
             return self.SEVERITY_LEVELS["hard"]
         elif any(kw in fact_lower for kw in ["prefer", "should", "better"]):

@@ -61,7 +61,7 @@ class CCA:
         crit = max(telemetry.get("operational_risk", 0), telemetry.get("semantic_risk", 0))
         irr = 1.0 if telemetry.get("action_verb_detected") else 0.0
         
-        theta = 0.95 if crit > 0.7 else 0.75
+        theta = 0.25 if crit > 0.7 else 0.35  # ADR-0006: angular scale, critical tightens
         lam = max(0.05, 0.25 - irr * 0.15)
         
         weights = {'w_NR': 0.25, 'w_RI': 0.25, 'w_IF': 0.50}

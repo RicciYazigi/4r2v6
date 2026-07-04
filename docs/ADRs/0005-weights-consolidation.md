@@ -89,3 +89,15 @@ python -m pytest
 - ADR-0004: Real motor as default (unchanged)
 - KERNEL_VERSIONS_LEDGER.md: 5-variant comparison and vulnerability analysis
 - fuzzing/summary.json: Empirical basis for physics_priority profile (2540 cases)
+
+---
+
+## Amendment (2026-07-04, ADR-0006)
+
+The verification snippet above predates the angular-metric canon. On the
+angular scale, orthogonal vectors give C_NR = 0.5 (not 1.0); the measured
+values for the scenario are C_NR=0.5000, C_IF=0.2477 (dual-path, no silent
+clip), C_total=0.3326 => Zone GRAY (0.28-0.39). The security guarantee is
+preserved and strengthened: an antipodal normative breach contributes >= 1/3
+to C_total (measured canonical case 0.6667 => RED/BLOCK). See ADR-0006 and
+historiafable5.md.

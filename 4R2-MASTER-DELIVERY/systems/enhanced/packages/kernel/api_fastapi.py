@@ -27,7 +27,7 @@ import re
 import hmac
 import hashlib
 import os
-from src.core.kernel import CoherenceKernel, LayerState, create_kernel
+from kernel_1240421 import CoherenceKernel, LayerState, create_kernel
 
 # Logging setup
 logging.basicConfig(level=logging.INFO)
@@ -394,7 +394,7 @@ async def calculate_loss_4r2(
     """
     try:
         kernel = get_kernel()
-        loss = kernel.compute_loss_4r2(
+        loss = kernel.compute_loss_4R2(
             base_loss=request.base_loss,
             coherence_total=request.coherence_total,
             decision_changes=request.decision_changes,

@@ -4,6 +4,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY api_fastapi.py .
 COPY kernel_1240421.py .
+COPY kernel_v6.py .
 COPY requirements.txt .
 COPY src ./src
 EXPOSE 8000
