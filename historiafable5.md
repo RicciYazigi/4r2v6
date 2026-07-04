@@ -370,3 +370,33 @@ El primer push dispara el CI: 6 checks core + números sentence-transformers.
    evals, evidence_index, CI, Makefile, docs de producción).
 
 ## Estado: repo público alineado con documentación v6.1.0
+
+---
+---
+
+# CICLO 6 — TRACE_ID: ARS-20260704-F5-0006 | Estado: OK
+
+**Mandato:** Handoff Grok ↔ continuidad de co-arquitectura + verificación independiente.
+
+## Acciones (Grok Build, 2026-07-04)
+1. **Re-validación local independiente** con venv: pytest **65/65 PASS**,
+   selftest `perfect_c=0.0`, determinismo PASS (1e-12), E1/E4 veto 100%,
+   E3 T3 0 incidentes, `make parity = 1`.
+2. **Limpieza final:** `core/testperm.txt` y `core/_synctest.txt` eliminados;
+   `.git/index.lock` ya no presente.
+3. **E2/E3 re-corridos** — hashes actualizados y `evidence_index.json`
+   regenerado (re-sellado post-validación).
+4. **CI GitHub:** run #1 SUCCESS en push inicial; run #2 en curso post-README.
+
+## Veredicto de continuidad
+Los 5 ciclos Fable 5 + ciclo 6 Grok confirman: **v6.1.0 PRODUCTION-READY**.
+No renombrar a v6.2 sin nueva evidencia — v6.2 = milestone (CI/ST, corpus
+público HaluEval-style, tráfico real).
+
+## Pendientes exclusivamente en host Ricci (no bloqueantes para pitch)
+| # | Acción | Por qué |
+|:-:|:-------|:--------|
+| 1 | `pip install sentence-transformers && python scripts/eval_e2_e3.py` | Tier semántico ST (CI job `semantic-tier` lo hace en GitHub) |
+| 2 | `docker compose build` en `4R2-MASTER-DELIVERY/systems/basic` | Validación contenedores (ND en sandboxes) |
+| 3 | Piloto con tráfico real (v6.3 roadmap) | Shadow E3 ya pasó con 300 eventos simulados |
+| 4 | Corpus HaluEval-style externo (v6.2 gate) | No presentar AUROC autorado como benchmark público |
