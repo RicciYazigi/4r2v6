@@ -1,4 +1,5 @@
 import os
+import hmac
 import logging
 import json
 from datetime import datetime
@@ -29,6 +30,22 @@ app = FastAPI(
 
 # Inyección del orquestador (instancia única)
 orchestrator = MasterOrchestrator()
+
+# ============================================================================
+# HARDENING: AUTENTICACIÓN DE ENDPOINTS ADMINISTRATIVOS (v6.0)
+# ============================================================================
+def _verify_admin_key(x_api_key: Optional[str]) -> None:
+    """Valida x_api_key contra AGW_ADMIN_KEY/AGW_API_KEY. Fail-closed: sin
+    variable de entorno configurada, todo acceso se rechaza (no hay valor
+    por defecto adivinable). Comparación en tiempo constante contra timing attacks.
+    """
+    admin_key = os.environ.get("AGW_ADMIN_KEY") or os.environ.get("AGW_API_KEY")
+    if not admin_key:
+        logger.error("AGW_ADMIN_KEY/AGW_API_KEY no configurada: rechazando acceso administrativo (fail-closed)")
+        raise HTTPException(status_code=503, detail="Server misconfigured: admin API key not set")
+    if not x_api_key or not hmac.compare_digest(x_api_key, admin_key):
+        raise HTTPException(status_code=401, detail="Invalid or missing API key")
+
 
 # ============================================================================
 # HARDENING: RATE LIMITING (60 req/min per IP) - consistente con kernel 4R2
@@ -101,10 +118,11 @@ async def health_check():
 @app.post("/analyze/{client_id}")
 async def analyze_system(client_id: str, request: Dict[str, Any], x_api_key: str = Header(None)):
     # Hardened auth: require valid key for production paths
-    admin_key = os.environ.get("AGW_ADMIN_KEY", os.environ.get("AGW_API_KEY", "AGW_ADMIN_KEY"))
-    if not x_api_key or x_api_key != admin_key:
+    try:
+        _verify_admin_key(x_api_key)
+    except HTTPException:
         logger.warning(f"Unauthorized access attempt for client {client_id}")
-        raise HTTPException(status_code=401, detail="Invalid or missing API key")
+        raise
     
     # Polymorphic parsing: check if request is formatted like AnalyzeRequest or RuntimeDecisionRequest
     if "metadata" in request:
@@ -166,9 +184,7 @@ async def analyze_system(client_id: str, request: Dict[str, Any], x_api_key: str
 
 @app.get("/evidence/{client_id}/{trace_id}")
 async def get_evidence_package(client_id: str, trace_id: str, x_api_key: str = Header(None)):
-    admin_key = os.environ.get("AGW_ADMIN_KEY", os.environ.get("AGW_API_KEY", "AGW_ADMIN_KEY"))
-    if not x_api_key or x_api_key != admin_key:
-        raise HTTPException(status_code=401, detail="Invalid API key")
+    _verify_admin_key(x_api_key)
     
     evidence_dir = Path("evidence/fresh")
     files_list = []

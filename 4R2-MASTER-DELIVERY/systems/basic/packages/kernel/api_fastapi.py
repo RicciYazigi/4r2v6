@@ -23,6 +23,9 @@ from time import time
 import logging
 import json
 import re
+import hmac
+import hashlib
+import os
 from kernel_1240421 import CoherenceKernel, LayerState, create_kernel
 
 # Logging setup
@@ -149,12 +152,20 @@ app = FastAPI(
 # Apply middleware in order (first added = outermost)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(TripwireMiddleware)
+# CORS: allow_credentials=True with a wildcard origin lets any site make
+# authenticated requests against this API. Origins must be explicit.
+allowed_origins_raw = os.environ.get("ALLOWED_ORIGINS")
+if allowed_origins_raw:
+    _cors_origins = [o.strip() for o in allowed_origins_raw.split(",") if o.strip()]
+else:
+    _cors_origins = []
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=_cors_origins or ["*"],
+    allow_credentials=bool(_cors_origins),
+    allow_methods=["POST", "GET"],
+    allow_headers=["Authorization", "Content-Type", "X-Session-Id"],
 )
 
 # Security
@@ -170,12 +181,36 @@ def get_kernel() -> CoherenceKernel:
         _kernel = create_kernel(lambda_landauer=0.05, beta_coherence=0.1)
     return _kernel
 
+def get_api_keys() -> dict:
+    raw = os.environ.get("API_KEYS_JSON")
+    if not raw:
+        return {}
+    try:
+        return json.loads(raw)
+    except Exception:
+        return {}
+
 def verify_token(credentials: HTTPAuthorizationCredentials = Security(security)) -> str:
-    """Verify JWT token (simplified for demo)"""
+    """Verify bearer token against API_KEYS_JSON (timing-safe, fail-closed)."""
     token = credentials.credentials
-    if not token:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    return token
+    api_keys = get_api_keys()
+    if not api_keys:
+        logger.error("API_KEYS_JSON not configured: rejecting all bearer tokens (fail-closed)")
+        raise HTTPException(status_code=503, detail="Server misconfigured: API token not set")
+    try:
+        prefix, key_id, secret = token.split("_", 2)
+        assert prefix == "4r2"
+    except (ValueError, AssertionError):
+        raise HTTPException(status_code=401, detail="Malformed credential")
+    stored = api_keys.get(key_id)
+    if stored is None:
+        raise HTTPException(status_code=401, detail="Unknown key")
+    digest = hashlib.sha256(secret.encode()).hexdigest()
+    if not hmac.compare_digest(digest, stored["hash"]):
+        raise HTTPException(status_code=401, detail="Invalid credential")
+    if stored.get("expires", float("inf")) < time():
+        raise HTTPException(status_code=401, detail="Expired credential")
+    return key_id
 
 # ============================================================================
 # REQUEST/RESPONSE MODELS

@@ -23,9 +23,17 @@ export class SessionManager {
     const session = this.sessions.get(sessionId);
     if (!session) return { success: false, error: 'Session not found' };
     
-    // Verificar hash (simplificado - en producción usar crypto real)
-    const expectedHash = process.env.ACTIVATION_HASH || 'dev-hash';
-    if (activationHash !== expectedHash) {
+    const expected = process.env.ACTIVATION_HASH;
+    if (!expected) {
+      throw new Error("FATAL: ACTIVATION_HASH not set");
+    }
+
+    const crypto = require('node:crypto');
+    const a = Buffer.from(String(activationHash));
+    const b = Buffer.from(expected);
+    
+    const ok = a.length === b.length && crypto.timingSafeEqual(a, b);
+    if (!ok) {
       return { success: false, error: 'Invalid activation hash' };
     }
     

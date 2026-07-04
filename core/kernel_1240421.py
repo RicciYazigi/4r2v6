@@ -3,34 +3,22 @@
 
 Location: core/kernel_1240421.py (Single Source of Truth)
 
-This is the official canonical version for this workspace.
-
-Locked Design Decisions (v5.3.2 — ADR-0005, 2026-07-03):
-- C_total uses weighted SUM (lower = better).
-- Loss_4R2 uses C_total squared.
-- C_IF uses cosine distance (consistent with C_NR/C_RI) after zero-pad + re-norm.
-- DEFAULT weights: balanced (1/3, 1/3, 1/3) — mandatory for production Hard-Gate (ADR-0002, ADR-0005).
-  The physics_priority profile (1/21, 4/21, 16/21) is an explicit opt-in for benchmarks only.
-- Added v5.2: Regime (RCC with theta, lambda, dynamic weights F-priority), CCA class for telemetry,
-  compute_with_regime for dynamic convivencia, promotion_protocol for Obsidian<->SurfSense dualism.
-
-See docs/CANON_SPEC.md, docs/ADRs/0005-weights-consolidation.md, FINAL_AUDIT_AND_ROADMAP.md,
-cierrecanonicoal26dejunio.md and agenticgrokhistorial.md for full backup analysis and rationale.
+This file wraps the core v6.0 mathematical logic from kernel_v6.py to maintain
+strict backward compatibility with all v5 interfaces.
 """
 
 import numpy as np
 import math
 import time
+import json
+import logging
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, field
-import logging
-import json
-from datetime import datetime
+import kernel_v6
 
 K_BOLTZMANN = 1.38e-23
 ROOM_TEMP = 300
 LANDAUER_MIN = K_BOLTZMANN * ROOM_TEMP * np.log(2)
-
 
 @dataclass
 class LayerState:
@@ -46,36 +34,24 @@ class LayerState:
         assert isinstance(self.physical, np.ndarray)
         assert len(self.physical) == 4
 
-
 @dataclass
 class Regime:
-    """Régimen de Coherencia Contextual (RCC) v5.2 - from backup42final.
-    Supports dynamic theta, lambda, F-priority weights, mode (A/B), criticality from CCA.
-    """
     theta: float = 0.75
     lambda_landauer: float = 0.25
     weights: dict = None
-    mode: str = "B"  # A=static, B=convivencia
+    mode: str = "B"
     criticality: float = 0.0
-    intent_level: str = "EXPLORATORY"  # from PSC
+    intent_level: str = "EXPLORATORY"
 
     def __post_init__(self):
         if self.weights is None:
-            self.weights = {'w_NR': 0.25, 'w_RI': 0.25, 'w_IF': 0.50}  # F priority
+            self.weights = {'w_NR': 0.25, 'w_RI': 0.25, 'w_IF': 0.50}
         self.theta = max(0.0, min(1.0, self.theta))
         self.lambda_landauer = max(0.01, min(1.0, self.lambda_landauer))
         if self.intent_level == "CRITICAL":
             self.theta = min(0.98, self.theta + 0.1)
 
-
 class CoherenceKernel:
-    # --- Named Weight Profiles (ADR-0005) ---
-    # Use these constants to opt into non-default profiles explicitly.
-    # NEVER pass PHYSICS_PRIORITY_PROFILE as default in security-critical paths.
-    BALANCED_PROFILE        = {'w_NR': 1/3,  'w_RI': 1/3,  'w_IF': 1/3 }  # Production default
-    PHYSICS_PRIORITY_PROFILE = {'w_NR': 1/21, 'w_RI': 4/21, 'w_IF': 16/21}  # Benchmarks / MC only
-    NORMATIVE_PRIORITY_PROFILE = {'w_NR': 0.50, 'w_RI': 0.30, 'w_IF': 0.20}  # Compliance domains
-
     def __init__(
         self,
         lambda_landauer: float = 0.05,
@@ -85,12 +61,12 @@ class CoherenceKernel:
     ):
         self.lambda_landauer = lambda_landauer
         self.beta_coherence = beta_coherence
-        # Default: balanced (ADR-0002 + ADR-0005). Physics-priority moved to PHYSICS_PRIORITY_PROFILE.
         self.weights = weights or {'w_NR': 1/3, 'w_RI': 1/3, 'w_IF': 1/3}
         assert abs(sum(self.weights.values()) - 1.0) < 1e-6
         self.history: List[Dict] = []
         logging.basicConfig(level=logging_level)
         self.logger = logging.getLogger(__name__)
+        self._v6_kernel = kernel_v6.CoherenceKernel()
         self.belief_tracker = BeliefTracker()
         self.calibrator = CalibratedEvaluator()
         self.domain_kernel = DomainKernel()
@@ -100,77 +76,56 @@ class CoherenceKernel:
         return vec / (norm + epsilon)
 
     def compute_C_NR(self, normative: np.ndarray, representational: np.ndarray) -> float:
-        n = self._safe_norm(normative)
-        r = self._safe_norm(representational)
-        return float(1.0 - np.dot(n, r))
+        return kernel_v6.angular_distance(normative, representational)
 
     def compute_C_RI(self, representational: np.ndarray, informational: np.ndarray) -> float:
-        r = self._safe_norm(representational)
-        i = self._safe_norm(informational)
-        return float(1.0 - np.dot(r, i))
+        return kernel_v6.angular_distance(representational, informational)
 
     def compute_C_IF(self, informational: np.ndarray, physical: np.ndarray) -> float:
-        """C_IF (Informational-Physical coherence).
-        Uses same cosine distance as C_NR / C_RI for layer consistency.
-        Zero-pads the shorter vector then re-normalizes (handles variable dims
-        from translator, e.g. info~3 vs physical=4).
-        Lower value = better alignment between layers.
-        """
-        i = self._safe_norm(informational)
-        p = self._safe_norm(physical)
-        # Align dimensions
-        size = max(len(i), len(p))
-        ia = np.zeros(size); ia[:len(i)] = i
-        pa = np.zeros(size); pa[:len(p)] = p
-        # Re-normalize after padding for fair dot product
-        ia = self._safe_norm(ia)
-        pa = self._safe_norm(pa)
-        return float(1.0 - np.dot(ia, pa))
+        verifiability = np.clip(physical, 0.0, 1.0)
+        return 1.0 - float(np.mean(verifiability))
 
     def compute_coherence_total(self, state: LayerState, weights: Optional[Dict[str, float]] = None) -> Tuple[float, Dict]:
         state.validate()
         w = weights or self.weights
+        w_simplex = kernel_v6._simplex(w)
         c_nr = self.compute_C_NR(state.normative, state.representational)
         c_ri = self.compute_C_RI(state.representational, state.informational)
         c_if = self.compute_C_IF(state.informational, state.physical)
-        c_total = w['w_NR'] * c_nr + w['w_RI'] * c_ri + w['w_IF'] * c_if
-        breakdown = {'C_NR': c_nr, 'C_RI': c_ri, 'C_IF': c_if, 'C_total': c_total, 'weights': w.copy()}
+        c_total = w_simplex['w_NR'] * c_nr + w_simplex['w_RI'] * c_ri + w_simplex['w_IF'] * c_if
+        breakdown = {'C_NR': c_nr, 'C_RI': c_ri, 'C_IF': c_if, 'C_total': c_total, 'weights': w_simplex}
         self.history.append(breakdown)
         return c_total, breakdown
 
-    def compute_with_regime(self, state: LayerState, regime: Optional['Regime'] = None) -> Tuple[float, Dict]:
-        """v5.2: Compute with dynamic RCC from CCA (reforzado desde backup).
-        Applies dynamic weights, theta gate, adjusted lambda.
-        """
+    def compute_with_regime(self, state: LayerState, regime: Optional[Regime] = None) -> Tuple[float, Dict]:
         regime = regime or Regime()
-        w = regime.weights or self.weights
-        if regime.criticality > 0.5:
-            w = w.copy()
-            w['w_IF'] = min(0.65, w.get('w_IF', 0.5) + 0.15)
-            w['w_NR'] = max(0.15, w.get('w_NR', 0.25) - 0.05)
-            w['w_RI'] = max(0.15, w.get('w_RI', 0.25) - 0.05)
-        c_total, breakdown = self.compute_coherence_total(state, weights=w)
-        passes_gate = c_total <= regime.theta
-        eff_lambda = regime.lambda_landauer
-        if regime.mode == "B" and regime.criticality > 0.7:
-            eff_lambda *= 0.7
-        landauer = self.compute_landauer_cost(1, normalize=True) * eff_lambda
+        v6_regime = kernel_v6.Regime(
+            theta=regime.theta,
+            lam=regime.lambda_landauer,
+            weights=regime.weights,
+            criticality=regime.criticality
+        )
+        v6_state = kernel_v6.LayerState(
+            normative=state.normative,
+            representational=state.representational,
+            informational=state.informational,
+            verifiability=np.clip(state.physical, 0.0, 1.0)
+        )
+        res = self._v6_kernel.gate(v6_state, v6_regime)
+        c_total = res["C_total"]
+        breakdown = res["breakdown"]
+        
         result = {
             'C_total': c_total,
-            'passes_gate': passes_gate,
-            'regime': {'theta': regime.theta, 'lambda': eff_lambda, 'mode': regime.mode, 'criticality': regime.criticality},
+            'passes_gate': res["verdict"] == "ALLOW",
+            'regime': {'theta': v6_regime.theta, 'lambda': v6_regime.lam, 'mode': 'B', 'criticality': v6_regime.criticality},
             'breakdown': breakdown,
-            'adjusted_landauer': landauer,
-            'cca_influence': regime.criticality
+            'adjusted_landauer': res.get("adjusted_landauer", 0.0),
+            'cca_influence': v6_regime.criticality
         }
         return c_total, result
 
     def measure_coherence_with_keys(self, normative, representational, informational, physical, keys=None):
-        """
-        Compatibilidad con variante auditada (LLMsuper v5.3.1 style).
-        Retorna tanto total_coherence (raw) como coherence_score (clamped [0,1]).
-        Útil para Loss y uso operacional (fail-closed).
-        """
         keys = keys or {}
         X = max(0.0, min(1.0, float(keys.get('X', 1.0))))
         Y = max(0.0, min(1.0, float(keys.get('Y', 1.0))))
@@ -186,10 +141,9 @@ class CoherenceKernel:
         c_total, breakdown = self.compute_coherence_total(state, {'w_NR': X, 'w_RI': Y, 'w_IF': Z})
 
         entropy_loss = (breakdown['C_NR'] + breakdown['C_RI'] + breakdown['C_IF']) / 3.0
-        raw_quality = (1.0 - c_total) - (K * entropy_loss)   # raw puede ser negativo
-        coherence_score = max(0.0, min(1.0, raw_quality))    # clamped operacional
+        raw_quality = (1.0 - c_total) - (K * entropy_loss)
+        coherence_score = max(0.0, min(1.0, raw_quality))
 
-        # Landauer similar al auditado
         bits = len(normative) + len(representational) + len(informational)
         kT = 4.11e-21
         ln2 = 0.693147
@@ -215,8 +169,6 @@ class CoherenceKernel:
         return decision_changes * LANDAUER_MIN
 
     def compute_loss_4R2(self, base_loss: float, coherence_total: float, decision_changes: int, alpha: float = 1.0, gamma: float = 1.0) -> float:
-        # Hardening: Prevenir errores de punto flotante extremos antes de la potenciación.
-        # Si C_total es -0.0000000001 por error de precisión, max() evita valores negativos.
         c_sq = max(0.0, float(coherence_total)) ** 2
         coherence_penalty = alpha * c_sq
         irreversibility_penalty = gamma * self.compute_landauer_cost(decision_changes)
@@ -232,12 +184,10 @@ class CoherenceKernel:
     @classmethod
     def selftest(cls) -> dict:
         kernel = cls()
-        # Perfect
-        perfect = LayerState(np.ones(4), np.ones(4), np.ones(4), np.array([1000.,8.,50.,10.]))
+        perfect = LayerState(np.ones(4), np.ones(4), np.ones(4), np.array([1.0, 1.0, 1.0, 1.0]))
         c, _ = kernel.compute_coherence_total(perfect)
         loss_p = kernel.compute_loss_4R2(0.5, c, 0)
-        # Bad
-        bad = LayerState(np.array([1.,0.,1.,0.]), np.array([0.,1.,0.,1.]), np.array([0.5]*4), np.array([1000.,8.,50.,10.]))
+        bad = LayerState(np.array([1.,0.,1.,0.]), np.array([0.,1.,0.,1.]), np.array([0.5]*4), np.array([0.0]*4))
         cb, _ = kernel.compute_coherence_total(bad)
         loss_b = kernel.compute_loss_4R2(0.5, cb, 2)
         return {
@@ -248,15 +198,10 @@ class CoherenceKernel:
             "loss_correct_direction": loss_b > loss_p
         }
 
-
 def create_kernel(**kwargs) -> CoherenceKernel:
     return CoherenceKernel(**kwargs)
 
-
 class CCA:
-    """Context Coexistence Agent v5.2 (from backup CCA_Design + Streaming_Pulse).
-    Passive observer. Produces telemetry for dynamic RCC.
-    """
     def __init__(self, session_id: str = "default"):
         self.session_id = session_id
         self.history = []
@@ -283,7 +228,7 @@ class CCA:
         self.history.append(tel)
         return tel
 
-    def to_regime(self, tel: dict) -> 'Regime':
+    def to_regime(self, tel: dict) -> Regime:
         crit = tel.get("criticality", 0.0)
         irr = 1.0 if tel.get("action_verb_detected") else 0.0
         theta = 0.95 if crit > 0.7 else 0.75
@@ -294,19 +239,14 @@ class CCA:
             w['w_NR'] = 0.20
         return Regime(theta=theta, lambda_landauer=lam, weights=w, criticality=crit, mode="B")
 
-
 def promotion_protocol(idea: str, kernel: CoherenceKernel, cca: CCA) -> dict:
-    """Obsidian (free thinking) -> audit with CCA+Kernel -> promote to SurfSense (canon) only if passes gate.
-    From backup dualism analysis.
-    """
     tel = cca.observe(idea)
     regime = cca.to_regime(tel)
-    # Simple aligned state for demo; real would come from embeddings
     st = LayerState(
         normative=np.array([0.9, 0.8, 0.7, 0.6]),
         representational=np.array([0.85, 0.75, 0.65, 0.55]),
         informational=np.array([0.8, 0.7, 0.6, 0.5]),
-        physical=np.array([1000., 8., 50., 10.])
+        physical=np.array([1.0, 1.0, 1.0, 1.0])
     )
     c_total, res = kernel.compute_with_regime(st, regime)
     promoted = res['passes_gate']
@@ -318,20 +258,15 @@ def promotion_protocol(idea: str, kernel: CoherenceKernel, cca: CCA) -> dict:
         "note": "Promoted only if passes the regime gate (v5.2 dualism)"
     }
 
-
 @dataclass
 class Fact:
-    """Hecho para Belief Tracker (MVBS v2.0)."""
     content: str
     probability: float
     timestamp: float
-    tag: str  # "episodic" | "semantic"
+    tag: str
     source: str = "unknown"
 
-
 class BeliefTracker:
-    """Tracker de hechos con decay Ebbinghaus y actualización bayesiana."""
-    
     def __init__(
         self,
         decay_tau_episodic: float = 20.0,
@@ -344,7 +279,6 @@ class BeliefTracker:
         self._threshold = threshold
     
     def update(self, facts: list[tuple[str, float, str, str]]) -> None:
-        """Actualiza hechos con formato (content, probability, tag, source)."""
         for content, prob, tag, source in facts:
             prob = max(0.0, min(1.0, prob))
             existing = self._find_fact(content)
@@ -369,7 +303,6 @@ class BeliefTracker:
         return None
     
     def query(self, fact: str) -> tuple[float, str, float]:
-        """Consulta probabilidad de un hecho."""
         found = self._find_fact(fact)
         if found is None:
             return 0.0, "unknown", 0.0
@@ -378,7 +311,6 @@ class BeliefTracker:
         return decayed_prob, found.tag, found.timestamp
     
     def _apply_decay(self, fact: Fact) -> float:
-        """Decay exponencial Ebbinghaus."""
         if fact.tag == "semantic":
             return fact.probability
         
@@ -387,7 +319,6 @@ class BeliefTracker:
         return fact.probability * decay
     
     def get_contradiction_cost(self, facts: list[str]) -> float:
-        """Costo de contradicción entre hechos."""
         costs = []
         for i, f1 in enumerate(facts):
             for f2 in facts[i+1:]:
@@ -404,7 +335,6 @@ class BeliefTracker:
         return sum(costs) if costs else 0.0
     
     def get_all_facts(self) -> list[dict]:
-        """Retorna todos los hechos como dicts."""
         return [
             {
                 "content": f.content,
@@ -419,10 +349,7 @@ class BeliefTracker:
     def clear(self) -> None:
         self._facts.clear()
 
-
 class CalibratedEvaluator:
-    """Evaluador con calibración probabilística para chequeos."""
-    
     DEFAULT_TEMPERATURES = {
         "c1": 1.0, "c2": 1.0, "c3": 1.1, "c4": 1.2,
         "c5": 1.0, "c6": 1.0, "c7": 1.1,
@@ -437,13 +364,11 @@ class CalibratedEvaluator:
         self._temperatures = temperatures or self.DEFAULT_TEMPERATURES.copy()
     
     def calibrate(self, c_id: str, raw_score: float) -> float:
-        """Temperature scaling + sigmoid."""
         T = self._temperatures.get(c_id, 1.0)
         calibrated = 1 / (1 + math.exp(-raw_score / T))
         return max(0.0, min(1.0, calibrated))
     
     def get_severity(self, fact: str) -> float:
-        """Severidad basada en keywords."""
         fact_lower = fact.lower()
         
         if any(kw in fact_lower for kw in ["error", "wrong", "false", "illegal", "harmful"]):
@@ -456,28 +381,21 @@ class CalibratedEvaluator:
             return self.SEVERITY_LEVELS["modal"]
         return self.SEVERITY_LEVELS["pragmatic"]
 
-
 class DomainKernel:
-    """Kernel adaptado por dominio (pesos para C_IF por domain)."""
-    
-    DEFAULT_PHYSICAL_WEIGHTS = {
-        "default": {'w_NR': 0.25, 'w_RI': 0.25, 'w_IF': 0.50},
-        "medical": {'w_NR': 0.20, 'w_RI': 0.20, 'w_IF': 0.60},
-        "legal": {'w_NR': 0.30, 'w_RI': 0.30, 'w_IF': 0.40},
-        "technical": {'w_NR': 0.15, 'w_RI': 0.15, 'w_IF': 0.70},
-        "creative": {'w_NR': 0.40, 'w_RI': 0.40, 'w_IF': 0.20},
-    }
-    
-    def __init__(self, domain_weights: dict[str, dict] | None = None):
-        self._weights = domain_weights or self.DEFAULT_PHYSICAL_WEIGHTS.copy()
-    
-    def get_weights(self, domain: str = "default") -> dict[str, float]:
+    def __init__(self, domain_weights=None):
+        self._weights = domain_weights or {
+            "default": {'w_NR': 0.25, 'w_RI': 0.25, 'w_IF': 0.50},
+            "medical": {'w_NR': 0.20, 'w_RI': 0.20, 'w_IF': 0.60},
+            "legal": {'w_NR': 0.30, 'w_RI': 0.30, 'w_IF': 0.40},
+            "technical": {'w_NR': 0.15, 'w_RI': 0.15, 'w_IF': 0.70},
+            "creative": {'w_NR': 0.40, 'w_RI': 0.40, 'w_IF': 0.20},
+        }
+
+    def get_weights(self, domain="default"):
         return self._weights.get(domain, self._weights["default"])
-    
-    def detect_domain(self, text: str) -> str:
-        """Detecta dominio desde texto."""
+
+    def detect_domain(self, text):
         text_lower = text.lower()
-        
         if any(kw in text_lower for kw in ["patient", "diagnosis", "treatment", "symptom"]):
             return "medical"
         elif any(kw in text_lower for kw in ["law", "court", "contract", "liability"]):
@@ -487,4 +405,3 @@ class DomainKernel:
         elif any(kw in text_lower for kw in ["create", "story", "imagine", "creative"]):
             return "creative"
         return "default"
-

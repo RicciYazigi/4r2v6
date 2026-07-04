@@ -10,12 +10,12 @@ import os
 import sys
 
 def verify_rate_limit_on_analyze():
-    os.environ.setdefault("AGW_ADMIN_KEY", "AGW_ADMIN_KEY")
+    test_key = os.environ.setdefault("AGW_ADMIN_KEY", "hardening-verify-local-only-key")
     from fastapi.testclient import TestClient
     from antigravity_wings.api.server import app
 
     client = TestClient(app)
-    headers = {"x-api-key": "AGW_ADMIN_KEY"}
+    headers = {"x-api-key": test_key}
     oks = 0
     too_many = 0
     for i in range(70):

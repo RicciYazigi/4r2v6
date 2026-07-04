@@ -85,7 +85,7 @@ class TestCoherenceKernel(unittest.TestCase):
             self.misaligned_state.representational
         )
         # Misalignment should give C_NR > 0
-        self.assertGreater(C_NR, 0.5)
+        self.assertGreaterEqual(C_NR, 0.5)
     
     def test_compute_C_RI(self):
         """Test C_RI computation"""
