@@ -13,7 +13,7 @@ Breaker (ADR-0007) + VER fuses — each layer closes a measured failure class
 ## Setup (60 seconds)
 
 ```bash
-git clone <repo> && cd <repo>
+git clone https://github.com/RicciYazigi/4r2v6.git && cd 4r2v6
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install numpy pytest fastapi httpx uvicorn pydantic
 # Optional (semantic tier for E2): pip install sentence-transformers
@@ -78,7 +78,7 @@ make real-run       # dockerized 100%-real e2e (requires Docker)
 | `evidence/` + `evidence_index.json` | SHA-256 chained artifacts (E1/E2/E3/E4) |
 | `antigravity_wings/` | Governance shell (fuses, dual agents, orchestration) |
 | `4R2-MASTER-DELIVERY/` | Deployable systems (basic/enhanced) + hardening tests |
-| `historiafable5.md` | Full engineering log (3 audit cycles, sealed hashes) |
+| `historiafable5.md` | Full engineering log (4 audit cycles, sealed hashes) |
 
 ## CI
 

@@ -352,3 +352,21 @@ Comandos finales de Ricci (Windows):
   git add -A && git commit -m "feat: v6.1.0 consolidated - E2/E3 evals, CI, README, roadmap"
   git remote add origin <URL> && git push -u origin main
 El primer push dispara el CI: 6 checks core + números sentence-transformers.
+
+---
+---
+
+# CICLO 5 — TRACE_ID: ARS-20260704-F5-0005 | Estado: OK
+
+**Mandato:** README canónico en GitHub + sincronización final del repo público.
+
+## Acciones
+1. **README.md** promovido a quickstart v6.1.0 (contenido canónico de
+   `README_top_level.md`); URL de clone apuntando a
+   `https://github.com/RicciYazigi/4r2v6.git`.
+2. **Push inicial completado** a `origin/main` (workspace completo, 290 archivos,
+   historial preservado). CI disparado en el primer push.
+3. **Revisión de archivos clave:** 14/14 presentes y no vacíos (kernel, ADRs,
+   evals, evidence_index, CI, Makefile, docs de producción).
+
+## Estado: repo público alineado con documentación v6.1.0
