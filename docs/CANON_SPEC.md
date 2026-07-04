@@ -125,3 +125,12 @@ weights (ADR-0005) + gate/zone recalibration (ADR-0006 D3/D4).
 **Any code, test or doc claiming `1 - cos` formulas, ranges [0,2], zone bounds
 0.35/0.65, or θ default 0.65–0.75 is stale.** See `historiafable5.md` for the
 migration log and sealed hashes.
+
+## 9. ADR-0007 Addendum (2026-07-04) — Layer Breach Breaker
+
+`compute_with_regime` applies per-layer caps AFTER the convex gate:
+`max(C_NR, C_RI) >= 0.75 => BLOCK` ; `>= 0.60 => ALLOW downgraded to FLAG`.
+Rationale: convexity bounds any single layer's contribution by max(w) < theta,
+enabling single-layer camouflage attacks (measured: raw veto 50% -> 100% with
+LBB, n=80, seed 1240421). v6 fail-closed results map to C_total=1.0 / BLOCK
+(never an exception). Kernel version: v6.1.0.

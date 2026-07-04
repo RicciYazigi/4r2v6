@@ -2,7 +2,7 @@
 4R2 Coherence Kernel - Canonical Implementation of Algorithm 1240421
 
 Location: core/kernel_1240421.py (Single Source of Truth)
-Version: v6.0.1 (ADR-0006 — angular metric canon + F-layer dual-path semantics)
+Version: v6.1.0 (ADR-0006 angular canon + ADR-0007 Layer Breach Breaker & fail-closed wrapper)
 
 This file wraps the core v6.0 mathematical logic from kernel_v6.py to maintain
 strict backward compatibility with all v5 interfaces.
@@ -169,12 +169,34 @@ class CoherenceKernel:
             verifiability=self._verifiability_proxy(state)
         )
         res = self._v6_kernel.gate(v6_state, v6_regime)
-        c_total = res["C_total"]
-        breakdown = res["breakdown"]
+        # ADR-0007: honor v6 fail-closed results (no C_total on poisoned
+        # input). Worst-case score 1.0, empty breakdown, verdict BLOCK.
+        c_total = res.get("C_total", 1.0)
+        breakdown = res.get("breakdown", {})
+
+        # ADR-0007 - Layer Breach Breaker (LBB).
+        # Convex dilution defense: with balanced weights no single layer can
+        # push C_total above 1/3, so a single-layer breach (e.g. antipodal
+        # normative violation camouflaged by perfect verifiability) would
+        # otherwise pass theta=0.35. LBB caps inter-layer breaches directly:
+        #   max(C_NR, C_RI) >= 0.75  => BLOCK (fail-closed)
+        #   max(C_NR, C_RI) >= 0.60  => downgrade ALLOW to FLAG
+        verdict = res["verdict"]
+        lbb_trigger = None
+        if isinstance(breakdown, dict):
+            m_layer = max(breakdown.get('C_NR', 0.0), breakdown.get('C_RI', 0.0))
+            if m_layer >= 0.75:
+                verdict = "BLOCK"
+                lbb_trigger = "LBB_BLOCK"
+            elif m_layer >= 0.60 and verdict == "ALLOW":
+                verdict = "FLAG"
+                lbb_trigger = "LBB_FLAG"
 
         result = {
             'C_total': c_total,
-            'passes_gate': res["verdict"] == "ALLOW",
+            'passes_gate': verdict == "ALLOW",
+            'verdict': verdict,
+            'lbb_trigger': lbb_trigger,
             'regime': {'theta': v6_regime.theta, 'lambda': v6_regime.lam, 'mode': 'B', 'criticality': v6_regime.criticality},
             'breakdown': breakdown,
             'adjusted_landauer': res.get("adjusted_landauer", 0.0),

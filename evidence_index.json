@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "audit_index": "RICCI-AUDIT-20260125",
+  "generated_utc": "2026-07-04T16:50:17.096490Z",
+  "generator": "generate_evidence_index.py v1.0",
+  "evidence_directory": "/sessions/practical-fervent-wright/mnt/4R2 repo maestro jul2026/evidence",
+  "statistics": {
+    "total_files": 5,
+    "total_size_bytes": 580259,
+    "extensions_included": [
+      ".json",
+      ".jsonl",
+      ".csv",
+      ".txt",
+      ".log",
+      ".md",
+      ".py"
+    ]
+  },
+  "files": {
+    "dataset_E1.json": {
+      "sha256": "da23cad533ffbf8290bc25ef1d33ae8b665b985ae9b0d162d1c35ff4627b2f6e",
+      "size_bytes": 304520,
+      "modified_utc": "2026-07-04T14:54:16Z"
+    },
+    "dataset_E2_corpus.json": {
+      "sha256": "e16d05ba8703c805f9b2b85518c5f7458649c9e89eb68d71319afb9e9c029623",
+      "size_bytes": 133192,
+      "modified_utc": "2026-07-04T16:13:08Z"
+    },
+    "eval_E1_E4_results.json": {
+      "sha256": "de6056dbd699ccb43ff1ea7cbc73b6a8ea9841c418253363f4820f6091e91c43",
+      "size_bytes": 96412,
+      "modified_utc": "2026-07-04T14:54:16Z"
+    },
+    "eval_E2_results.json": {
+      "sha256": "c4fd0763eab3531e4730c6a1e5102b8d1c2febeef96061db2e06a158622728c6",
+      "size_bytes": 45635,
+      "modified_utc": "2026-07-04T16:13:08Z"
+    },
+    "eval_E3_shadow.json": {
+      "sha256": "9ed3764f79b58e03b5e25c24040e4732b6afa8f18a42512323a2f6977ed278be",
+      "size_bytes": 500,
+      "modified_utc": "2026-07-04T16:13:08Z"
+    }
+  }
+}

@@ -51,3 +51,17 @@ package-check:
 	@echo "=== PACKAGING CHECK ==="
 	python -c "import tomllib; tomllib.load(open('pyproject.toml','rb')); print('pyproject.toml valid')" 2>/dev/null || echo "pyproject check skipped (no tomllib or file)"
 	@echo "See pyproject.toml and Makefile for packaging status."
+
+# --- v6.1.0 local targets (no docker) ---
+.PHONY: test-local evals parity determinism
+test-local:
+	python -m pytest -q
+evals:
+	python scripts/eval_e1_e4.py && python scripts/eval_e2_e3.py
+determinism:
+	PYTHONPATH=antigravity_wings/antigravity_wings:antigravity_wings:core python scripts/determinism_harness.py
+parity:
+	@sha256sum core/kernel_1240421.py \
+	  4R2-MASTER-DELIVERY/systems/basic/packages/kernel/kernel_1240421.py \
+	  4R2-MASTER-DELIVERY/systems/enhanced/packages/kernel/kernel_1240421.py \
+	  4R2-MASTER-DELIVERY/tests/kernel_1240421.py | awk '{print $$1}' | sort -u | wc -l

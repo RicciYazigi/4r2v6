@@ -92,6 +92,6 @@ python scripts/determinism_harness.py
 ## 5. Ledger & Release Status
 
 -   **Canonical Release Branch**: `audit-grade-v5.2-final`
--   **Release Tag**: `v6.0.1-fable5`
+-   **Release Tag**: `v6.1.0-fable5` (E2/E3 PASS — docs/E2_E3_REPORT.md)
 -   **Audit Certification Code**: RICCI-AUDIT-CANONICAL-v6.0.1 (ADR-0006)
 -   **Production Status**: Certified / Production-Grade / Zero Mock usage on active paths.

@@ -20,7 +20,8 @@ import hashlib
 import json
 import os
 import sys
-from datetime import datetime, UTC
+from datetime import datetime, timezone
+UTC = timezone.utc
 from pathlib import Path
 from typing import Dict, List, Any
 import argparse

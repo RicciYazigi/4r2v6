@@ -1,0 +1,71 @@
+name: 4R2 CI — tests, determinism, evals, replica parity
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install numpy pytest fastapi httpx uvicorn pydantic
+
+      - name: Unit & integration tests (65)
+        run: python -m pytest -q
+
+      - name: Kernel replica hash parity (must be 1)
+        run: |
+          N=$(sha256sum core/kernel_1240421.py \
+              4R2-MASTER-DELIVERY/systems/basic/packages/kernel/kernel_1240421.py \
+              4R2-MASTER-DELIVERY/systems/enhanced/packages/kernel/kernel_1240421.py \
+              4R2-MASTER-DELIVERY/tests/kernel_1240421.py | awk '{print $1}' | sort -u | wc -l)
+          echo "unique kernel hashes: $N"
+          test "$N" = "1"
+
+      - name: Determinism harness (bit-identical, 1e-12)
+        run: python scripts/determinism_harness.py
+        env:
+          PYTHONPATH: antigravity_wings/antigravity_wings:antigravity_wings:core
+
+      - name: E1/E4 baseline + adversarial (veto must be 1.0)
+        run: |
+          python scripts/eval_e1_e4.py | tee /tmp/e14.log
+          grep -q '"veto_accuracy_kernel_LBB": 1.0' /tmp/e14.log
+
+      - name: E2/E3 real-embedding eval + shadow pilot (0 incidents)
+        run: |
+          python scripts/eval_e2_e3.py | tee /tmp/e23.log
+          grep -q '"incidents_grave_or_adv_ALLOW": 0' /tmp/e23.log
+
+      - name: Selftest invariant (perfect_c == 0.0)
+        run: |
+          PYTHONPATH=core python -c "from kernel_1240421 import CoherenceKernel as K; r=K.selftest(); assert r['perfect_c']==0.0 and r['loss_correct_direction'], r; print(r)"
+
+  semantic-tier:
+    # Optional heavier job: sentence-transformers backend for E2.
+    # continue-on-error so the core pipeline never blocks on model downloads.
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps + sentence-transformers
+        run: pip install numpy pytest sentence-transformers
+      - name: E2 with transformer embeddings
+        run: python scripts/eval_e2_e3.py | tee /tmp/e2st.log
+      - name: Upload E2-st evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2-sentence-transformers-results
+          path: evidence/eval_E2_results.json

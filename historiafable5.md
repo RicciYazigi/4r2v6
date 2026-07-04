@@ -219,3 +219,136 @@ Dirección humana: Richie.*
 | kernel_v6.py | `faeb964ea38f941facb588dd29307425cbf073d49fc67a09971af9ee549eedc6` |
 | CANON_SPEC.md v6.0.1 | `5f7872077d629f3b2c955cade54254d88fcb82fa8fadd6540656aea9128ad4bc` |
 | ADR-0006 | `a7cb94d68ac0883ed52a722dc9fe2a67db458a234103b7a9459fee2f7bd90b97` |
+
+---
+---
+
+# CICLO 2 — TRACE_ID: ARS-20260704-F5-0002 | Estado: OK
+
+**Mandato:** cierre total production-ready (prompt Grok evaluado; decisiones propias autorizadas por Ricci).
+
+## Decisión de arquitectura sobre el prompt de Grok
+Se ejecutó el fondo (evals, limpieza, migración, whitepaper, roadmap) pero NO
+el renombre a "v6.2" sin evidencia: el freeze probado es **v6.1.0** y v6.2
+queda como milestone en ROADMAP_DEFINITIVO.md. Grok afirmaba "commit de
+ADR-0006 realizado": verificado (72dad8b) — correcto.
+
+## Acciones e hallazgos del ciclo
+1. **ADR-0007 — Layer Breach Breaker.** Hallazgo estructural propio: con pesos
+   1/3, ninguna capa puede superar C_total=0.35 (dilución convexa) ⇒ ataques
+   de capa única pasaban el gate. Confirmado por E4: veto crudo 50% (A1
+   camuflaje normativo 0/20, A4 inflación de verificabilidad 0/20).
+   Fix: max(C_NR,C_RI)≥0.75⇒BLOCK; ≥0.60⇒FLAG. Post-fix: veto 100%.
+2. **Bug fail-closed del wrapper.** El eval E4-A3 (zero-vector) crasheaba el
+   wrapper (KeyError C_total) — un guardrail que lanza excepción no es
+   fail-closed. Fix: resultado v6 sin C_total ⇒ 1.0/BLOCK/breakdown vacío.
+3. **Dataset E1** (300 casos, 4 dominios, semilla 1240421, ground-truth
+   geométrico exacto) + **eval E1/E4**: FPR 0.0 (n=100), FNR 0.0 (n=60),
+   veto adversarial 100% (n=80). Sellado SHA-256.
+4. **Migración test_pilot_contexts.py** a F∈[0,1]⁴ + regresión anti
+   silent-clip (C_IF legacy 0.3210 > 0 verificado).
+5. **Limpieza:** kernel_1240421_old_broken.py → archive/; evidence_index.json
+   regenerado (generador parcheado para Python 3.10: datetime.UTC).
+6. **Kernel v6.1.0** estampado y re-sincronizado 4/4 réplicas → 1 hash.
+7. **Docs producción:** ADR-0007, ROADMAP_DEFINITIVO, arXiv_submission_v6,
+   FINANCIAL_SCENARIO (especulativo, sin cifras inventadas), SALES_STRATEGY,
+   MEGA_DELIVERY_v6.1, CANON_SPEC §9, README ledger v6.1.0.
+8. **Docker: ND** (sin Docker en sandbox). Plan exacto en MEGA_DELIVERY §5.
+9. Revalidación total: pytest 65/65 · determinismo PASS · brutal 100% real ·
+   pilotos PASS.
+
+## Sellado del ciclo 2
+| Artefacto | SHA-256 |
+|:----------|:--------|
+| kernel v6.1.0 (4 réplicas, 1 hash) | `24c7b26c6752a3fbc9bb506c314191e12c518b2d133ee46dd8144fc2e3c7af9f` |
+| dataset_E1.json | `da23cad533ffbf8290bc25ef1d33ae8b665b985ae9b0d162d1c35ff4627b2f6e` |
+| eval_E1_E4_results.json | `de6056dbd699ccb43ff1ea7cbc73b6a8ea9841c418253363f4820f6091e91c43` |
+| evidencia determinismo | `9dc7de6d65f0428f74a79c2a6f42c3f4e8539f3538c7776b7770564f47db68e3` |
+
+Mensaje de commit sugerido si el lock persiste:
+feat(security): v6.1.0 ADR-0007 Layer Breach Breaker + fail-closed wrapper; evals E1/E4 (veto 50%->100%); production docs package
+
+---
+---
+
+# CICLO 3 — TRACE_ID: ARS-20260704-F5-0003 | Estado: OK
+
+**Mandato:** E2 con embeddings reales + E3 piloto sombra + cierre 100% production-ready.
+
+## Acciones y hallazgos
+1. **E2 ejecutado con embedder real** (LSA TF-IDF+SVD k=64 puro numpy,
+   determinista, cero mocks; el harness auto-detecta sentence-transformers y
+   se auto-mejora en un host con torch — ND en sandbox, declarado).
+   Corpus: 240 casos de texto real, 4 dominios × 4 clases. F extraída de
+   rasgos reales de la respuesta, incluida **negación de cumplimiento**.
+2. **Hallazgo de calibración:** θ=0.35 (régimen sintético) quedó descalibrado
+   para LSA (FPR 8.3%). Procedimiento de calibración por percentiles
+   automatizado: θ* = 0.4625.
+3. **Hallazgo de defensa en profundidad (medido por tiers):**
+   T1 gate default: veto adversarial 75%. T2 solo calibrado: veto 0%.
+   **T3 (θ* + LBB + fusible VER): FPR 0.0, FNR 0.0, veto 100%, aceptable 1.0.**
+   AUROC on-vs-grave 1.0; on-vs-adversarial 0.80 sin F negation-aware → 1.0
+   con ella (la verificabilidad es capa de señal indispensable).
+4. **E3 piloto sombra:** 300 eventos (70/15/10/5), modo log-only, config T3:
+   **0 incidentes**, FLAG benigno 0.0% (<10%), latencia media 0.124 ms /
+   p95 0.164 ms (afirmación sub-ms ahora MEDIDA).
+5. **Piloto insurance re-verificado** post-v6.1.0: veto en caliente OK.
+6. Limpieza: __pycache__/.pytest_cache purgados y añadidos a .gitignore.
+   core/testperm.txt y core/_synctest.txt: bloqueados por permisos del mount —
+   borrar a mano en Windows (única basura restante).
+7. Docs sincronizados: docs/E2_E3_REPORT.md (nuevo), ROADMAP (E2-lex/E3-sim
+   marcados hechos con alcance declarado), MEGA_DELIVERY §7 addendum, README.
+8. evidence_index.json regenerado (5 artefactos E1+E2+E3 encadenados).
+9. pytest 65/65 · réplicas 4/4 un hash · determinismo previo vigente.
+
+## Sellado ciclo 3
+| Artefacto | SHA-256 (32) |
+|:----------|:-------------|
+| dataset_E2_corpus.json | `e16d05ba8703c805f9b2b85518c5f745` |
+| eval_E2_results.json | `c4fd0763eab3531e4730c6a1e5102b8d` |
+| eval_E3_shadow.json | `9ed3764f79b58e03b5e25c24040e4732` |
+
+## Estado final del workspace
+PRODUCTION-READY con 2 acciones manuales de Ricci: (1) `del .git\index.lock`
++ commit; (2) `docker compose build` en host. Pendientes de roadmap (no
+bloqueantes): E2-st en host con torch, piloto con tráfico real, CI.
+
+---
+---
+
+# CICLO 4 — TRACE_ID: ARS-20260704-F5-0004 | Estado: OK
+
+**Mandato:** consolidación final del workspace para GitHub + pitch Big Tech.
+
+## Acciones
+1. **Checklist ciclo 1-3:** 21/21 archivos clave verificados presentes y no vacíos.
+2. **E2-st (sentence-transformers): ND en sandbox** (torch ~900MB excede el
+   entorno; 2 intentos, declarado). Resolución arquitectónica: el CI incluye el
+   job `semantic-tier` que instala sentence-transformers, corre el MISMO
+   harness `scripts/eval_e2_e3.py` (auto-detecta el backend) y sube
+   `eval_E2_results.json` como artifact — **los números ST se generan solos en
+   el primer push a GitHub**, o en host local con
+   `pip install sentence-transformers && python scripts/eval_e2_e3.py`.
+3. **CI creado:** `.github/workflows/ci.yml` — pytest + paridad de hashes de
+   las 4 réplicas (falla si ≠1) + determinismo + E1/E4 (exige veto 1.0) +
+   E2/E3 (exige 0 incidentes) + selftest (exige perfect_c=0.0) + job ST opcional.
+4. **README_top_level.md:** setup 60s, quickstart de verificación completa,
+   ejemplo de uso mínimo, make targets, mapa del repo, regla de evidencia.
+5. **Makefile:** targets locales sin docker (test-local, evals, determinism,
+   parity).
+6. **ROADMAP:** tabla de milestones consolidada (v6.1.0 CERRADO → v6.2 CI/ST →
+   v6.3 tráfico real → v7 SDK/arXiv/data-room).
+7. **evidence_index.json final** regenerado con E1+E2+E3 encadenados.
+8. Validación final: pytest 65/65 · make parity = 1 · workspace limpio.
+
+## Nota de honestidad para el pitch
+Corpus público (HaluEval-style) adaptado a NRIF: NO ejecutado aún (requiere
+descarga externa) — está en el gate de v6.2 junto con E2-st. No presentar
+AUROC del corpus autorado como si fuera de benchmark público.
+
+## Estado: workspace GitHub-ready
+Comandos finales de Ricci (Windows):
+  del .git\index.lock & del core\testperm.txt & del core\_synctest.txt
+  git add -A && git commit -m "feat: v6.1.0 consolidated - E2/E3 evals, CI, README, roadmap"
+  git remote add origin <URL> && git push -u origin main
+El primer push dispara el CI: 6 checks core + números sentence-transformers.
