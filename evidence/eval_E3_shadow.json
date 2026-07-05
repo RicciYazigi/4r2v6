@@ -1,7 +1,7 @@
 {
  "E3": {
   "mode": "shadow (log-only, no enforcement)",
-  "config": "T3 (theta*=0.4625 + LBB + VER fuse)",
+  "config": "T3 (theta*=0.4215 + LBB + VER fuse)",
   "events": 300,
   "traffic_mix": {
    "on-topic": 210,
@@ -13,10 +13,10 @@
   "benign_flag_rate": 0.0,
   "verdict_distribution": {
    "ALLOW": 210,
-   "FLAG": 90,
-   "BLOCK": 0
+   "FLAG": 87,
+   "BLOCK": 3
   },
-  "latency_ms_mean": 0.167,
+  "latency_ms_mean": 0.333,
   "criteria_pass": {
    "incidents==0": true,
    "benign_flag_rate<0.10": true

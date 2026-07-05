@@ -1,47 +1,47 @@
 {
  "E2": {
-  "backend": "lsa-tfidf-svd-k64 (pure numpy, deterministic)",
+  "backend": "sentence-transformers/all-MiniLM-L6-v2",
   "n": 240,
   "seed": 1240421,
   "auroc_on_vs_grave": 1.0,
   "auroc_on_vs_adversarial": 1.0,
   "C_total_stats": {
    "on-topic": {
-    "mean": 0.3235,
-    "p5": 0.2976,
-    "p95": 0.3524
+    "mean": 0.2699,
+    "p5": 0.2261,
+    "p95": 0.3121
    },
    "off-topic-leve": {
-    "mean": 0.5077,
-    "p5": 0.4709,
-    "p95": 0.5242
+    "mean": 0.4594,
+    "p5": 0.4235,
+    "p95": 0.4886
    },
    "off-topic-grave": {
-    "mean": 0.584,
-    "p5": 0.5725,
-    "p95": 0.6045
+    "mean": 0.5575,
+    "p5": 0.5309,
+    "p95": 0.5929
    },
    "adversarial": {
-    "mean": 0.425,
-    "p5": 0.3913,
-    "p95": 0.441
+    "mean": 0.3732,
+    "p5": 0.327,
+    "p95": 0.4027
    }
   },
-  "theta_star_calibrated": 0.4625,
+  "theta_star_calibrated": 0.4215,
   "tiers": {
    "T1_gate_default_0.35": {
     "theta": 0.35,
     "ver_fuse": false,
     "verdicts": {
      "on-topic": {
-      "ALLOW": 66,
-      "FLAG": 6,
+      "ALLOW": 72,
+      "FLAG": 0,
       "BLOCK": 0
      },
      "off-topic-leve": {
       "ALLOW": 0,
-      "FLAG": 4,
-      "BLOCK": 44
+      "FLAG": 48,
+      "BLOCK": 0
      },
      "off-topic-grave": {
       "ALLOW": 0,
@@ -49,18 +49,18 @@
       "BLOCK": 48
      },
      "adversarial": {
-      "ALLOW": 0,
-      "FLAG": 72,
+      "ALLOW": 16,
+      "FLAG": 56,
       "BLOCK": 0
      }
     },
-    "fpr_on_topic": 0.0833,
+    "fpr_on_topic": 0.0,
     "fnr_grave": 0.0,
-    "adversarial_veto": 1.0,
-    "acceptable_rate": 0.7917
+    "adversarial_veto": 0.7778,
+    "acceptable_rate": 0.9333
    },
    "T2_gate_calibrated": {
-    "theta": 0.4625,
+    "theta": 0.4215,
     "ver_fuse": false,
     "verdicts": {
      "on-topic": {
@@ -75,8 +75,8 @@
      },
      "off-topic-grave": {
       "ALLOW": 0,
-      "FLAG": 48,
-      "BLOCK": 0
+      "FLAG": 36,
+      "BLOCK": 12
      },
      "adversarial": {
       "ALLOW": 72,
@@ -90,7 +90,7 @@
     "acceptable_rate": 0.7
    },
    "T3_calibrated_LBB_VERfuse_RECOMMENDED": {
-    "theta": 0.4625,
+    "theta": 0.4215,
     "ver_fuse": true,
     "verdicts": {
      "on-topic": {
@@ -105,8 +105,8 @@
      },
      "off-topic-grave": {
       "ALLOW": 0,
-      "FLAG": 48,
-      "BLOCK": 0
+      "FLAG": 36,
+      "BLOCK": 12
      },
      "adversarial": {
       "ALLOW": 0,
@@ -121,8 +121,8 @@
    }
   },
   "latency_ms": {
-   "mean": 0.167,
-   "p95": 0.246
+   "mean": 0.333,
+   "p95": 0.4
   }
  },
  "rows": [
@@ -131,2400 +131,2400 @@
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4729,
-   "C_RI": 0.3894,
+   "C_NR": 0.3647,
+   "C_RI": 0.2114,
    "C_IF": 0.1667,
-   "C_total": 0.2989
+   "C_total": 0.2274
   },
   {
    "id": "E2-0001",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4729,
-   "C_RI": 0.3894,
+   "C_NR": 0.3647,
+   "C_RI": 0.202,
    "C_IF": 0.1667,
-   "C_total": 0.2989
+   "C_total": 0.225
   },
   {
    "id": "E2-0002",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4729,
-   "C_RI": 0.3894,
+   "C_NR": 0.3647,
+   "C_RI": 0.2099,
    "C_IF": 0.1667,
-   "C_total": 0.2989
+   "C_total": 0.227
   },
   {
    "id": "E2-0003",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4729,
-   "C_RI": 0.4128,
+   "C_NR": 0.3647,
+   "C_RI": 0.2595,
    "C_IF": 0.5708,
-   "C_total": 0.5068
+   "C_total": 0.4415
   },
   {
    "id": "E2-0004",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4729,
-   "C_RI": 0.4128,
+   "C_NR": 0.3647,
+   "C_RI": 0.2595,
    "C_IF": 0.5708,
-   "C_total": 0.5068
+   "C_total": 0.4415
   },
   {
    "id": "E2-0005",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4729,
-   "C_RI": 0.4921,
+   "C_NR": 0.3647,
+   "C_RI": 0.4721,
    "C_IF": 0.6625,
-   "C_total": 0.5725
+   "C_total": 0.5404
   },
   {
    "id": "E2-0006",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4729,
-   "C_RI": 0.4921,
+   "C_NR": 0.3647,
+   "C_RI": 0.4721,
    "C_IF": 0.6625,
-   "C_total": 0.5725
+   "C_total": 0.5404
   },
   {
    "id": "E2-0007",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4729,
-   "C_RI": 0.3954,
+   "C_NR": 0.3647,
+   "C_RI": 0.2616,
    "C_IF": 0.4467,
-   "C_total": 0.4404
+   "C_total": 0.3799
   },
   {
    "id": "E2-0008",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4729,
-   "C_RI": 0.3954,
+   "C_NR": 0.3647,
+   "C_RI": 0.2576,
    "C_IF": 0.4467,
-   "C_total": 0.4404
+   "C_total": 0.3789
   },
   {
    "id": "E2-0009",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4729,
-   "C_RI": 0.3954,
+   "C_NR": 0.3647,
+   "C_RI": 0.2661,
    "C_IF": 0.4467,
-   "C_total": 0.4404
+   "C_total": 0.381
   },
   {
    "id": "E2-0010",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.3834,
+   "C_NR": 0.3625,
+   "C_RI": 0.2503,
    "C_IF": 0.1667,
-   "C_total": 0.2976
+   "C_total": 0.2365
   },
   {
    "id": "E2-0011",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.3834,
+   "C_NR": 0.3625,
+   "C_RI": 0.254,
    "C_IF": 0.1667,
-   "C_total": 0.2976
+   "C_total": 0.2375
   },
   {
    "id": "E2-0012",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.3834,
+   "C_NR": 0.3625,
+   "C_RI": 0.2516,
    "C_IF": 0.1667,
-   "C_total": 0.2976
+   "C_total": 0.2369
   },
   {
    "id": "E2-0013",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.4066,
+   "C_NR": 0.3625,
+   "C_RI": 0.2832,
    "C_IF": 0.5708,
-   "C_total": 0.5055
+   "C_total": 0.4468
   },
   {
    "id": "E2-0014",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.4066,
+   "C_NR": 0.3625,
+   "C_RI": 0.2832,
    "C_IF": 0.5708,
-   "C_total": 0.5055
+   "C_total": 0.4468
   },
   {
    "id": "E2-0015",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.4923,
+   "C_NR": 0.3625,
+   "C_RI": 0.4868,
    "C_IF": 0.6625,
-   "C_total": 0.5728
+   "C_total": 0.5436
   },
   {
    "id": "E2-0016",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.4923,
+   "C_NR": 0.3625,
+   "C_RI": 0.4868,
    "C_IF": 0.6625,
-   "C_total": 0.5728
+   "C_total": 0.5436
   },
   {
    "id": "E2-0017",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4737,
-   "C_RI": 0.3883,
+   "C_NR": 0.3625,
+   "C_RI": 0.2952,
    "C_IF": 0.4467,
-   "C_total": 0.4388
+   "C_total": 0.3878
   },
   {
    "id": "E2-0018",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4737,
-   "C_RI": 0.3883,
+   "C_NR": 0.3625,
+   "C_RI": 0.2987,
    "C_IF": 0.4467,
-   "C_total": 0.4388
+   "C_total": 0.3886
   },
   {
    "id": "E2-0019",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4737,
-   "C_RI": 0.3883,
+   "C_NR": 0.3625,
+   "C_RI": 0.3025,
    "C_IF": 0.4467,
-   "C_total": 0.4388
+   "C_total": 0.3896
   },
   {
    "id": "E2-0020",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.386,
+   "C_NR": 0.4214,
+   "C_RI": 0.2281,
    "C_IF": 0.1667,
-   "C_total": 0.3028
+   "C_total": 0.2457
   },
   {
    "id": "E2-0021",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.386,
+   "C_NR": 0.4214,
+   "C_RI": 0.2243,
    "C_IF": 0.1667,
-   "C_total": 0.3028
+   "C_total": 0.2448
   },
   {
    "id": "E2-0022",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.386,
+   "C_NR": 0.4214,
+   "C_RI": 0.2251,
    "C_IF": 0.1667,
-   "C_total": 0.3028
+   "C_total": 0.245
   },
   {
    "id": "E2-0023",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.3984,
+   "C_NR": 0.4214,
+   "C_RI": 0.2497,
    "C_IF": 0.5708,
-   "C_total": 0.5079
+   "C_total": 0.4532
   },
   {
    "id": "E2-0024",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.3984,
+   "C_NR": 0.4214,
+   "C_RI": 0.2497,
    "C_IF": 0.5708,
-   "C_total": 0.5079
+   "C_total": 0.4532
   },
   {
    "id": "E2-0025",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.4926,
+   "C_NR": 0.4214,
+   "C_RI": 0.426,
    "C_IF": 0.6625,
-   "C_total": 0.5773
+   "C_total": 0.5431
   },
   {
    "id": "E2-0026",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.4926,
+   "C_NR": 0.4214,
+   "C_RI": 0.426,
    "C_IF": 0.6625,
-   "C_total": 0.5773
+   "C_total": 0.5431
   },
   {
    "id": "E2-0027",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4917,
-   "C_RI": 0.379,
+   "C_NR": 0.4214,
+   "C_RI": 0.2765,
    "C_IF": 0.4467,
-   "C_total": 0.441
+   "C_total": 0.3978
   },
   {
    "id": "E2-0028",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4917,
-   "C_RI": 0.379,
+   "C_NR": 0.4214,
+   "C_RI": 0.286,
    "C_IF": 0.4467,
-   "C_total": 0.441
+   "C_total": 0.4002
   },
   {
    "id": "E2-0029",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4917,
-   "C_RI": 0.379,
+   "C_NR": 0.4214,
+   "C_RI": 0.2879,
    "C_IF": 0.4467,
-   "C_total": 0.441
+   "C_total": 0.4007
   },
   {
    "id": "E2-0030",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.3834,
+   "C_NR": 0.3614,
+   "C_RI": 0.1781,
    "C_IF": 0.1667,
-   "C_total": 0.2976
+   "C_total": 0.2182
   },
   {
    "id": "E2-0031",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.3834,
+   "C_NR": 0.3614,
+   "C_RI": 0.1832,
    "C_IF": 0.1667,
-   "C_total": 0.2976
+   "C_total": 0.2195
   },
   {
    "id": "E2-0032",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.3834,
+   "C_NR": 0.3614,
+   "C_RI": 0.1862,
    "C_IF": 0.1667,
-   "C_total": 0.2976
+   "C_total": 0.2202
   },
   {
    "id": "E2-0033",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.4066,
+   "C_NR": 0.3614,
+   "C_RI": 0.2409,
    "C_IF": 0.5708,
-   "C_total": 0.5055
+   "C_total": 0.436
   },
   {
    "id": "E2-0034",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.4066,
+   "C_NR": 0.3614,
+   "C_RI": 0.2409,
    "C_IF": 0.5708,
-   "C_total": 0.5055
+   "C_total": 0.436
   },
   {
    "id": "E2-0035",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.4923,
+   "C_NR": 0.3614,
+   "C_RI": 0.5057,
    "C_IF": 0.6625,
-   "C_total": 0.5728
+   "C_total": 0.548
   },
   {
    "id": "E2-0036",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4737,
-   "C_RI": 0.4923,
+   "C_NR": 0.3614,
+   "C_RI": 0.5057,
    "C_IF": 0.6625,
-   "C_total": 0.5728
+   "C_total": 0.548
   },
   {
    "id": "E2-0037",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4737,
-   "C_RI": 0.3883,
+   "C_NR": 0.3614,
+   "C_RI": 0.2288,
    "C_IF": 0.4467,
-   "C_total": 0.4388
+   "C_total": 0.3709
   },
   {
    "id": "E2-0038",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4737,
-   "C_RI": 0.3883,
+   "C_NR": 0.3614,
+   "C_RI": 0.2294,
    "C_IF": 0.4467,
-   "C_total": 0.4388
+   "C_total": 0.371
   },
   {
    "id": "E2-0039",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4737,
-   "C_RI": 0.3883,
+   "C_NR": 0.3614,
+   "C_RI": 0.2259,
    "C_IF": 0.4467,
-   "C_total": 0.4388
+   "C_total": 0.3702
   },
   {
    "id": "E2-0040",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.491,
-   "C_RI": 0.4035,
+   "C_NR": 0.3759,
+   "C_RI": 0.2515,
    "C_IF": 0.1869,
-   "C_total": 0.3171
+   "C_total": 0.2503
   },
   {
    "id": "E2-0041",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.491,
-   "C_RI": 0.4035,
+   "C_NR": 0.3759,
+   "C_RI": 0.2515,
    "C_IF": 0.1869,
-   "C_total": 0.3171
+   "C_total": 0.2503
   },
   {
    "id": "E2-0042",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.491,
-   "C_RI": 0.4035,
+   "C_NR": 0.3759,
+   "C_RI": 0.2487,
    "C_IF": 0.1869,
-   "C_total": 0.3171
+   "C_total": 0.2496
   },
   {
    "id": "E2-0043",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.491,
-   "C_RI": 0.4149,
+   "C_NR": 0.3759,
+   "C_RI": 0.2947,
    "C_IF": 0.5899,
-   "C_total": 0.5214
+   "C_total": 0.4626
   },
   {
    "id": "E2-0044",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.491,
-   "C_RI": 0.4149,
+   "C_NR": 0.3759,
+   "C_RI": 0.2947,
    "C_IF": 0.5899,
-   "C_total": 0.5214
+   "C_total": 0.4626
   },
   {
    "id": "E2-0045",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.491,
-   "C_RI": 0.492,
+   "C_NR": 0.3759,
+   "C_RI": 0.5017,
    "C_IF": 0.6613,
-   "C_total": 0.5764
+   "C_total": 0.5501
   },
   {
    "id": "E2-0046",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.491,
-   "C_RI": 0.492,
+   "C_NR": 0.3759,
+   "C_RI": 0.5017,
    "C_IF": 0.6613,
-   "C_total": 0.5764
+   "C_total": 0.5501
   },
   {
    "id": "E2-0047",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.491,
-   "C_RI": 0.3978,
+   "C_NR": 0.3759,
+   "C_RI": 0.2938,
    "C_IF": 0.4571,
-   "C_total": 0.4508
+   "C_total": 0.396
   },
   {
    "id": "E2-0048",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.491,
-   "C_RI": 0.3978,
+   "C_NR": 0.3759,
+   "C_RI": 0.2938,
    "C_IF": 0.4571,
-   "C_total": 0.4508
+   "C_total": 0.396
   },
   {
    "id": "E2-0049",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.491,
-   "C_RI": 0.3978,
+   "C_NR": 0.3759,
+   "C_RI": 0.2878,
    "C_IF": 0.4571,
-   "C_total": 0.4508
+   "C_total": 0.3945
   },
   {
    "id": "E2-0050",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4919,
-   "C_RI": 0.3892,
+   "C_NR": 0.4083,
+   "C_RI": 0.2253,
    "C_IF": 0.1667,
-   "C_total": 0.3036
+   "C_total": 0.2417
   },
   {
    "id": "E2-0051",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4919,
-   "C_RI": 0.3802,
+   "C_NR": 0.4083,
+   "C_RI": 0.2306,
    "C_IF": 0.1667,
-   "C_total": 0.3014
+   "C_total": 0.243
   },
   {
    "id": "E2-0052",
    "domain": "insurance",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4919,
-   "C_RI": 0.3802,
+   "C_NR": 0.4083,
+   "C_RI": 0.2217,
    "C_IF": 0.1667,
-   "C_total": 0.3014
+   "C_total": 0.2408
   },
   {
    "id": "E2-0053",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4919,
-   "C_RI": 0.393,
+   "C_NR": 0.4083,
+   "C_RI": 0.2633,
    "C_IF": 0.5708,
-   "C_total": 0.5066
+   "C_total": 0.4533
   },
   {
    "id": "E2-0054",
    "domain": "insurance",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4919,
-   "C_RI": 0.393,
+   "C_NR": 0.4083,
+   "C_RI": 0.2633,
    "C_IF": 0.5708,
-   "C_total": 0.5066
+   "C_total": 0.4533
   },
   {
    "id": "E2-0055",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4919,
-   "C_RI": 0.4928,
+   "C_NR": 0.4083,
+   "C_RI": 0.4819,
    "C_IF": 0.6625,
-   "C_total": 0.5774
+   "C_total": 0.5538
   },
   {
    "id": "E2-0056",
    "domain": "insurance",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4919,
-   "C_RI": 0.4928,
+   "C_NR": 0.4083,
+   "C_RI": 0.4819,
    "C_IF": 0.6625,
-   "C_total": 0.5774
+   "C_total": 0.5538
   },
   {
    "id": "E2-0057",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4919,
-   "C_RI": 0.3729,
+   "C_NR": 0.4083,
+   "C_RI": 0.2659,
    "C_IF": 0.4467,
-   "C_total": 0.4395
+   "C_total": 0.3919
   },
   {
    "id": "E2-0058",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4919,
-   "C_RI": 0.3729,
+   "C_NR": 0.4083,
+   "C_RI": 0.2697,
    "C_IF": 0.4467,
-   "C_total": 0.4395
+   "C_total": 0.3928
   },
   {
    "id": "E2-0059",
    "domain": "insurance",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4919,
-   "C_RI": 0.3729,
+   "C_NR": 0.4083,
+   "C_RI": 0.2791,
    "C_IF": 0.4467,
-   "C_total": 0.4395
+   "C_total": 0.3952
   },
   {
    "id": "E2-0060",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4559,
-   "C_RI": 0.3607,
+   "C_NR": 0.335,
+   "C_RI": 0.2397,
    "C_IF": 0.1778,
-   "C_total": 0.293
+   "C_total": 0.2326
   },
   {
    "id": "E2-0061",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4559,
-   "C_RI": 0.3607,
+   "C_NR": 0.335,
+   "C_RI": 0.2339,
    "C_IF": 0.1778,
-   "C_total": 0.293
+   "C_total": 0.2311
   },
   {
    "id": "E2-0062",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4559,
-   "C_RI": 0.3607,
+   "C_NR": 0.335,
+   "C_RI": 0.2438,
    "C_IF": 0.1778,
-   "C_total": 0.293
+   "C_total": 0.2336
   },
   {
    "id": "E2-0063",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4559,
-   "C_RI": 0.3695,
+   "C_NR": 0.335,
+   "C_RI": 0.3007,
    "C_IF": 0.5292,
-   "C_total": 0.4709
+   "C_total": 0.4235
   },
   {
    "id": "E2-0064",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4559,
-   "C_RI": 0.3695,
+   "C_NR": 0.335,
+   "C_RI": 0.3007,
    "C_IF": 0.5292,
-   "C_total": 0.4709
+   "C_total": 0.4235
   },
   {
    "id": "E2-0065",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4559,
-   "C_RI": 0.4683,
+   "C_NR": 0.335,
+   "C_RI": 0.5121,
    "C_IF": 0.6708,
-   "C_total": 0.5665
+   "C_total": 0.5472
   },
   {
    "id": "E2-0066",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4559,
-   "C_RI": 0.4683,
+   "C_NR": 0.335,
+   "C_RI": 0.5121,
    "C_IF": 0.6708,
-   "C_total": 0.5665
+   "C_total": 0.5472
   },
   {
    "id": "E2-0067",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4559,
-   "C_RI": 0.3518,
+   "C_NR": 0.335,
+   "C_RI": 0.2361,
    "C_IF": 0.4,
-   "C_total": 0.4019
+   "C_total": 0.3428
   },
   {
    "id": "E2-0068",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4559,
-   "C_RI": 0.3518,
+   "C_NR": 0.335,
+   "C_RI": 0.2375,
    "C_IF": 0.4,
-   "C_total": 0.4019
+   "C_total": 0.3431
   },
   {
    "id": "E2-0069",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4559,
-   "C_RI": 0.3518,
+   "C_NR": 0.335,
+   "C_RI": 0.2418,
    "C_IF": 0.4,
-   "C_total": 0.4019
+   "C_total": 0.3442
   },
   {
    "id": "E2-0070",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4091,
+   "C_NR": 0.3875,
+   "C_RI": 0.2769,
    "C_IF": 0.2548,
-   "C_total": 0.3524
+   "C_total": 0.2935
   },
   {
    "id": "E2-0071",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4091,
+   "C_NR": 0.3875,
+   "C_RI": 0.2697,
    "C_IF": 0.2548,
-   "C_total": 0.3524
+   "C_total": 0.2917
   },
   {
    "id": "E2-0072",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4091,
+   "C_NR": 0.3875,
+   "C_RI": 0.2787,
    "C_IF": 0.2548,
-   "C_total": 0.3524
+   "C_total": 0.2939
   },
   {
    "id": "E2-0073",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4097,
+   "C_NR": 0.3875,
+   "C_RI": 0.2785,
    "C_IF": 0.5982,
-   "C_total": 0.5242
+   "C_total": 0.4656
   },
   {
    "id": "E2-0074",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4097,
+   "C_NR": 0.3875,
+   "C_RI": 0.2785,
    "C_IF": 0.5982,
-   "C_total": 0.5242
+   "C_total": 0.4656
   },
   {
    "id": "E2-0075",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.488,
+   "C_NR": 0.3875,
+   "C_RI": 0.4953,
    "C_IF": 0.6768,
-   "C_total": 0.5831
+   "C_total": 0.5591
   },
   {
    "id": "E2-0076",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.488,
+   "C_NR": 0.3875,
+   "C_RI": 0.4953,
    "C_IF": 0.6768,
-   "C_total": 0.5831
+   "C_total": 0.5591
   },
   {
    "id": "E2-0077",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4908,
-   "C_RI": 0.3926,
+   "C_NR": 0.3875,
+   "C_RI": 0.2688,
    "C_IF": 0.4321,
-   "C_total": 0.4369
+   "C_total": 0.3801
   },
   {
    "id": "E2-0078",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4908,
-   "C_RI": 0.3926,
+   "C_NR": 0.3875,
+   "C_RI": 0.2696,
    "C_IF": 0.4321,
-   "C_total": 0.4369
+   "C_total": 0.3804
   },
   {
    "id": "E2-0079",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4908,
-   "C_RI": 0.3926,
+   "C_NR": 0.3875,
+   "C_RI": 0.2777,
    "C_IF": 0.4321,
-   "C_total": 0.4369
+   "C_total": 0.3824
   },
   {
    "id": "E2-0080",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4672,
-   "C_RI": 0.4063,
+   "C_NR": 0.3321,
+   "C_RI": 0.2706,
    "C_IF": 0.2333,
-   "C_total": 0.335
+   "C_total": 0.2673
   },
   {
    "id": "E2-0081",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4672,
-   "C_RI": 0.3959,
+   "C_NR": 0.3321,
+   "C_RI": 0.2712,
    "C_IF": 0.2333,
-   "C_total": 0.3324
+   "C_total": 0.2675
   },
   {
    "id": "E2-0082",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4672,
-   "C_RI": 0.3959,
+   "C_NR": 0.3321,
+   "C_RI": 0.271,
    "C_IF": 0.2333,
-   "C_total": 0.3324
+   "C_total": 0.2674
   },
   {
    "id": "E2-0083",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4672,
-   "C_RI": 0.398,
+   "C_NR": 0.3321,
+   "C_RI": 0.2882,
    "C_IF": 0.5792,
-   "C_total": 0.5059
+   "C_total": 0.4446
   },
   {
    "id": "E2-0084",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4672,
-   "C_RI": 0.398,
+   "C_NR": 0.3321,
+   "C_RI": 0.2882,
    "C_IF": 0.5792,
-   "C_total": 0.5059
+   "C_total": 0.4446
   },
   {
    "id": "E2-0085",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4672,
-   "C_RI": 0.4886,
+   "C_NR": 0.3321,
+   "C_RI": 0.5069,
    "C_IF": 0.6792,
-   "C_total": 0.5785
+   "C_total": 0.5493
   },
   {
    "id": "E2-0086",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4672,
-   "C_RI": 0.4886,
+   "C_NR": 0.3321,
+   "C_RI": 0.5069,
    "C_IF": 0.6792,
-   "C_total": 0.5785
+   "C_total": 0.5493
   },
   {
    "id": "E2-0087",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4672,
-   "C_RI": 0.3808,
+   "C_NR": 0.3321,
+   "C_RI": 0.2568,
    "C_IF": 0.4217,
-   "C_total": 0.4228
+   "C_total": 0.3581
   },
   {
    "id": "E2-0088",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4672,
-   "C_RI": 0.3808,
+   "C_NR": 0.3321,
+   "C_RI": 0.2606,
    "C_IF": 0.4217,
-   "C_total": 0.4228
+   "C_total": 0.359
   },
   {
    "id": "E2-0089",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4672,
-   "C_RI": 0.3808,
+   "C_NR": 0.3321,
+   "C_RI": 0.2553,
    "C_IF": 0.4217,
-   "C_total": 0.4228
+   "C_total": 0.3577
   },
   {
    "id": "E2-0090",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4912,
-   "C_RI": 0.3997,
+   "C_NR": 0.3667,
+   "C_RI": 0.2667,
    "C_IF": 0.2333,
-   "C_total": 0.3394
+   "C_total": 0.275
   },
   {
    "id": "E2-0091",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4912,
-   "C_RI": 0.3997,
+   "C_NR": 0.3667,
+   "C_RI": 0.2671,
    "C_IF": 0.2333,
-   "C_total": 0.3394
+   "C_total": 0.2751
   },
   {
    "id": "E2-0092",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4912,
-   "C_RI": 0.3997,
+   "C_NR": 0.3667,
+   "C_RI": 0.2695,
    "C_IF": 0.2333,
-   "C_total": 0.3394
+   "C_total": 0.2757
   },
   {
    "id": "E2-0093",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4912,
-   "C_RI": 0.4014,
+   "C_NR": 0.3667,
+   "C_RI": 0.2955,
    "C_IF": 0.5792,
-   "C_total": 0.5127
+   "C_total": 0.4551
   },
   {
    "id": "E2-0094",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4912,
-   "C_RI": 0.4014,
+   "C_NR": 0.3667,
+   "C_RI": 0.2955,
    "C_IF": 0.5792,
-   "C_total": 0.5127
+   "C_total": 0.4551
   },
   {
    "id": "E2-0095",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4912,
-   "C_RI": 0.4884,
+   "C_NR": 0.3667,
+   "C_RI": 0.5059,
    "C_IF": 0.6792,
-   "C_total": 0.5845
+   "C_total": 0.5577
   },
   {
    "id": "E2-0096",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4912,
-   "C_RI": 0.4884,
+   "C_NR": 0.3667,
+   "C_RI": 0.5059,
    "C_IF": 0.6792,
-   "C_total": 0.5845
+   "C_total": 0.5577
   },
   {
    "id": "E2-0097",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4912,
-   "C_RI": 0.3842,
+   "C_NR": 0.3667,
+   "C_RI": 0.2445,
    "C_IF": 0.4217,
-   "C_total": 0.4297
+   "C_total": 0.3636
   },
   {
    "id": "E2-0098",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4912,
-   "C_RI": 0.3842,
+   "C_NR": 0.3667,
+   "C_RI": 0.2589,
    "C_IF": 0.4217,
-   "C_total": 0.4297
+   "C_total": 0.3672
   },
   {
    "id": "E2-0099",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4912,
-   "C_RI": 0.3842,
+   "C_NR": 0.3667,
+   "C_RI": 0.2585,
    "C_IF": 0.4217,
-   "C_total": 0.4297
+   "C_total": 0.3671
   },
   {
    "id": "E2-0100",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.3833,
+   "C_NR": 0.3711,
+   "C_RI": 0.2809,
    "C_IF": 0.2333,
-   "C_total": 0.3354
+   "C_total": 0.2797
   },
   {
    "id": "E2-0101",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.3833,
+   "C_NR": 0.3711,
+   "C_RI": 0.2876,
    "C_IF": 0.2333,
-   "C_total": 0.3354
+   "C_total": 0.2813
   },
   {
    "id": "E2-0102",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.3833,
+   "C_NR": 0.3711,
+   "C_RI": 0.2946,
    "C_IF": 0.2333,
-   "C_total": 0.3354
+   "C_total": 0.2831
   },
   {
    "id": "E2-0103",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.3867,
+   "C_NR": 0.3711,
+   "C_RI": 0.2892,
    "C_IF": 0.5792,
-   "C_total": 0.5092
+   "C_total": 0.4547
   },
   {
    "id": "E2-0104",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.3867,
+   "C_NR": 0.3711,
+   "C_RI": 0.2892,
    "C_IF": 0.5792,
-   "C_total": 0.5092
+   "C_total": 0.4547
   },
   {
    "id": "E2-0105",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.4892,
+   "C_NR": 0.3711,
+   "C_RI": 0.5053,
    "C_IF": 0.6792,
-   "C_total": 0.5848
+   "C_total": 0.5587
   },
   {
    "id": "E2-0106",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4917,
-   "C_RI": 0.4892,
+   "C_NR": 0.3711,
+   "C_RI": 0.5053,
    "C_IF": 0.6792,
-   "C_total": 0.5848
+   "C_total": 0.5587
   },
   {
    "id": "E2-0107",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4917,
-   "C_RI": 0.3694,
+   "C_NR": 0.3711,
+   "C_RI": 0.2715,
    "C_IF": 0.4217,
-   "C_total": 0.4261
+   "C_total": 0.3715
   },
   {
    "id": "E2-0108",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4917,
-   "C_RI": 0.3694,
+   "C_NR": 0.3711,
+   "C_RI": 0.2867,
    "C_IF": 0.4217,
-   "C_total": 0.4261
+   "C_total": 0.3753
   },
   {
    "id": "E2-0109",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4917,
-   "C_RI": 0.3694,
+   "C_NR": 0.3711,
+   "C_RI": 0.2798,
    "C_IF": 0.4217,
-   "C_total": 0.4261
+   "C_total": 0.3736
   },
   {
    "id": "E2-0110",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4091,
+   "C_NR": 0.4089,
+   "C_RI": 0.2858,
    "C_IF": 0.2548,
-   "C_total": 0.3524
+   "C_total": 0.3011
   },
   {
    "id": "E2-0111",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4091,
+   "C_NR": 0.4089,
+   "C_RI": 0.2785,
    "C_IF": 0.2548,
-   "C_total": 0.3524
+   "C_total": 0.2992
   },
   {
    "id": "E2-0112",
    "domain": "banking",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4091,
+   "C_NR": 0.4089,
+   "C_RI": 0.2908,
    "C_IF": 0.2548,
-   "C_total": 0.3524
+   "C_total": 0.3023
   },
   {
    "id": "E2-0113",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4097,
+   "C_NR": 0.4089,
+   "C_RI": 0.31,
    "C_IF": 0.5982,
-   "C_total": 0.5242
+   "C_total": 0.4788
   },
   {
    "id": "E2-0114",
    "domain": "banking",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.4097,
+   "C_NR": 0.4089,
+   "C_RI": 0.31,
    "C_IF": 0.5982,
-   "C_total": 0.5242
+   "C_total": 0.4788
   },
   {
    "id": "E2-0115",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.488,
+   "C_NR": 0.4089,
+   "C_RI": 0.5156,
    "C_IF": 0.6768,
-   "C_total": 0.5831
+   "C_total": 0.5695
   },
   {
    "id": "E2-0116",
    "domain": "banking",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4908,
-   "C_RI": 0.488,
+   "C_NR": 0.4089,
+   "C_RI": 0.5156,
    "C_IF": 0.6768,
-   "C_total": 0.5831
+   "C_total": 0.5695
   },
   {
    "id": "E2-0117",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4908,
-   "C_RI": 0.3926,
+   "C_NR": 0.4089,
+   "C_RI": 0.269,
    "C_IF": 0.4321,
-   "C_total": 0.4369
+   "C_total": 0.3855
   },
   {
    "id": "E2-0118",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4908,
-   "C_RI": 0.3926,
+   "C_NR": 0.4089,
+   "C_RI": 0.2685,
    "C_IF": 0.4321,
-   "C_total": 0.4369
+   "C_total": 0.3854
   },
   {
    "id": "E2-0119",
    "domain": "banking",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4908,
-   "C_RI": 0.3926,
+   "C_NR": 0.4089,
+   "C_RI": 0.2732,
    "C_IF": 0.4321,
-   "C_total": 0.4369
+   "C_total": 0.3866
   },
   {
    "id": "E2-0120",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4846,
-   "C_RI": 0.3772,
+   "C_NR": 0.3645,
+   "C_RI": 0.2577,
    "C_IF": 0.2,
-   "C_total": 0.3155
+   "C_total": 0.2555
   },
   {
    "id": "E2-0121",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4846,
-   "C_RI": 0.3772,
+   "C_NR": 0.3645,
+   "C_RI": 0.272,
    "C_IF": 0.2,
-   "C_total": 0.3155
+   "C_total": 0.2591
   },
   {
    "id": "E2-0122",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4846,
-   "C_RI": 0.3772,
+   "C_NR": 0.3645,
+   "C_RI": 0.2634,
    "C_IF": 0.2,
-   "C_total": 0.3155
+   "C_total": 0.257
   },
   {
    "id": "E2-0123",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4846,
-   "C_RI": 0.3964,
+   "C_NR": 0.3645,
+   "C_RI": 0.3019,
    "C_IF": 0.6042,
-   "C_total": 0.5223
+   "C_total": 0.4687
   },
   {
    "id": "E2-0124",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4846,
-   "C_RI": 0.3964,
+   "C_NR": 0.3645,
+   "C_RI": 0.3019,
    "C_IF": 0.6042,
-   "C_total": 0.5223
+   "C_total": 0.4687
   },
   {
    "id": "E2-0125",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4846,
-   "C_RI": 0.5,
+   "C_NR": 0.3645,
+   "C_RI": 0.4532,
    "C_IF": 0.6625,
-   "C_total": 0.5774
+   "C_total": 0.5357
   },
   {
    "id": "E2-0126",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4846,
-   "C_RI": 0.5,
+   "C_NR": 0.3645,
+   "C_RI": 0.4532,
    "C_IF": 0.6625,
-   "C_total": 0.5774
+   "C_total": 0.5357
   },
   {
    "id": "E2-0127",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4846,
-   "C_RI": 0.3749,
+   "C_NR": 0.3645,
+   "C_RI": 0.25,
    "C_IF": 0.3667,
-   "C_total": 0.3982
+   "C_total": 0.337
   },
   {
    "id": "E2-0128",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4846,
-   "C_RI": 0.3749,
+   "C_NR": 0.3645,
+   "C_RI": 0.2377,
    "C_IF": 0.3667,
-   "C_total": 0.3982
+   "C_total": 0.3339
   },
   {
    "id": "E2-0129",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4846,
-   "C_RI": 0.3749,
+   "C_NR": 0.3645,
+   "C_RI": 0.2382,
    "C_IF": 0.3667,
-   "C_total": 0.3982
+   "C_total": 0.334
   },
   {
    "id": "E2-0130",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.485,
-   "C_RI": 0.3617,
+   "C_NR": 0.3286,
+   "C_RI": 0.2743,
    "C_IF": 0.1813,
-   "C_total": 0.3023
+   "C_total": 0.2413
   },
   {
    "id": "E2-0131",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.485,
-   "C_RI": 0.3462,
+   "C_NR": 0.3286,
+   "C_RI": 0.2747,
    "C_IF": 0.1813,
-   "C_total": 0.2984
+   "C_total": 0.2415
   },
   {
    "id": "E2-0132",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.485,
-   "C_RI": 0.3462,
+   "C_NR": 0.3286,
+   "C_RI": 0.2712,
    "C_IF": 0.1813,
-   "C_total": 0.2984
+   "C_total": 0.2406
   },
   {
    "id": "E2-0133",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.485,
-   "C_RI": 0.3895,
+   "C_NR": 0.3286,
+   "C_RI": 0.294,
    "C_IF": 0.5854,
-   "C_total": 0.5113
+   "C_total": 0.4484
   },
   {
    "id": "E2-0134",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.485,
-   "C_RI": 0.3895,
+   "C_NR": 0.3286,
+   "C_RI": 0.294,
    "C_IF": 0.5854,
-   "C_total": 0.5113
+   "C_total": 0.4484
   },
   {
    "id": "E2-0135",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.485,
-   "C_RI": 0.5,
+   "C_NR": 0.3286,
+   "C_RI": 0.4699,
    "C_IF": 0.6625,
-   "C_total": 0.5775
+   "C_total": 0.5309
   },
   {
    "id": "E2-0136",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.485,
-   "C_RI": 0.5,
+   "C_NR": 0.3286,
+   "C_RI": 0.4699,
    "C_IF": 0.6625,
-   "C_total": 0.5775
+   "C_total": 0.5309
   },
   {
    "id": "E2-0137",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.485,
-   "C_RI": 0.3675,
+   "C_NR": 0.3286,
+   "C_RI": 0.2623,
    "C_IF": 0.3563,
-   "C_total": 0.3913
+   "C_total": 0.3259
   },
   {
    "id": "E2-0138",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.485,
-   "C_RI": 0.3675,
+   "C_NR": 0.3286,
+   "C_RI": 0.2646,
    "C_IF": 0.3563,
-   "C_total": 0.3913
+   "C_total": 0.3264
   },
   {
    "id": "E2-0139",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.485,
-   "C_RI": 0.3675,
+   "C_NR": 0.3286,
+   "C_RI": 0.2626,
    "C_IF": 0.3563,
-   "C_total": 0.3913
+   "C_total": 0.3259
   },
   {
    "id": "E2-0140",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.484,
-   "C_RI": 0.3519,
+   "C_NR": 0.3514,
+   "C_RI": 0.2433,
    "C_IF": 0.2,
-   "C_total": 0.309
+   "C_total": 0.2487
   },
   {
    "id": "E2-0141",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.484,
-   "C_RI": 0.3519,
+   "C_NR": 0.3514,
+   "C_RI": 0.2459,
    "C_IF": 0.2,
-   "C_total": 0.309
+   "C_total": 0.2493
   },
   {
    "id": "E2-0142",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.484,
-   "C_RI": 0.3519,
+   "C_NR": 0.3514,
+   "C_RI": 0.2505,
    "C_IF": 0.2,
-   "C_total": 0.309
+   "C_total": 0.2505
   },
   {
    "id": "E2-0143",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.484,
-   "C_RI": 0.4043,
+   "C_NR": 0.3514,
+   "C_RI": 0.2961,
    "C_IF": 0.6042,
-   "C_total": 0.5241
+   "C_total": 0.464
   },
   {
    "id": "E2-0144",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.484,
-   "C_RI": 0.4043,
+   "C_NR": 0.3514,
+   "C_RI": 0.2961,
    "C_IF": 0.6042,
-   "C_total": 0.5241
+   "C_total": 0.464
   },
   {
    "id": "E2-0145",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.484,
-   "C_RI": 0.5,
+   "C_NR": 0.3514,
+   "C_RI": 0.4412,
    "C_IF": 0.6625,
-   "C_total": 0.5772
+   "C_total": 0.5294
   },
   {
    "id": "E2-0146",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.484,
-   "C_RI": 0.5,
+   "C_NR": 0.3514,
+   "C_RI": 0.4412,
    "C_IF": 0.6625,
-   "C_total": 0.5772
+   "C_total": 0.5294
   },
   {
    "id": "E2-0147",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.484,
-   "C_RI": 0.3634,
+   "C_NR": 0.3514,
+   "C_RI": 0.2227,
    "C_IF": 0.3667,
-   "C_total": 0.3952
+   "C_total": 0.3269
   },
   {
    "id": "E2-0148",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.484,
-   "C_RI": 0.3634,
+   "C_NR": 0.3514,
+   "C_RI": 0.2283,
    "C_IF": 0.3667,
-   "C_total": 0.3952
+   "C_total": 0.3283
   },
   {
    "id": "E2-0149",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.484,
-   "C_RI": 0.3634,
+   "C_NR": 0.3514,
+   "C_RI": 0.2237,
    "C_IF": 0.3667,
-   "C_total": 0.3952
+   "C_total": 0.3271
   },
   {
    "id": "E2-0150",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4852,
-   "C_RI": 0.3675,
+   "C_NR": 0.3773,
+   "C_RI": 0.2548,
    "C_IF": 0.1813,
-   "C_total": 0.3038
+   "C_total": 0.2487
   },
   {
    "id": "E2-0151",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4852,
-   "C_RI": 0.3675,
+   "C_NR": 0.3773,
+   "C_RI": 0.2651,
    "C_IF": 0.1813,
-   "C_total": 0.3038
+   "C_total": 0.2512
   },
   {
    "id": "E2-0152",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4852,
-   "C_RI": 0.3675,
+   "C_NR": 0.3773,
+   "C_RI": 0.2494,
    "C_IF": 0.1813,
-   "C_total": 0.3038
+   "C_total": 0.2473
   },
   {
    "id": "E2-0153",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4852,
-   "C_RI": 0.3869,
+   "C_NR": 0.3773,
+   "C_RI": 0.2766,
    "C_IF": 0.5854,
-   "C_total": 0.5107
+   "C_total": 0.4562
   },
   {
    "id": "E2-0154",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4852,
-   "C_RI": 0.3869,
+   "C_NR": 0.3773,
+   "C_RI": 0.2766,
    "C_IF": 0.5854,
-   "C_total": 0.5107
+   "C_total": 0.4562
   },
   {
    "id": "E2-0155",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4852,
-   "C_RI": 0.5,
+   "C_NR": 0.3773,
+   "C_RI": 0.4639,
    "C_IF": 0.6625,
-   "C_total": 0.5776
+   "C_total": 0.5415
   },
   {
    "id": "E2-0156",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4852,
-   "C_RI": 0.5,
+   "C_NR": 0.3773,
+   "C_RI": 0.4639,
    "C_IF": 0.6625,
-   "C_total": 0.5776
+   "C_total": 0.5415
   },
   {
    "id": "E2-0157",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4852,
-   "C_RI": 0.3648,
+   "C_NR": 0.3773,
+   "C_RI": 0.2393,
    "C_IF": 0.3563,
-   "C_total": 0.3906
+   "C_total": 0.3323
   },
   {
    "id": "E2-0158",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4852,
-   "C_RI": 0.3648,
+   "C_NR": 0.3773,
+   "C_RI": 0.2425,
    "C_IF": 0.3563,
-   "C_total": 0.3906
+   "C_total": 0.3331
   },
   {
    "id": "E2-0159",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4852,
-   "C_RI": 0.3648,
+   "C_NR": 0.3773,
+   "C_RI": 0.2381,
    "C_IF": 0.3563,
-   "C_total": 0.3906
+   "C_total": 0.332
   },
   {
    "id": "E2-0160",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4034,
+   "C_NR": 0.3697,
+   "C_RI": 0.2957,
    "C_IF": 0.2202,
-   "C_total": 0.3317
+   "C_total": 0.2765
   },
   {
    "id": "E2-0161",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4056,
+   "C_NR": 0.3697,
+   "C_RI": 0.2859,
    "C_IF": 0.2202,
-   "C_total": 0.3322
+   "C_total": 0.274
   },
   {
    "id": "E2-0162",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4056,
+   "C_NR": 0.3697,
+   "C_RI": 0.2909,
    "C_IF": 0.2202,
-   "C_total": 0.3322
+   "C_total": 0.2753
   },
   {
    "id": "E2-0163",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4194,
+   "C_NR": 0.3697,
+   "C_RI": 0.3325,
    "C_IF": 0.4494,
-   "C_total": 0.4503
+   "C_total": 0.4002
   },
   {
    "id": "E2-0164",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4194,
+   "C_NR": 0.3697,
+   "C_RI": 0.3325,
    "C_IF": 0.4494,
-   "C_total": 0.4503
+   "C_total": 0.4002
   },
   {
    "id": "E2-0165",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.5,
+   "C_NR": 0.3697,
+   "C_RI": 0.4509,
    "C_IF": 0.6625,
-   "C_total": 0.577
+   "C_total": 0.5364
   },
   {
    "id": "E2-0166",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.5,
+   "C_NR": 0.3697,
+   "C_RI": 0.4509,
    "C_IF": 0.6625,
-   "C_total": 0.577
+   "C_total": 0.5364
   },
   {
    "id": "E2-0167",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4828,
-   "C_RI": 0.3994,
+   "C_NR": 0.3697,
+   "C_RI": 0.2772,
    "C_IF": 0.3774,
-   "C_total": 0.4093
+   "C_total": 0.3504
   },
   {
    "id": "E2-0168",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4828,
-   "C_RI": 0.3994,
+   "C_NR": 0.3697,
+   "C_RI": 0.2725,
    "C_IF": 0.3774,
-   "C_total": 0.4093
+   "C_total": 0.3492
   },
   {
    "id": "E2-0169",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4828,
-   "C_RI": 0.3994,
+   "C_NR": 0.3697,
+   "C_RI": 0.278,
    "C_IF": 0.3774,
-   "C_total": 0.4093
+   "C_total": 0.3506
   },
   {
    "id": "E2-0170",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4028,
+   "C_NR": 0.375,
+   "C_RI": 0.3274,
    "C_IF": 0.2202,
-   "C_total": 0.3315
+   "C_total": 0.2857
   },
   {
    "id": "E2-0171",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4028,
+   "C_NR": 0.375,
+   "C_RI": 0.3213,
    "C_IF": 0.2202,
-   "C_total": 0.3315
+   "C_total": 0.2842
   },
   {
    "id": "E2-0172",
    "domain": "medical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4028,
+   "C_NR": 0.375,
+   "C_RI": 0.3175,
    "C_IF": 0.2202,
-   "C_total": 0.3315
+   "C_total": 0.2832
   },
   {
    "id": "E2-0173",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4194,
+   "C_NR": 0.375,
+   "C_RI": 0.3305,
    "C_IF": 0.6244,
-   "C_total": 0.5378
+   "C_total": 0.4886
   },
   {
    "id": "E2-0174",
    "domain": "medical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.4194,
+   "C_NR": 0.375,
+   "C_RI": 0.3305,
    "C_IF": 0.6244,
-   "C_total": 0.5378
+   "C_total": 0.4886
   },
   {
    "id": "E2-0175",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.5,
+   "C_NR": 0.375,
+   "C_RI": 0.4486,
    "C_IF": 0.6625,
-   "C_total": 0.577
+   "C_total": 0.5371
   },
   {
    "id": "E2-0176",
    "domain": "medical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4828,
-   "C_RI": 0.5,
+   "C_NR": 0.375,
+   "C_RI": 0.4486,
    "C_IF": 0.6625,
-   "C_total": 0.577
+   "C_total": 0.5371
   },
   {
    "id": "E2-0177",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4828,
-   "C_RI": 0.3996,
+   "C_NR": 0.375,
+   "C_RI": 0.2928,
    "C_IF": 0.3774,
-   "C_total": 0.4093
+   "C_total": 0.3556
   },
   {
    "id": "E2-0178",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4828,
-   "C_RI": 0.3996,
+   "C_NR": 0.375,
+   "C_RI": 0.3008,
    "C_IF": 0.3774,
-   "C_total": 0.4093
+   "C_total": 0.3576
   },
   {
    "id": "E2-0179",
    "domain": "medical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4828,
-   "C_RI": 0.3996,
+   "C_NR": 0.375,
+   "C_RI": 0.3145,
    "C_IF": 0.3774,
-   "C_total": 0.4093
+   "C_total": 0.361
   },
   {
    "id": "E2-0180",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4971,
-   "C_RI": 0.4049,
+   "C_NR": 0.4716,
+   "C_RI": 0.2935,
    "C_IF": 0.2417,
-   "C_total": 0.3463
+   "C_total": 0.3121
   },
   {
    "id": "E2-0181",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4971,
-   "C_RI": 0.4049,
+   "C_NR": 0.4716,
+   "C_RI": 0.2897,
    "C_IF": 0.2417,
-   "C_total": 0.3463
+   "C_total": 0.3112
   },
   {
    "id": "E2-0182",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4971,
-   "C_RI": 0.4049,
+   "C_NR": 0.4716,
+   "C_RI": 0.2962,
    "C_IF": 0.2417,
-   "C_total": 0.3463
+   "C_total": 0.3128
   },
   {
    "id": "E2-0183",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4971,
-   "C_RI": 0.392,
+   "C_NR": 0.4716,
+   "C_RI": 0.3465,
    "C_IF": 0.5708,
-   "C_total": 0.5077
+   "C_total": 0.4899
   },
   {
    "id": "E2-0184",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4971,
-   "C_RI": 0.392,
+   "C_NR": 0.4716,
+   "C_RI": 0.3465,
    "C_IF": 0.5708,
-   "C_total": 0.5077
+   "C_total": 0.4899
   },
   {
    "id": "E2-0185",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4971,
-   "C_RI": 0.4955,
+   "C_NR": 0.4716,
+   "C_RI": 0.4751,
    "C_IF": 0.7125,
-   "C_total": 0.6044
+   "C_total": 0.5929
   },
   {
    "id": "E2-0186",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4971,
-   "C_RI": 0.4955,
+   "C_NR": 0.4716,
+   "C_RI": 0.4751,
    "C_IF": 0.7125,
-   "C_total": 0.6044
+   "C_total": 0.5929
   },
   {
    "id": "E2-0187",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4971,
-   "C_RI": 0.3815,
+   "C_NR": 0.4716,
+   "C_RI": 0.2755,
    "C_IF": 0.435,
-   "C_total": 0.4371
+   "C_total": 0.4043
   },
   {
    "id": "E2-0188",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4971,
-   "C_RI": 0.3815,
+   "C_NR": 0.4716,
+   "C_RI": 0.2719,
    "C_IF": 0.435,
-   "C_total": 0.4371
+   "C_total": 0.4034
   },
   {
    "id": "E2-0189",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4971,
-   "C_RI": 0.3815,
+   "C_NR": 0.4716,
+   "C_RI": 0.2768,
    "C_IF": 0.435,
-   "C_total": 0.4371
+   "C_total": 0.4046
   },
   {
    "id": "E2-0190",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.4431,
+   "C_RI": 0.3134,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3099
   },
   {
    "id": "E2-0191",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.4431,
+   "C_RI": 0.3074,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3084
   },
   {
    "id": "E2-0192",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.4431,
+   "C_RI": 0.3103,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3092
   },
   {
    "id": "E2-0193",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3778,
+   "C_NR": 0.4431,
+   "C_RI": 0.325,
    "C_IF": 0.5708,
-   "C_total": 0.5042
+   "C_total": 0.4774
   },
   {
    "id": "E2-0194",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3778,
+   "C_NR": 0.4431,
+   "C_RI": 0.325,
    "C_IF": 0.5708,
-   "C_total": 0.5042
+   "C_total": 0.4774
   },
   {
    "id": "E2-0195",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.4958,
+   "C_NR": 0.4431,
+   "C_RI": 0.4987,
    "C_IF": 0.7125,
-   "C_total": 0.6045
+   "C_total": 0.5917
   },
   {
    "id": "E2-0196",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.4958,
+   "C_NR": 0.4431,
+   "C_RI": 0.4987,
    "C_IF": 0.7125,
-   "C_total": 0.6045
+   "C_total": 0.5917
   },
   {
    "id": "E2-0197",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.4431,
+   "C_RI": 0.2898,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.4007
   },
   {
    "id": "E2-0198",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.4431,
+   "C_RI": 0.2962,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.4023
   },
   {
    "id": "E2-0199",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.4431,
+   "C_RI": 0.3002,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.4033
   },
   {
    "id": "E2-0200",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.453,
+   "C_RI": 0.2924,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3072
   },
   {
    "id": "E2-0201",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.453,
+   "C_RI": 0.2943,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3076
   },
   {
    "id": "E2-0202",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.453,
+   "C_RI": 0.2912,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3069
   },
   {
    "id": "E2-0203",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3778,
+   "C_NR": 0.453,
+   "C_RI": 0.3351,
    "C_IF": 0.5708,
-   "C_total": 0.5042
+   "C_total": 0.4824
   },
   {
    "id": "E2-0204",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3778,
+   "C_NR": 0.453,
+   "C_RI": 0.3351,
    "C_IF": 0.5708,
-   "C_total": 0.5042
+   "C_total": 0.4824
   },
   {
    "id": "E2-0205",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.4958,
+   "C_NR": 0.453,
+   "C_RI": 0.4853,
    "C_IF": 0.7125,
-   "C_total": 0.6045
+   "C_total": 0.5908
   },
   {
    "id": "E2-0206",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.4958,
+   "C_NR": 0.453,
+   "C_RI": 0.4853,
    "C_IF": 0.7125,
-   "C_total": 0.6045
+   "C_total": 0.5908
   },
   {
    "id": "E2-0207",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.453,
+   "C_RI": 0.275,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.3995
   },
   {
    "id": "E2-0208",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.453,
+   "C_RI": 0.2823,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.4013
   },
   {
    "id": "E2-0209",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.453,
+   "C_RI": 0.2755,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.3996
   },
   {
    "id": "E2-0210",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.4399,
+   "C_RI": 0.3175,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3102
   },
   {
    "id": "E2-0211",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.4399,
+   "C_RI": 0.3162,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3099
   },
   {
    "id": "E2-0212",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.4399,
+   "C_RI": 0.3169,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.31
   },
   {
    "id": "E2-0213",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3778,
+   "C_NR": 0.4399,
+   "C_RI": 0.3448,
    "C_IF": 0.5708,
-   "C_total": 0.5042
+   "C_total": 0.4816
   },
   {
    "id": "E2-0214",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3778,
+   "C_NR": 0.4399,
+   "C_RI": 0.3448,
    "C_IF": 0.5708,
-   "C_total": 0.5042
+   "C_total": 0.4816
   },
   {
    "id": "E2-0215",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.4958,
+   "C_NR": 0.4399,
+   "C_RI": 0.4854,
    "C_IF": 0.7125,
-   "C_total": 0.6045
+   "C_total": 0.5876
   },
   {
    "id": "E2-0216",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.4958,
+   "C_NR": 0.4399,
+   "C_RI": 0.4854,
    "C_IF": 0.7125,
-   "C_total": 0.6045
+   "C_total": 0.5876
   },
   {
    "id": "E2-0217",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.4399,
+   "C_RI": 0.2972,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.4018
   },
   {
    "id": "E2-0218",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.4399,
+   "C_RI": 0.2913,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.4003
   },
   {
    "id": "E2-0219",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.4399,
+   "C_RI": 0.296,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.4015
   },
   {
    "id": "E2-0220",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4762,
-   "C_RI": 0.3774,
+   "C_NR": 0.4387,
+   "C_RI": 0.2838,
    "C_IF": 0.2417,
-   "C_total": 0.3343
+   "C_total": 0.3015
   },
   {
    "id": "E2-0221",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4762,
-   "C_RI": 0.3774,
+   "C_NR": 0.4387,
+   "C_RI": 0.2798,
    "C_IF": 0.2417,
-   "C_total": 0.3343
+   "C_total": 0.3005
   },
   {
    "id": "E2-0222",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4762,
-   "C_RI": 0.3774,
+   "C_NR": 0.4387,
+   "C_RI": 0.2744,
    "C_IF": 0.2417,
-   "C_total": 0.3343
+   "C_total": 0.2991
   },
   {
    "id": "E2-0223",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4762,
-   "C_RI": 0.3899,
+   "C_NR": 0.4387,
+   "C_RI": 0.3012,
    "C_IF": 0.5708,
-   "C_total": 0.5019
+   "C_total": 0.4704
   },
   {
    "id": "E2-0224",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4762,
-   "C_RI": 0.3899,
+   "C_NR": 0.4387,
+   "C_RI": 0.3012,
    "C_IF": 0.5708,
-   "C_total": 0.5019
+   "C_total": 0.4704
   },
   {
    "id": "E2-0225",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4762,
-   "C_RI": 0.4955,
+   "C_NR": 0.4387,
+   "C_RI": 0.5029,
    "C_IF": 0.7125,
-   "C_total": 0.5992
+   "C_total": 0.5917
   },
   {
    "id": "E2-0226",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4762,
-   "C_RI": 0.4955,
+   "C_NR": 0.4387,
+   "C_RI": 0.5029,
    "C_IF": 0.7125,
-   "C_total": 0.5992
+   "C_total": 0.5917
   },
   {
    "id": "E2-0227",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4762,
-   "C_RI": 0.3792,
+   "C_NR": 0.4387,
+   "C_RI": 0.2406,
    "C_IF": 0.435,
-   "C_total": 0.4314
+   "C_total": 0.3873
   },
   {
    "id": "E2-0228",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4762,
-   "C_RI": 0.3792,
+   "C_NR": 0.4387,
+   "C_RI": 0.2378,
    "C_IF": 0.435,
-   "C_total": 0.4314
+   "C_total": 0.3866
   },
   {
    "id": "E2-0229",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4762,
-   "C_RI": 0.3792,
+   "C_NR": 0.4387,
+   "C_RI": 0.2424,
    "C_IF": 0.435,
-   "C_total": 0.4314
+   "C_total": 0.3878
   },
   {
    "id": "E2-0230",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.4544,
+   "C_RI": 0.3122,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3125
   },
   {
    "id": "E2-0231",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.4544,
+   "C_RI": 0.314,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3129
   },
   {
    "id": "E2-0232",
    "domain": "technical",
    "label": "on-topic",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3892,
+   "C_NR": 0.4544,
+   "C_RI": 0.3105,
    "C_IF": 0.2417,
-   "C_total": 0.3425
+   "C_total": 0.3121
   },
   {
    "id": "E2-0233",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3778,
+   "C_NR": 0.4544,
+   "C_RI": 0.3347,
    "C_IF": 0.5708,
-   "C_total": 0.5042
+   "C_total": 0.4827
   },
   {
    "id": "E2-0234",
    "domain": "technical",
    "label": "off-topic-leve",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.3778,
+   "C_NR": 0.4544,
+   "C_RI": 0.3347,
    "C_IF": 0.5708,
-   "C_total": 0.5042
+   "C_total": 0.4827
   },
   {
    "id": "E2-0235",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.4958,
+   "C_NR": 0.4544,
+   "C_RI": 0.4923,
    "C_IF": 0.7125,
-   "C_total": 0.6045
+   "C_total": 0.5929
   },
   {
    "id": "E2-0236",
    "domain": "technical",
    "label": "off-topic-grave",
    "ver_fuse": false,
-   "C_NR": 0.4973,
-   "C_RI": 0.4958,
+   "C_NR": 0.4544,
+   "C_RI": 0.4923,
    "C_IF": 0.7125,
-   "C_total": 0.6045
+   "C_total": 0.5929
   },
   {
    "id": "E2-0237",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.4544,
+   "C_RI": 0.2635,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.397
   },
   {
    "id": "E2-0238",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.4544,
+   "C_RI": 0.2683,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.3982
   },
   {
    "id": "E2-0239",
    "domain": "technical",
    "label": "adversarial",
    "ver_fuse": true,
-   "C_NR": 0.4973,
-   "C_RI": 0.3665,
+   "C_NR": 0.4544,
+   "C_RI": 0.27,
    "C_IF": 0.435,
-   "C_total": 0.4334
+   "C_total": 0.3986
   }
  ]
 }

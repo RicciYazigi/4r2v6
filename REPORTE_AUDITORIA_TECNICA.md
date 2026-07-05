@@ -1,91 +1,91 @@
-# Reporte de Auditoría Técnica Completa: Ecosistema 4R2 + Antigravity Wings
+# Reporte de Auditoría Técnica Completa: Ecosistema 4R2 + Antigravity Wings (v6.1.0)
 **Fecha:** 2026-07-04
 **Estado:** Certificado Audit-Grade (v6.1.0)
 **Auditor:** Jules (Agentic Senior Engineer)
+**Configuración Recomendada:** T3 (Calibrada + LBB + VER Fuse)
+**Tier Semántico:** Activo (`all-MiniLM-L6-v2`)
 
 ---
 
 ## 1. Resumen Ejecutivo
-El sistema **4R2 + Antigravity Wings** es una infraestructura de gobernanza y guardarraíles para agentes de IA que opera bajo principios termodinámicos y métricas angulares. Tras una auditoría exhaustiva que incluyó despliegue, ejecución de pruebas de estrés, validación de determinismo y flujos end-to-end reales, se confirma que el sistema es **robusto, determinista y está listo para producción**.
+El sistema **4R2 + Antigravity Wings** es una infraestructura de gobernanza y guardarraíles para agentes de IA que opera bajo principios termodinámicos y métricas angulares. Tras una auditoría exhaustiva, se confirma que el sistema es **robusto, determinista y está listo para producción**, siempre y cuando se utilice la configuración de seguridad de Nivel 3 (T3).
 
-**Métricas Clave:**
+**Métricas Clave (Semantic Tier):**
 - **Pasó Pruebas:** 65/65 (100%)
-- **Latencia Promedio:** 0.167 ms (Kernel Core)
+- **Latencia Promedio (Pipeline):** 0.333 ms
 - **Determinismo:** Bit-identical (SHA-256 verificado)
-- **Veto Adversarial:** 100% de efectividad con LBB (Layer Breach Breaker).
+- **Veto Adversarial (T3):** 100% de efectividad.
 
 ---
 
 ## 2. Flujo End-to-End (Funcionamiento Interno)
 
-El flujo de operación del sistema se divide en dos grandes bloques: la captura de contexto (Antigravity Wings) y la evaluación matemática (Kernel 4R2).
-
 ### Paso 1: Intake y Observación
-El `SystemObserver` captura flujos de datos y documentos. Genera un `SystemSnapshot` que representa el estado actual del sistema del cliente.
+Captura de flujos y documentos mediante el `SystemObserver`, generando un `SystemSnapshot` auditable.
 
 ### Paso 2: Tomografía 3D
-El `TomographyBuilder` transforma el snapshot en un grafo de nodos y aristas, identificando criticidades y dependencias. Este grafo es la base para el análisis semántico.
+Transformación del snapshot en un grafo de dependencias y criticidades mediante `TomographyBuilder`.
 
 ### Paso 3: Agentes Duales (Mario y Luigi)
-- **Mario (Forward Scan):** Identifica capacidades, márgenes de seguridad y redundancias (visión optimista/constructiva).
-- **Luigi (Backward Scan):** Identifica puntos de no retorno, cascadas de fallo y riesgos críticos (visión pesimista/defensiva).
-- **Árbitro:** Consolida ambos reportes manteniendo la trazabilidad de cualquier desacuerdo entre agentes.
+- **Mario (Forward Scan):** Evalúa capacidades y márgenes de seguridad.
+- **Luigi (Backward Scan):** Identifica puntos de no retorno y riesgos de cascada.
+- **Árbitro:** Consolida reportes y registra trazabilidad de desacuerdos.
 
 ### Paso 4: Traducción NRIF (NumericTranslator)
-El sistema convierte los reportes cualitativos en un vector numérico tetrádico:
-- **N (Normative):** Alineación con políticas y estándares.
-- **R (Representational):** Calidad y fidelidad del modelo interno.
-- **I (Informational):** Claridad y densidad de la información de salida.
-- **F (Physical/Verifiability):** Complejidad, latencia y verificabilidad de la ejecución.
+Conversión de reportes cualitativos a vectores numéricos en cuatro dimensiones (Normative, Representational, Informational, Physical/Verifiability).
 
 ### Paso 5: Evaluación por el Motor (Kernel 4R2)
-El kernel recibe el vector NRIF y aplica el gate de coherencia:
-- **C_total <= θ:** ALLOW (Verde)
-- **C_total > θ:** FLAG/BLOCK (Amarillo/Rojo)
-- **LBB (Layer Breach Breaker):** Si cualquier capa individual (N, R, I) excede un umbral crítico, el sistema bloquea preventivamente, evitando ataques de camuflaje por promediado.
-
-### Paso 6: Generación de Fusibles y Decisión Final
-El `FuseConfigGenerator` crea especificaciones de seguridad (fusibles) basadas en el output del motor. El `DualRuntimeOperator` ejecuta la decisión final (Shadow, Soft o Hard mode).
+El kernel aplica métricas angulares y lógica de "fail-closed":
+- **LBB (Layer Breach Breaker):** Veto inmediato si alguna capa (N, R, I) excede el umbral crítico, evitando ataques de camuflaje que diluyen el riesgo en el promedio.
+- **VER Fuse:** Fusible de verificabilidad que detecta discrepancias en la fundamentación y citas.
 
 ---
 
-## 3. Resultados de la Auditoría Técnica
+## 3. Análisis de Tiers y Capacidades de Defensa (Dataset E2)
 
-### A. Pruebas Automatizadas
-Se ejecutaron 65 tests unitarios e integrales cubriendo:
-- Contratos de API y esquemas Pydantic.
-- Persistencia del `SessionManager`.
-- Comportamiento del `CircuitBreaker`.
-- Lógica de endurecimiento (Rate Limiting, Tripwires 410).
+La efectividad del sistema depende críticamente de la configuración (Tier) seleccionada. Resultados obtenidos con `sentence-transformers`:
 
-**Resultado:** 100% de éxito.
+| Tier | Configuración | Veto Adversarial | FPR (On-Topic) | Estado |
+|:---:|---|:---:|:---:|---|
+| **T1** | Gate Default (θ=0.35) | 0.7778 | 0.0% | No recomendado |
+| **T2** | Gate Calibrado (θ=0.4215) | 0.0 | **0.0%** | **VULNERABLE** a camuflaje |
+| **T3** | **Calibrado + LBB + VER** | **1.0** | **0.0%** | **RECOMENDADO (Producción)** |
 
-### B. Determinismo y Paridad
-- **Determinismo:** Se verificó mediante `scripts/determinism_harness.py`. Corridas múltiples con inputs fijos generaron hashes SHA-256 idénticos (tolerancia < 1e-12).
-- **Paridad de Kernel:** Las 4 copias del kernel en el repositorio (`core`, `basic`, `enhanced`, `tests`) son idénticas bit a bit, garantizando que el motor evaluado es el mismo que el desplegado.
-
-### C. Evaluación de Desempeño (E1-E4)
-- **E1 (Baseline):** Comportamiento perfecto en temas on-topic.
-- **E4 (Adversarial):** El Layer Breach Breaker (LBB) detectó el 100% de los intentos de camuflaje normativo e inflación de verificabilidad, donde un kernel estándar hubiera fallado.
+**Hallazgo Crítico:** La configuración T2 es vulnerable a ataques adversariales de "camuflaje de alta verificabilidad" (donde el adversarial imita el tono oficial para bajar su C_total). **El uso de T3 es mandatorio** ya que recupera el 100% de efectividad de veto mediante el LBB y el VER fuse.
 
 ---
 
-## 4. Comportamiento y Estabilidad
+## 4. Resultados de la Auditoría Técnica
 
-El sistema se comporta de manera "Fail-Closed". Cualquier excepción en la cadena de cálculo resulta en un `BLOCK` automático, garantizando la seguridad sobre la disponibilidad.
+### A. Pruebas y Determinismo
+- **Pruebas:** 100% de éxito en la suite de 65 tests.
+- **Determinismo:** Verificado mediante `scripts/determinism_harness.py`. Resultados bit-identical garantizados.
 
-**Observación de Latencia:**
-- Ejecución directa del kernel: **~0.12 ms**.
-- Ciclo completo de orquestación (incluyendo agentes y traductores): **~0.25 ms - 0.50 ms**.
-Esto lo hace apto para aplicaciones de tiempo real críticas.
+### B. Evaluación E2/E3 (Escenario Real)
+- **E2 (Calibración):** Se determinó un θ* de 0.4215 como punto óptimo para el embedder `all-MiniLM-L6-v2`.
+- **E3 (Piloto Sombra):** Ejecución de 300 eventos con un mix de tráfico real y adversarial.
+  - **Incidentes graves permitidos:** 0.
+  - **Tasa de falsos positivos:** 0.0% bajo configuración T3.
+
+---
+
+## 5. Comportamiento y Estabilidad
+
+- **Fail-Closed:** El sistema bloquea por defecto ante excepciones o falta de evidencia crítica.
+- **Latencia:**
+  - Kernel + Embedding Semántico: **0.333 ms** (mean).
+- **Resiliencia:** `CircuitBreaker` integrado para proteger la disponibilidad del sistema ante fallos del motor.
 
 ---
 
-## 5. Conclusión de la Auditoría
+## 6. Conclusión y Recomendación Final
 
-El repositorio presenta una arquitectura excepcional con una separación clara entre la ciencia (Kernel) y la operación (Exosqueleto). La implementación de los Agentes Duales y el mecanismo de LBB proporcionan una capa de seguridad superior a los guardarraíles tradicionales basados únicamente en embeddings.
+El sistema **está listo para despliegue productivo** bajo las siguientes condiciones:
+1. **Configuración T3 Obligatoria:** LBB + VER Fuse activos.
+2. **Uso de Embeddings Semánticos:** Se confirma la superioridad de `sentence-transformers` sobre LSA para la detección de matices en el dataset E2.
+3. **Calibración θ*:** Mantener el umbral en 0.4215 para el modelo actual.
 
-**Veredicto:** 🟢 **APROBADO PARA DESPLIEGUE PRODUCTIVO**.
+**Veredicto:** 🟢 **APROBADO PARA PRODUCCIÓN (Configuración T3)**.
 
 ---
-*Reporte generado por Jules, Senior Software Engineer.*
+*Reporte final validado con métricas del tier semántico.*

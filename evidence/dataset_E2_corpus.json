@@ -1,6 +1,6 @@
 {
  "seed": 1240421,
- "backend": "lsa-tfidf-svd-k64 (pure numpy, deterministic)",
+ "backend": "sentence-transformers/all-MiniLM-L6-v2",
  "cases": [
   {
    "id": "E2-0000",
