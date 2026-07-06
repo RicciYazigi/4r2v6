@@ -586,3 +586,94 @@ host con `docker compose -f docker-compose.sidecar.yml up -d && curl localhost:8
 ```
 **Confianza:** alta (todo verificado por ejecucion; benchmark reproduce el §D
 salvo latencia). Kernel congelado intacto; paridad 1; nada roto.
+
+
+---
+---
+
+# CICLO 10 — TRACE_ID: ARS-20260706-F5-AUDIT | Estado: OK
+
+**Mandato:** cerrar el hallazgo de la auditoría milimétrica de Richie (config
+sellado degenerado a=0), organizar la raíz, re-verificar todo. Español.
+
+## A) Hallazgo de auditoría (Richie, ejecutando el repo real tras el merge)
+`evidence/frontier_v7_config.json` — el config que `frontier_calibrate.py` sella
+como oficial — tenia `h: {a:0.0, b:1.0, g:0.0, thr:0.42}`. `a=0.0` = ignora
+C_NR: **el mismo defecto de degeneracion, ahora en el eje N-R**, en el artefacto
+sellado. Su hash era identico al de la primera version (antes de ambos hallazgos
+previos). El reporte decia "a≈b≈0.5" (verdad para eval_high_ver_fpr.json) pero
+NO para el config sellado. Causa raiz: `frontier_calibrate.py` calibraba los
+pesos sobre el corpus **E2 puro** (grave solo divergen por C_RI → Fisher aprende
+b=1,a=0), nunca se re-corrio con ambos ejes, y el test de regresion usaba corpus
+sintetico aislado (no el pipeline real que genera el artefacto).
+Riesgo: no activo (ningun gate carga ese archivo) pero contradecia la evidencia.
+
+## B) Correccion (medida, no forzada)
+Separacion limpia de responsabilidades:
+- **PESOS (a,b,g)** = propiedad del threat model (ambos ejes importan igual →
+  a≈b; (1−C_IF) no discrimina → g≈0). Se calibran sobre corpus de camuflaje de
+  AMBOS ejes (geometrico, embedder-agnostico).
+- **THRESHOLD** = especifico del embedder → Youden sobre E2 real.
+
+`scripts/frontier_calibrate.py` reescrito: expone `build_calibration_config()`
+(el MISMO pipeline que sella el artefacto) + `both_axes_camouflage_corpus()` +
+`degeneracy_check`. Config sellado nuevo:
+
+| | a | b | g | thr | degeneracy | E2 FPR/FNR/veto |
+|:--|:-:|:-:|:-:|:--:|:----------:|:---------------:|
+| antes | 0.0 | 1.0 | 0.0 | 0.42 | FAIL | 0/0/1.0 |
+| ahora | 0.499 | 0.501 | 0.0 | 0.453 | PASS | 0/0/1.0 |
+
+## C) Test que ata el artefacto real
+`tests/test_frontier_config_integrity.py` (3 tests): corre el PIPELINE REAL
+(`build_rows` + `build_calibration_config`, con embedder) y ademas inspecciona
+el ARTEFACTO SELLADO en disco; falla si a o b degeneran a 0 o si g reintroduce
+(1−C_IF). CI reforzado con gate de degeneracy sobre el config sellado.
+
+## D) Organizacion de la raiz
+Raiz limpia. Movidos a `archive/docs_legacy/`: Funcionamiento completo.md,
+hisotiraldetrabajoyaccionesAntigravity.md, informecierrejulio2026endtoend.md,
+MEGA_DELIVERY_v6.1.md, PERFECTION_ROADMAP.md, 4r2_definitive_blueprint.md,
+README_top_level.md (duplicado). Ref en docs/FINANCIAL_SCENARIO.md actualizada.
+Raiz final: README, CHANGES, historiafable5, pyproject, Makefile, Dockerfile(.sidecar),
+docker-compose.sidecar.yml, evidence_index.json, self_test.py, PUSH_v7_wsl.sh.
+
+## E) Verificacion final (ejecutada)
+| Control | Resultado |
+|:--------|:---------|
+| pytest | **102 passed** (65 core + 22 SDK + 15 frontier) |
+| check_release_coherence | PASS |
+| config sellado frontier_v7_config.json | a=0.499 b=0.501 g=0.0 (degeneracy PASS) |
+| E2 con config | FPR 0.0 / FNR 0.0 / veto 1.0 |
+| parity | 1 |
+| self_test | exit 0 |
+| evidence_index | 11 artefactos coherente |
+
+## F) Sellado ciclo 10
+| Artefacto | SHA-256 |
+|:----------|:--------|
+| frontier_v7_config.json | `b4993bd6b81e17298fc8e0c966be8a903b7ea524e819ae87bac440b289c04f7b` |
+| frontier_calibration.json | `c56d42839e16bd13f7c2e313a425b7865279dddf8cfe22d62c09ff398f6b5f4d` |
+
+## G) Memoria
+```json
+{
+ "hechos": [
+  "Config sellado frontier_v7_config.json arreglado: a=0.499 b=0.501 g=0.0 (antes a=0 degenerado en N-R)",
+  "PESOS de H = threat model (ambos ejes, geometrico); THRESHOLD = embedder-specific (E2 Youden)",
+  "3 tests de integridad atan el pipeline real Y el artefacto sellado; CI gate de degeneracy",
+  "102/102 tests; raiz organizada (historicos a archive/docs_legacy/)"
+ ],
+ "decisiones": [
+  "Pesos calibrados sobre corpus de ambos ejes, NO sobre E2 puro (evita degeneracion)",
+  "build_calibration_config() es el unico pipeline; el test corre ESE pipeline, no datos aislados",
+  "docs historicos a archive/docs_legacy/; raiz solo estandar/activo"
+ ],
+ "tareas": [
+  "Richie: correr PUSH_v7_wsl.sh (add -A capta renames + config nuevo + tests)",
+  "Richie: docker en host (ND en sandbox)"
+ ]
+}
+```
+**Confianza:** alta. Tercer hallazgo simetrico cazado en auditoria y cerrado con
+el artefacto real re-sellado y atado por tests que corren el pipeline de produccion.

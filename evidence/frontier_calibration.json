@@ -3,11 +3,20 @@
  "backend": "lsa-tfidf-svd-k64 (pure numpy, deterministic)",
  "n_rows": 240,
  "H_params": {
-  "a": 0.0,
-  "b": 1.0,
+  "a": 0.499,
+  "b": 0.501,
   "g": 0.0,
-  "threshold": 0.42,
-  "source": "Fisher-LDA benign-vs-off-topic-grave n=168"
+  "threshold": 0.453,
+  "source": "weights: Fisher on both-axes camouflage; threshold: Youden on E2"
+ },
+ "degeneracy_check": {
+  "a": 0.499,
+  "b": 0.501,
+  "g": 0.0,
+  "a_gt_0": true,
+  "b_gt_0": true,
+  "g_near_0": true,
+  "verdict": "PASS: both breach weights active, (1-C_IF) suppressed"
  },
  "OOD_band": {
   "lo": 1.0406,
@@ -16,7 +25,7 @@
  },
  "H_auroc": {
   "benign_vs_grave": 1.0,
-  "benign_vs_adversarial": 0.2747
+  "benign_vs_adversarial": 0.2931
  },
  "metrics_v6_default_frontier": {
   "fpr_on_topic": 0.0,
@@ -38,7 +47,8 @@
   "auroc_diagonal_fisher": 0.326,
   "delta_auroc": -0.0622,
   "decision": "KEEP angular (diagonal-Fisher gives no material gain; no legitimate distribution family exists for a true FIM)",
-  "note": "Diagonal-Gaussian proxy, NOT a true FIM. A true FIM needs the embeddings to be parameters of an estimated distribution family, which they are not."
+  "note": "Diagonal-Gaussian proxy, NOT a true FIM."
  },
- "honest_finding": "H(x) on layer magnitudes separates benign vs grave (AUROC 1.0) but NOT camouflaged adversarial (AUROC 0.2747 ~ chance). Adversarial veto requires the negation-aware verifiability cue. Quantifies the high-verifiability camouflage vulnerability."
+ "methodology": "WEIGHTS calibrated on a both-axes camouflage corpus (a\u2248b, g\u21920; property of the threat model, embedder-agnostic); THRESHOLD calibrated on the real E2 corpus (embedder-specific). Validated on E2: FPR/FNR/veto below. Fixes the a=0 N-R-axis degeneracy found in audit 2026-07-06.",
+ "honest_finding": "H(x) magnitudes separate benign vs grave (AUROC 1.0) but NOT camouflaged adversarial (AUROC 0.2931). Adversarial veto needs the negation-aware verifiability cue (VER fuse)."
 }

@@ -1,12 +1,12 @@
 {
   "schema_version": "1.0",
   "audit_index": "RICCI-AUDIT-20260125",
-  "generated_utc": "2026-07-06T21:52:16.383849Z",
+  "generated_utc": "2026-07-06T22:41:12.345268Z",
   "generator": "generate_evidence_index.py v1.0",
   "evidence_directory": "/mnt/c/Users/USER/Documents/4R2 repo maestro jul2026/evidence",
   "statistics": {
     "total_files": 11,
-    "total_size_bytes": 587555,
+    "total_size_bytes": 587941,
     "extensions_included": [
       ".json",
       ".jsonl",
@@ -19,39 +19,39 @@
   },
   "files": {
     "benchmark_v7_results.json": {
-      "sha256": "0172cf66ff9270b8b4881ba4861f352f242332976166c5be3ef7ed292964eef9",
-      "size_bytes": 1223,
-      "modified_utc": "2026-07-06T21:52:11.467005Z"
+      "sha256": "88f5cca45e9d0f8ba10234ad75cf7b71d7106d827af4b13c63ca63c7dfd85d0c",
+      "size_bytes": 1224,
+      "modified_utc": "2026-07-06T22:41:09.410728Z"
     },
     "dataset_E1.json": {
       "sha256": "da23cad533ffbf8290bc25ef1d33ae8b665b985ae9b0d162d1c35ff4627b2f6e",
       "size_bytes": 304520,
-      "modified_utc": "2026-07-06T21:52:07.219407Z"
+      "modified_utc": "2026-07-06T22:41:07.037250Z"
     },
     "dataset_E2_corpus.json": {
       "sha256": "e16d05ba8703c805f9b2b85518c5f7458649c9e89eb68d71319afb9e9c029623",
       "size_bytes": 133192,
-      "modified_utc": "2026-07-06T21:52:09.580994Z"
+      "modified_utc": "2026-07-06T22:41:08.294034Z"
     },
     "eval_E1_E4_results.json": {
       "sha256": "de6056dbd699ccb43ff1ea7cbc73b6a8ea9841c418253363f4820f6091e91c43",
       "size_bytes": 96412,
-      "modified_utc": "2026-07-06T21:52:07.241893Z"
+      "modified_utc": "2026-07-06T22:41:07.043764Z"
     },
     "eval_E2_results.json": {
-      "sha256": "d2c61ebb8887f2363fcff707a933ed5c5c41dab556edc986544ae2ecbc5b6dc1",
+      "sha256": "f6503ea4578239ba8295da77072c7139e7772c1fa895b2c7bc3432f8d94c502f",
       "size_bytes": 45635,
-      "modified_utc": "2026-07-06T21:52:09.597920Z"
+      "modified_utc": "2026-07-06T22:41:08.304037Z"
     },
     "eval_E3_shadow.json": {
-      "sha256": "5078de009f49d98e7fdd960686cc6cfbd07661dfd5df84cc669d7b3e3f2e9a5d",
+      "sha256": "cd2ff7a8633f256ecd7fbade9629120e8ca303b782eb249115a8585f949e3078",
       "size_bytes": 500,
-      "modified_utc": "2026-07-06T21:52:09.611253Z"
+      "modified_utc": "2026-07-06T22:41:08.309562Z"
     },
     "eval_E4E5_results.json": {
       "sha256": "c7e06228a0f8acae4ac8e0e35ad37996088622914d59e503592bba977b68a818",
       "size_bytes": 1780,
-      "modified_utc": "2026-07-06T21:52:14.676773Z"
+      "modified_utc": "2026-07-06T22:41:12.931367Z"
     },
     "eval_high_ver_fpr.json": {
       "sha256": "2fe5f6adea6673169d97b9cfc31b68ec7ea8aa5d1dcbbda0ac7a2497c5a7d227",
@@ -61,17 +61,17 @@
     "eval_negation_hardening.json": {
       "sha256": "5786d04dfac4744f9444c4576eca3dc66e961c7f40e8fbbf7d44bb18227ad5cf",
       "size_bytes": 1274,
-      "modified_utc": "2026-07-06T21:52:15.714937Z"
+      "modified_utc": "2026-07-06T22:41:13.587538Z"
     },
     "frontier_calibration.json": {
-      "sha256": "61b9bbf7667e32b4a184a8241aaa9dc580224a237e43dc85f8867aff2bbf661f",
-      "size_bytes": 1426,
-      "modified_utc": "2026-07-05T18:23:14.194950Z"
+      "sha256": "c56d42839e16bd13f7c2e313a425b7865279dddf8cfe22d62c09ff398f6b5f4d",
+      "size_bytes": 1772,
+      "modified_utc": "2026-07-06T22:41:10.633768Z"
     },
     "frontier_v7_config.json": {
-      "sha256": "f97498ef8827c0fefdcf833f2bc7a0157f28f12913b1e9b7d2e503b67598756f",
-      "size_bytes": 369,
-      "modified_utc": "2026-07-05T18:23:14.192442Z"
+      "sha256": "b4993bd6b81e17298fc8e0c966be8a903b7ea524e819ae87bac440b289c04f7b",
+      "size_bytes": 408,
+      "modified_utc": "2026-07-06T22:41:10.630767Z"
     }
   }
 }

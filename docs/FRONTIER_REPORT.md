@@ -197,6 +197,46 @@ falla si cualquiera de los dos ejes con verificación perfecta logra ALLOW. Este
 hueco lo encontró Richie reejecutando la calibración, no leyéndola — exactamente
 el patrón de auto-caza que este proyecto persigue.
 
+### 4.8 Tercer hallazgo de auditoría: el config SELLADO estaba degenerado (2026-07-06)
+
+Una auditoría milimétrica (Richie, ejecutando el repo real tras el merge)
+destapó una discrepancia entre la prosa y la evidencia sellada: aunque
+`eval_high_ver_fpr.json` mostraba `a=0.499, b=0.501`, el config que
+`scripts/frontier_calibrate.py` sella como oficial —
+`evidence/frontier_v7_config.json`— seguía con:
+
+```
+"h": {"a": 0.0, "b": 1.0, "g": 0.0, "threshold": 0.42}
+```
+
+`a=0.0` — **el mismo defecto de degeneración, ahora en el eje N-R**, en el
+artefacto que el pipeline nombra como config de producción. Causa raíz:
+`frontier_calibrate.py` calibraba los pesos sobre el corpus **E2 puro**, donde
+los grave off-topic solo divergen por C_RI (nunca por C_NR), así que Fisher
+aprendía `b=1, a=0` legítimamente para E2 pero quedaba ciego al eje N-R. El
+script nunca se re-corrió con ambos ejes tras el fix de `eval_e4_extended.py`,
+y el test de regresión usaba un corpus sintético aislado, no el pipeline real.
+(No era un riesgo activo — ningún módulo de gate carga ese archivo — pero
+contradecía el reporte y estaba sellado como evidencia de due diligence.)
+
+**Corrección (medida):** los **pesos** de H(x) son propiedad del *threat model*
+(ambos ejes importan igual → a≈b; (1−C_IF) no discrimina → g≈0), NO de un
+corpus; se calibran sobre un corpus de camuflaje de **ambos ejes**. El
+**threshold** sí es específico del embedder → se calibra por Youden sobre E2.
+Config sellado resultante:
+
+| | a | b | g | threshold | degeneracy_check | E2 FPR/FNR/veto |
+|:--|:-:|:-:|:-:|:--------:|:----------------:|:---------------:|
+| antes (E2 puro) | **0.0** | 1.0 | 0.0 | 0.42 | FAIL (N-R ciego) | 0/0/1.0 |
+| ahora (ambos ejes + E2 thr) | **0.499** | **0.501** | **0.0** | 0.453 | **PASS** | **0/0/1.0** |
+
+Salvaguardas: `frontier_calibrate.py` ahora expone `build_calibration_config()`
+(el mismo pipeline que sella el artefacto) y emite un `degeneracy_check`. Tres
+tests nuevos (`tests/test_frontier_config_integrity.py`) corren el **pipeline
+real** y además inspeccionan el **artefacto sellado en disco**, fallando si `a`
+o `b` degeneran a 0 o si `g` reintroduce (1−C_IF). El hueco ya no puede volver
+a colarse en silencio.
+
 ### 4.5 No-regresión
 
 | Control | v6.1.0 | v7 calibrado |
@@ -263,8 +303,8 @@ señales.
 
 | Artefacto | SHA-256 |
 |:----------|:--------|
-| frontier_v7_config.json | `f97498ef8827c0fefdcf833f2bc7a0157f28f12913b1e9b7d2e503b67598756f` |
-| frontier_calibration.json | `61b9bbf7667e32b4a184a8241aaa9dc580224a237e43dc85f8867aff2bbf661f` |
+| frontier_v7_config.json | `b4993bd6b81e17298fc8e0c966be8a903b7ea524e819ae87bac440b289c04f7b` |
+| frontier_calibration.json | `c56d42839e16bd13f7c2e313a425b7865279dddf8cfe22d62c09ff398f6b5f4d` |
 | eval_E4E5_results.json | `c7e06228a0f8acae4ac8e0e35ad37996088622914d59e503592bba977b68a818` |
 | eval_high_ver_fpr.json | `2fe5f6adea6673169d97b9cfc31b68ec7ea8aa5d1dcbbda0ac7a2497c5a7d227` |
 | eval_negation_hardening.json | `5786d04dfac4744f9444c4576eca3dc66e961c7f40e8fbbf7d44bb18227ad5cf` |

@@ -14,13 +14,15 @@ rm -f .git/index.lock
 python3 -m venv .venv 2>/dev/null || true
 source .venv/bin/activate 2>/dev/null || true
 pip install -e ".[service,dev]" -q
-python -m pytest -q                                   # 99 passed
+python -m pytest -q                                   # 102 passed
 python scripts/check_release_coherence.py             # RELEASE COHERENCE: PASS
 make parity                                           # 1
 make determinism                                      # PASS
 python scripts/eval_e1_e4.py   | grep '"veto_accuracy_kernel_LBB": 1.0'
 python scripts/eval_e2_e3.py   | grep '"incidents_grave_or_adv_ALLOW": 0'
 python benchmarks/public_benchmark.py                 # acceptability 1.0
+python scripts/frontier_calibrate.py >/dev/null                    # regenera config no-degenerado
+python -c "import json;h=json.load(open('evidence/frontier_v7_config.json'))['h'];assert h['a']>0.05 and h['b']>0.05 and h['g']<0.05,h;print('config both-axes OK:',{k:round(v,3) for k,v in h.items() if isinstance(v,(int,float))})"
 python self_test.py                                   # SELF-TEST: OK (exit 0)
 python scripts/generate_evidence_index.py --evidence-dir evidence --output evidence_index.json
 python examples/quickstart.py                         # ALLOW / FLAG / BLOCK
@@ -50,7 +52,7 @@ PRODUCTO (four_r2/; kernel math intacto):
 - check_release_coherence (una sola historia de version); pyproject 4.0.0->7.0.0 + extras
 - docs: LIMITATIONS, THREAT_MODEL, VERSIONING_POLICY, INTEGRATION, DATA_ROOM_CHECKLIST, MIGRATION, arXiv v7, ADR-0008
 
-VERIFICADO: 99/99 tests (65 core + 22 SDK + 12 frontier), coherence PASS, parity 1,
+AUDIT FIX (ciclo 10): frontier_v7_config.json estaba degenerado (a=0, ciego al eje N-R) por\ncalibrar sobre E2 puro; corregido -> pesos ambos ejes (a=0.499 b=0.501 g=0) + threshold E2 (0.453),\ndegeneracy_check PASS, 3 tests de integridad que corren el pipeline REAL y atan el artefacto sellado.\nRaiz organizada (docs historicos a archive/docs_legacy/).\n\nVERIFICADO: 102/102 tests (65 core + 22 SDK + 15 frontier), coherence PASS, parity 1,
 determinism PASS, benchmark acceptability 1.0, self-test exit 0, evidence_index 11 artefactos.
 Docker build ND en sandbox (verificar en host)."
 

@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-07-04 | **Etiqueta de veracidad: ESPECULATIVO** (modelo basado
 en supuestos declarados; no es asesoría financiera ni una valoración formal).
-Los números **verificados** del activo están en MEGA_DELIVERY_v6.1.md; todo lo
+Los números **verificados** del activo están en archive/docs_legacy/MEGA_DELIVERY_v6.1.md; todo lo
 demás aquí son escenarios condicionados a supuestos.
 
 ## 1. Qué es el activo hoy (verificado)

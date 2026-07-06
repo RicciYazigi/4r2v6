@@ -15,7 +15,7 @@ jobs:
         run: pip install -e ".[service,dev]"
       - name: Release coherence gate (single version story)
         run: python scripts/check_release_coherence.py
-      - name: Unit & integration tests (core 65 + SDK/service/coherence 22 + frontier 12)
+      - name: Unit & integration tests (core 65 + SDK/service/coherence 22 + frontier 15)
         run: python -m pytest -q
       - name: Kernel replica hash parity (must be 1)
         run: |
@@ -39,8 +39,10 @@ jobs:
           grep -q '"incidents_grave_or_adv_ALLOW": 0' /tmp/e23.log
       - name: Public benchmark v7 (held-out; acceptability must be 1.0)
         run: python benchmarks/public_benchmark.py
-      - name: v7 Frontier calibration (Fisher-vs-angular control)
-        run: python scripts/frontier_calibrate.py | tee /tmp/fcal.log
+      - name: v7 Frontier calibration + sealed-config degeneracy gate (both breach weights)
+        run: |
+          python scripts/frontier_calibrate.py | tee /tmp/fcal.log
+          python -c "import json; d=json.load(open('evidence/frontier_v7_config.json'))['h']; assert d['a']>0.05 and d['b']>0.05 and d['g']<0.05, d; print('sealed config both-axes OK:', d)"
       - name: v7 E4/E5 attack — camouflage must be closed on BOTH axes
         run: |
           python scripts/eval_e4_extended.py | tee /tmp/e45.log
