@@ -10,3 +10,10 @@ sessions/
 *.log
 *.hash
 *.db
+
+# v7 packaging artifacts
+*.egg-info/
+*.egg-info
+build/
+*.egg-link
+.eggs/

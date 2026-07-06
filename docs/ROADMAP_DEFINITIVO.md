@@ -53,4 +53,5 @@ E1/E4 sellados, determinismo probado, 4 réplicas 1 hash.
 | **v6.1.0** | Kernel angular + LBB + evals E1/E4 + E2-lex/E3-sim + docs + CI + README | 65/65, veto 100%, 0 incidentes, evidencia sellada | **CERRADO** |
 | **v6.2** | E2-st (el job `semantic-tier` del CI lo corre solo en el primer push a GitHub y sube el artifact) + CI verde + calibración LBB/θ por dominio + Docker validado en host | AUROC ST reportado + badge CI verde + parity=1 | CI listo; ejecución en GitHub/host |
 | **v6.3** | Piloto sombra con TRÁFICO REAL de cliente amigo (2 semanas) + observabilidad OTel | 0 incidentes reales, FLAG < 10%, informe firmado | Pendiente |
-| **v7** | SDK pip + sidecar + arXiv enviado + data-room M&A | Paquete instalable + submission ID + data-room revisado | Pendiente |
+| **v7.0-Frontier (core)** | Módulo opt-in `frontier_v7.py`: H(x) calibrado (ambos ejes), JS camuflaje, Shannon OOD, negación endurecida cableada a producción; 2 vulnerabilidades simétricas cazadas y cerradas ((1−C_IF) y eje C_RI) | 77/77 tests, veto ambos ejes, FPR alta-ver 0.0, evidencia sellada, ADR-0008 | **CERRADO (rama v7-frontier-wip)** |
+| **v7 (producto)** | SDK pip + sidecar + arXiv enviado + data-room M&A + Docker build en host | Paquete instalable + submission ID + data-room revisado | Pendiente |

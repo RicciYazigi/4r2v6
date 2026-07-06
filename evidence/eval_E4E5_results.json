@@ -1,0 +1,58 @@
+{
+ "seed": 1240421,
+ "weights": "balanced 1/3 (kernel gate)",
+ "theta": 0.35,
+ "H_calibrated_weights": {
+  "a": 0.499,
+  "b": 0.501,
+  "g": 0.0
+ },
+ "H_threshold": 0.209,
+ "H_source": "Fisher-LDA benign-vs-off-topic-grave n=180",
+ "fpr_high_verifiability_legit": 0.0,
+ "E4_single_layer_attack_NR": {
+  "axis": "NR",
+  "n": 38,
+  "attacker_success_gate_only": 1.0,
+  "attacker_success_v6_lbb": 0.7895,
+  "attacker_success_v7_frontier": 0.5526
+ },
+ "E4_single_layer_attack_RI": {
+  "axis": "RI",
+  "n": 38,
+  "attacker_success_gate_only": 1.0,
+  "attacker_success_v6_lbb": 0.7895,
+  "attacker_success_v7_frontier": 0.5526
+ },
+ "E4_adaptive_spread_attack": {
+  "max_evading_breach_gate_only": 0.99,
+  "max_evading_breach_v6_lbb": 0.5838,
+  "max_evading_breach_v7_frontier": 0.4062,
+  "note": "Smaller max-evading-breach = stronger. v7 (calibrated H over BOTH breach layers) shrinks it symmetrically without penalizing genuine verifiability."
+ },
+ "E5_OOD_entropy": {
+  "ood_band": {
+   "lo": 0.1839,
+   "hi": 0.6937
+  },
+  "benign_band_membership_rate": 0.0333,
+  "single_layer_attack_band_membership_rate": 0.0,
+  "honest_interpretation": "NEGATIVE RESULT: Shannon entropy does NOT detect the high-verifiability single-layer attack. Frontier OOD escalation requires max_layer>=0.5 (benign lacks it) => no benign FPR. H(x) is the defense; entropy is generic OOD telemetry."
+ },
+ "headline": {
+  "camouflage_closed_both_axes": true,
+  "gate_only_success_NR": 1.0,
+  "gate_only_success_RI": 1.0,
+  "v6_lbb_success_NR": 0.7895,
+  "v6_lbb_success_RI": 0.7895,
+  "v7_frontier_success_NR": 0.5526,
+  "v7_frontier_success_RI": 0.5526,
+  "fpr_high_verifiability_legit": 0.0,
+  "H_weights_calibrated": {
+   "a": 0.499,
+   "b": 0.501,
+   "g": 0.0
+  },
+  "both_breach_weights_active": true
+ }
+}

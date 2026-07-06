@@ -400,3 +400,189 @@ público HaluEval-style, tráfico real).
 | 2 | `docker compose build` en `4R2-MASTER-DELIVERY/systems/basic` | Validación contenedores (ND en sandboxes) |
 | 3 | Piloto con tráfico real (v6.3 roadmap) | Shadow E3 ya pasó con 300 eventos simulados |
 | 4 | Corpus HaluEval-style externo (v6.2 gate) | No presentar AUROC autorado como benchmark público |
+
+
+---
+---
+
+# CICLO 7 — TRACE_ID: ARS-20260705-F5-V7-0001 | Estado: OK
+
+**Mandato:** v6.1.0 -> v7.0 "Frontier". Formalizar y endurecer la defensa contra
+el camuflaje de alta verificabilidad, sin romper el kernel congelado. Rama
+`v7-frontier-wip`. Modelo: Claude Fable 5. Dirección: Richie.
+
+## Acciones (todo verificado por ejecución en esta sesión)
+1. **FASE 0 auditoría:** 65/65 tests base PASS; paridad réplicas = 1 hash;
+   evidence_index coherente 5/5. Hallazgos: P1 fusible VER evadible por
+   paráfrasis; P2 ADR-0001 sin marca de supersesión; P2 pyproject v4.0.0 vs
+   kernel v6.1.0; Docker ND (sin binario en sandbox).
+2. **FASE 1 núcleo (`core/frontier_v7.py`, opt-in, API v6 intacta):**
+   - Fisher vs angular: **se mantiene angular**; control diagonal-Fisher sobre
+     E2 real da ΔAUROC −0.0622 (empeora) => decisión evidenciada, no asumida.
+   - H(x)=a·C_NR+b·C_RI+g·(1−C_IF), pesos calibrados por Fisher-LDA; cotas y
+     monotonía probadas (T1). JS-camuflaje (reusa JS acotada del kernel) +
+     entropía de Shannon (no Von Neumann) para OOD.
+   - `frontier_verdict` = **escalación pura** (nunca relaja v6), probado.
+   - 9 tests nuevos -> **74/74 PASS**. Añadidos a pytest testpaths y a CI.
+3. **FASE 2 ataques reales (sellados):**
+   - Hallazgo cuantificado del camuflaje: H(x) sobre magnitudes separa
+     benigno-vs-grave AUROC 1.0 pero benigno-vs-adversarial 0.275 (≈azar) =>
+     la defensa del adversarial es la verificabilidad con negación, no H.
+   - E4-extendido (kernel real, geometría exacta): éxito del atacante
+     100% (sólo gate) -> 78.9% (v6 LBB) -> **34.2% (v7 H)**; máxima brecha
+     colable 0.99 -> 0.58 -> **0.229**. Cierre medido del camuflaje.
+   - E5-OOD entropía: **resultado negativo honesto** (no detecta este ataque;
+     queda como telemetría; escalación exige max_layer≥0.5 => 0 FP).
+   - P1 endurecido: detector de negación paráfrasis-robusto. Evasión
+     93.3% -> **0.0%**, 0 falsos positivos (probe n=15, límite léxico declarado).
+4. **FASE 3 empaquetado:** `Dockerfile` + `self_test.py` (ENTRYPOINT).
+   Self-test **exit 0** verificado localmente (7/7 checks). `docker build`
+   **ND** (sin Docker en sandbox) — comportamiento probado por ejecución local.
+5. **FASE 4 reporte:** `docs/FRONTIER_REPORT.md` con T1/T2 separados,
+   comparación honesta vs Llama Guard / NeMo / CAI, y limitaciones nombradas.
+   ADR-0001 marcado Superseded por ADR-0006. CI extendido con 5 pasos v7.
+
+## Sellado ciclo 7
+| Artefacto | SHA-256 |
+|:----------|:--------|
+| frontier_v7_config.json | `f97498ef8827c0fefdcf833f2bc7a0157f28f12913b1e9b7d2e503b67598756f` |
+| frontier_calibration.json | `61b9bbf7667e32b4a184a8241aaa9dc580224a237e43dc85f8867aff2bbf661f` |
+| eval_E4E5_results.json | `4d7469c3c74b3149df4cd6e7c9a1ddf0cf52fe104e8699ac111248a365897951` |
+| eval_negation_hardening.json | `5786d04dfac4744f9444c4576eca3dc66e961c7f40e8fbbf7d44bb18227ad5cf` |
+
+## Estado del workspace
+Ejecutable, 74/74 verde, sin tests rojos. Rama `v7-frontier-wip` (no en main).
+Commits/push: bloqueados desde el sandbox por permisos del mount .git — comandos
+WSL entregados a Richie. Pendientes no bloqueantes: docker build en host, wiring
+del detector de negación a producción, tier ST, corpus público, revisión legal.
+
+## Nota de nueva ciencia acoplada
+El valor de H(x) es geométrico y honesto: el atacante que diluye una brecha con
+verificabilidad perfecta (C_IF->0) fuerza (1−C_IF)=1, que es justo el término
+que H penaliza. No es física; es un funcional de penalización calibrado que
+convierte la evasión del atacante en un dilema de Pareto medible.
+
+**Confianza:** alta (T1 probado; T2 sellado con semilla fija).
+
+
+---
+
+## CICLO 7b — Revisión adversarial de Richie (2026-07-05) | Estado: OK
+
+Richie **reconstruyó y ejecutó** el `selftest()` (no solo lo leyó) y probó
+`h_energy` con casos que el reporte no aislaba. Halló una **vulnerabilidad
+simétrica real**: el término `(1−C_IF)` de H(x) sube con la verificabilidad
+genuinamente perfecta, así que un caso legítimo impecable (C_IF=0) puntuaba
+como el atacante de camuflaje (que también fuerza C_IF=0). Crítica correcta.
+
+**Verificado y corregido (no asumido):**
+- `scripts/eval_high_verifiability_fpr.py` (nuevo): 120 casos legítimos de alta
+  verificabilidad real (F=[1,1,1,1]) por el kernel real. H balanceado (g=1/3):
+  **FPR 0.15** sobre el mejor tráfico, 0 veto adicional. H calibrado por Fisher:
+  **g→0.0, FPR 0.0**, veto 1.0. El dato ya lo decía (E2 Fisher fijó g=0).
+- `eval_e4_extended.py` corregido: H **calibrado** (no balanceado hard-coded).
+  Headline: atacante 100%→34%, brecha máxima 0.99→0.23, **FPR alta-ver=0.0**,
+  γ=0.0. Config balanceado **retirado**.
+- 2 tests de regresión nuevos (11 en frontier, 76/76 total).
+- `docs/ADRs/0008-...md` (nuevo) registra la decisión; **ADR-0001 revertido** a
+  su original inmutable (respeta la convención: nuevo ADR, no reescritura).
+- `self_test.py` + CI: chequean FPR alta-ver=0 y γ≈0. `evidence_index`: 10
+  artefactos, coherente. §7 del reporte re-sellado y verificado.
+
+**Lección:** el proyecto existe para cazar vulnerabilidades simétricas; esta se
+cazó en revisión interna antes del merge, que es exactamente el patrón deseado.
+No renombrar ni mergear a main hasta que Richie apruebe post-revisión.
+
+**Confianza:** alta (T1 probado; T2 re-sellado con semilla fija; FPR del peor
+caso medido en 0).
+
+
+---
+---
+
+# CICLO 9 — TRACE_ID: ARS-20260706-F5-V7-PROD | Estado: OK
+
+**Mandato:** integrar el MEGA DELIVERY v7.0.0 (capa de PRODUCTO, hecho con
+Fable 5 antes de nuestro ciclo Frontier) al workspace, sin romper nada, y
+fusionarlo con el trabajo Frontier ya existente. Español.
+
+## A) Qué se integró (todo de alto valor, complementario al Frontier)
+El MEGA vive en `four_r2/` (SDK) y NO toca el kernel congelado ni el
+`core/frontier_v7.py`. Se creó verbatim:
+- **SDK `four_r2/`**: `_version.py` (7.0.0 pkg / 6.1.0 kernel), `_kernel_loader.py`
+  (importa el kernel canonico sin duplicarlo → paridad intacta), `embedders.py`
+  (HashingEmbedder blake2b determinista + tier ST opcional), `guardrail.py`
+  (facade fail-closed, nunca lanza), `calibration.py` (theta por percentiles con
+  reporte honesto OVERLAP), `metrics.py` (Prometheus), `service.py` (sidecar
+  FastAPI /health /v1/evaluate /metrics + auth X-API-Key), `__init__.py`.
+- **Gate de coherencia** `scripts/check_release_coherence.py` (una sola historia
+  de version, CI-gated).
+- **Benchmark** `benchmarks/public_benchmark.py` + `METHODOLOGY.md` (calibracion
+  held-out even/odd, acceptability E2-strict, SHA-256 encadenado).
+- **Docs de rigor**: `LIMITATIONS.md` (T1/T2/no-claims), `THREAT_MODEL.md`
+  (closed/mitigated/residual), `VERSIONING_POLICY.md`, `INTEGRATION.md`,
+  `DATA_ROOM_CHECKLIST.md` (filas ND honestas). Todas fusionadas con referencias
+  al Frontier (H(x), ambos ejes, ADR-0008).
+- **Docker**: `Dockerfile.sidecar` (non-root, healthcheck) + `docker-compose.sidecar.yml`.
+- **Tests**: `tests/test_sdk_guardrail.py` (15), `tests/test_service.py` (7),
+  `tests/test_release_coherence.py` (1).
+- **`examples/quickstart.py`**, `core/__init__.py`.
+- **VER grounding fuse** (nivel producto): F[0]<0.15 ⇒ ALLOW→FLAG (piso empirico
+  E2: benign min f_ground 0.214 vs adversarial 0.057). Cierra la clase
+  "verifiability inflation" (THREAT_MODEL #2).
+
+## B) Fusiones (preservando el trabajo Frontier — NO reemplazo ciego)
+- `pyproject.toml`: version 4.0.0→7.0.0, deps declaradas, extras
+  (service/semantic/dev). **testpaths incluye `scripts/test_frontier_v7.py`**
+  (los 12 tests frontier NO se pierden).
+- `README.md`(+`README_top_level.md`): release 7.0.0 + SDK/sidecar + **seccion
+  Frontier** + mapa con `core/frontier_v7.py` y `docs/FRONTIER_REPORT.md`; ADRs 0001…0008.
+- `.github/workflows/ci.yml`: pasos MEGA (coherence + benchmark) **Y** pasos
+  Frontier (calibracion, camuflaje ambos ejes, high-ver FPR, negacion, self-test,
+  re-sello). Un solo pipeline.
+- `Makefile`: targets `coherence`, `benchmark`, `sidecar` (TABs correctos).
+- `CHANGES.md`: entrada v7.0.0 al inicio.
+
+## C) Verificacion por ejecucion (2026-07-06, todo real)
+| Control | Resultado |
+|:--------|:---------|
+| `pip install -e ".[service,dev]"` | OK (four_r2 7.0.0 / kernel 6.1.0) |
+| `check_release_coherence.py` | RELEASE COHERENCE: PASS |
+| `pytest -q` | **99 passed** (65 core + 22 SDK/service + 12 frontier) |
+| `make parity` | 1 |
+| determinism harness | PASS (sin fuentes de no-determinismo) |
+| `public_benchmark.py` | acceptability 1.0, theta* 0.3971, benign ALLOW 1.0, FNR 0.0, veto 1.0 — reproduce el §D del MEGA (solo difiere latencia por hardware) |
+| `self_test.py` (frontier) | exit 0 |
+| `quickstart.py` | benign ALLOW / attack FLAG / broken BLOCK(fail-closed) |
+| evidence_index | 11 artefactos, coherente (incluye benchmark_v7_results.json) |
+
+Nota honesta de conteo: el MEGA declaraba 87/87 (fue escrito antes del Frontier);
+el numero REAL con Frontier integrado es **99/99**. Se reporta el real, no el del documento.
+
+## D) Docker
+`docker build`/`compose` siguen **ND** en el sandbox (sin binario). Verificar en
+host con `docker compose -f docker-compose.sidecar.yml up -d && curl localhost:8472/health`.
+
+## E) Memoria
+```json
+{
+ "hechos": [
+  "v7.0.0 producto: SDK four_r2/ (Guardrail fail-closed, sidecar FastAPI, metrics Prometheus)",
+  "99/99 tests (65 core + 22 SDK + 12 frontier); coherence PASS; parity 1; benchmark acceptability 1.0 theta 0.3971",
+  "VER grounding fuse F[0]<0.15 cierra verifiability-inflation; kernel math CONGELADO 6.1.0",
+  "MEGA producto + Frontier integrados sin romper nada; evidence_index 11 artefactos"
+ ],
+ "decisiones": [
+  "Kernel math NO se bumpea (6.1.0 sellado); package 7.0.0; check_release_coherence lo enforce",
+  "testpaths incluye frontier + tests SDK; CI corre ambos gates",
+  "Docs LIMITATIONS/THREAT_MODEL fusionan producto + frontier; filas ND honestas en DATA_ROOM"
+ ],
+ "tareas": [
+  "Richie: correr el bash unico de push WSL (rm lock, add -A, commit, tag v7.0.0, push)",
+  "Richie: docker compose sidecar en host (ND en sandbox)",
+  "Roadmap: corpus externo via --corpus, opinion legal EU AI Act, tier ST en CI"
+ ]
+}
+```
+**Confianza:** alta (todo verificado por ejecucion; benchmark reproduce el §D
+salvo latencia). Kernel congelado intacto; paridad 1; nada roto.

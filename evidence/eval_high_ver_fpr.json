@@ -1,0 +1,41 @@
+{
+ "seed": 1240421,
+ "n_legit": 120,
+ "n_attack_NR": 30,
+ "n_attack_RI": 30,
+ "note": "All legit + attack cases have PERFECT verifiability (C_IF=0, F=[1,1,1,1]).",
+ "OLD_calibration_single_axis_BROKEN": {
+  "weights": {
+   "a": 1.0,
+   "b": 0.0,
+   "g": 0.0
+  },
+  "threshold": 0.251,
+  "H_veto_attack_NR": 1.0,
+  "H_veto_attack_RI": 0.0,
+  "fpr_high_ver_legit": 0.0
+ },
+ "NEW_calibration_both_axes_FIXED": {
+  "weights": {
+   "a": 0.499,
+   "b": 0.501,
+   "g": 0.0
+  },
+  "threshold": 0.209,
+  "H_veto_attack_NR": 1.0,
+  "H_veto_attack_RI": 1.0,
+  "fpr_high_ver_legit": 0.0,
+  "source": "Fisher-LDA benign-vs-off-topic-grave n=180"
+ },
+ "full_pipeline_NEW_cfg": {
+  "attacker_allow_rate_NR": 0.0,
+  "attacker_allow_rate_RI": 0.0,
+  "attacker_allow_rate_legit_baseline_FPR": 1.0
+ },
+ "degeneracy_check": {
+  "a_gt_0": true,
+  "b_gt_0": true,
+  "verdict": "PASS: both breach weights active"
+ },
+ "finding": "The single-axis corpus made Fisher learn b=0, reopening the single-layer camouflage gap on the C_RI axis. Calibrating on a both-axes corpus restores a>0 and b>0, vetoes BOTH attack axes, and keeps FPR=0 on high-verifiability legit traffic. The g (1-C_IF) weight still calibrates ~0 (non-discriminative), as before."
+}
