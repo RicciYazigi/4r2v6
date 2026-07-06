@@ -3,51 +3,46 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "4r2-coherence-engine"
-version = "4.0.0"
-description = "Canonical 4R2 Coherence Engine with NRIF metrics, real motor defaults, full reproducibility and professional documentation."
+name = "four-r2-guardrail"
+version = "7.0.0"
+description = "4R2: deterministic, fail-closed NRIF coherence guardrail for LLM agents (ALLOW/FLAG/BLOCK), with SHA-256 reproducible evidence. Kernel math frozen at 6.1.0 (evidence-sealed)."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = {text = "Proprietary / Internal Use"}
-authors = [
-  {name = "Ricardo Yazigi (with Grok agentic collaboration)"}
-]
-keywords = ["coherence", "thermodynamics", "AI evaluation", "NRIF", "determinism"]
+authors = [{name = "Ricci Yazigi"}]
+keywords = ["guardrail", "LLM safety", "NRIF", "determinism", "runtime governance", "fail-closed"]
 classifiers = [
   "Development Status :: 4 - Beta",
-  "Intended Audience :: Science/Research",
-  "Programming Language :: Python :: 3",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-
-dependencies = [
-  "numpy>=1.23",
-]
+dependencies = ["numpy>=1.23"]
 
 [project.optional-dependencies]
-dev = [
-  "pytest>=7.0",
-  "black",
-  "ruff",
-]
+service = ["fastapi>=0.110", "uvicorn>=0.27", "pydantic>=2.5", "httpx>=0.26"]
+semantic = ["sentence-transformers>=2.2"]
+dev = ["pytest>=7.0", "httpx>=0.26", "black", "ruff"]
 
 [project.urls]
-Homepage = "internal"
-Documentation = "docs/RUNBOOK.md"
-"Source" = "clean copy in Grok4r2 rempacado"
+Homepage = "https://github.com/RicciYazigi/4r2v6"
+Source = "https://github.com/RicciYazigi/4r2v6"
+Documentation = "https://github.com/RicciYazigi/4r2v6/blob/main/docs/RUNBOOK.md"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["core*", "antigravity_wings*", "antigravity_wings.fuses*"]
+include = ["four_r2*", "core*", "antigravity_wings*", "antigravity_wings.fuses*"]
 
 [tool.pytest.ini_options]
-testpaths = ["antigravity_wings/tests", "4R2-MASTER-DELIVERY/tests"]
-pythonpath = ["core", "antigravity_wings"]
+testpaths = ["tests", "antigravity_wings/tests", "4R2-MASTER-DELIVERY/tests", "scripts/test_frontier_v7.py"]
+pythonpath = [".", "core", "antigravity_wings"]
 addopts = "--ignore=4R2-MASTER-DELIVERY/tests/tests_output.txt"
 
 [tool.black]
 line-length = 100
-target-version = ['py39']
+target-version = ["py310"]
 
 [tool.ruff]
 line-length = 100

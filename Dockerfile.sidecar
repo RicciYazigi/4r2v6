@@ -1,0 +1,14 @@
+# 4R2 guardrail sidecar — minimal, non-root, fail-closed.
+FROM python:3.12-slim
+WORKDIR /app
+COPY pyproject.toml README.md ./
+COPY core ./core
+COPY four_r2 ./four_r2
+COPY antigravity_wings ./antigravity_wings
+RUN pip install --no-cache-dir ".[service]" \
+ && useradd -r -u 10001 guardrail
+USER guardrail
+EXPOSE 8472
+HEALTHCHECK --interval=15s --timeout=3s --retries=3 \
+  CMD python -c "import urllib.request,sys;sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8472/health',timeout=2).status==200 else 1)"
+CMD ["uvicorn", "four_r2.service:app", "--host", "0.0.0.0", "--port", "8472"]

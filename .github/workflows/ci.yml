@@ -1,26 +1,22 @@
 name: 4R2 CI — tests, determinism, evals, replica parity
-
 on:
   push:
   pull_request:
-
 jobs:
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      - name: Install deps
-        run: pip install numpy pytest fastapi httpx uvicorn pydantic
-
-      - name: Unit & integration tests (65)
+      - name: Install package (editable, with extras)
+        run: pip install -e ".[service,dev]"
+      - name: Release coherence gate (single version story)
+        run: python scripts/check_release_coherence.py
+      - name: Unit & integration tests (core 65 + SDK/service/coherence 22 + frontier 12)
         run: python -m pytest -q
-
       - name: Kernel replica hash parity (must be 1)
         run: |
           N=$(sha256sum core/kernel_1240421.py \
@@ -29,29 +25,44 @@ jobs:
               4R2-MASTER-DELIVERY/tests/kernel_1240421.py | awk '{print $1}' | sort -u | wc -l)
           echo "unique kernel hashes: $N"
           test "$N" = "1"
-
       - name: Determinism harness (bit-identical, 1e-12)
         run: python scripts/determinism_harness.py
         env:
           PYTHONPATH: antigravity_wings/antigravity_wings:antigravity_wings:core
-
       - name: E1/E4 baseline + adversarial (veto must be 1.0)
         run: |
           python scripts/eval_e1_e4.py | tee /tmp/e14.log
           grep -q '"veto_accuracy_kernel_LBB": 1.0' /tmp/e14.log
-
       - name: E2/E3 real-embedding eval + shadow pilot (0 incidents)
         run: |
           python scripts/eval_e2_e3.py | tee /tmp/e23.log
           grep -q '"incidents_grave_or_adv_ALLOW": 0' /tmp/e23.log
-
+      - name: Public benchmark v7 (held-out; acceptability must be 1.0)
+        run: python benchmarks/public_benchmark.py
+      - name: v7 Frontier calibration (Fisher-vs-angular control)
+        run: python scripts/frontier_calibrate.py | tee /tmp/fcal.log
+      - name: v7 E4/E5 attack — camouflage must be closed on BOTH axes
+        run: |
+          python scripts/eval_e4_extended.py | tee /tmp/e45.log
+          python -c "import json; d=json.load(open('evidence/eval_E4E5_results.json')); h=d['headline']; assert h['camouflage_closed_both_axes'] and h['v7_frontier_success_NR']<h['gate_only_success_NR'] and h['v7_frontier_success_RI']<h['gate_only_success_RI'], h; print('camouflage closed both axes:', h)"
+      - name: v7 High-verifiability FPR must be 0 (both breach weights active)
+        run: |
+          python scripts/eval_high_verifiability_fpr.py | tee /tmp/hv.log
+          python -c "import json; d=json.load(open('evidence/eval_high_ver_fpr.json')); n=d['NEW_calibration_both_axes_FIXED']; assert n['fpr_high_ver_legit']==0.0 and n['H_veto_attack_NR']==1.0 and n['H_veto_attack_RI']==1.0 and d['degeneracy_check']['a_gt_0'] and d['degeneracy_check']['b_gt_0'], d; print('high-ver FPR 0, both axes vetoed OK')"
+      - name: v7 Negation hardening — hardened evasion must be 0
+        run: |
+          python scripts/eval_negation_hardening.py | tee /tmp/neg.log
+          python -c "import json; d=json.load(open('evidence/eval_negation_hardening.json')); assert d['hardened_v7']['evasion_rate_attacks']==0.0, d; print('evasion 0 OK')"
+      - name: v7 container self-test (exit 0)
+        run: python self_test.py
+      - name: Evidence index re-seal + verify (all hashes coherent)
+        run: |
+          python scripts/generate_evidence_index.py --evidence-dir ./evidence --output evidence_index.json
+          python -c "import json,hashlib,pathlib; idx=json.load(open('evidence_index.json')); assert all(hashlib.sha256(pathlib.Path('evidence',f).read_bytes()).hexdigest()==m['sha256'] for f,m in idx['files'].items()); print('index coherent:', idx['statistics']['total_files'], 'files')"
       - name: Selftest invariant (perfect_c == 0.0)
         run: |
           PYTHONPATH=core python -c "from kernel_1240421 import CoherenceKernel as K; r=K.selftest(); assert r['perfect_c']==0.0 and r['loss_correct_direction'], r; print(r)"
-
   semantic-tier:
-    # Optional heavier job: sentence-transformers backend for E2.
-    # continue-on-error so the core pipeline never blocks on model downloads.
     runs-on: ubuntu-latest
     timeout-minutes: 25
     continue-on-error: true

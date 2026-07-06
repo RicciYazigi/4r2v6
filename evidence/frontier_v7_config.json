@@ -1,0 +1,17 @@
+{
+ "h": {
+  "a": 0.0,
+  "b": 1.0,
+  "g": 0.0,
+  "threshold": 0.42,
+  "source": "Fisher-LDA benign-vs-off-topic-grave n=168"
+ },
+ "ood": {
+  "lo": 1.040648334351317,
+  "hi": 1.0963888932123431,
+  "source": "percentiles p5/p95 on benign n=120"
+ },
+ "lbb_block": 0.75,
+ "lbb_flag": 0.6,
+ "source": "calibrated on E2 backend=lsa-tfidf-svd-k64 (pure numpy, deterministic)"
+}

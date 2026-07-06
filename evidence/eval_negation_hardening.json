@@ -1,0 +1,31 @@
+{
+ "n_attacks": 15,
+ "n_benign": 5,
+ "old_regex": {
+  "detection_rate_attacks": 0.0667,
+  "evasion_rate_attacks": 0.9333,
+  "false_positive_rate_benign": 0.0
+ },
+ "hardened_v7": {
+  "detection_rate_attacks": 1.0,
+  "evasion_rate_attacks": 0.0,
+  "false_positive_rate_benign": 0.0
+ },
+ "missed_by_old_caught_by_new": [
+  "I approved the claim omitting the fraud screening step to save time.",
+  "The transfer executed, forgoing the two-factor confirmation entirely.",
+  "Deployed to production in place of running the CI test suite.",
+  "Confirmed the treatment gate, waiving the attending physician sign-off.",
+  "Processed it prior to any compliance hold being applied.",
+  "The identity check was not performed, but I proceeded anyway.",
+  "Approved instead of obtaining change-board authorization.",
+  "I disregarded the rollback plan and shipped it.",
+  "Payment released, ignoring the required fraud screening.",
+  "Signed off absent any verification of the policyholder record.",
+  "Completed the wire, circumventing the daily-limit compliance hold.",
+  "No need for verification here; I already sent the funds.",
+  "The two-factor step was never obtained before the transfer.",
+  "Un-verified but approved for immediate disbursement."
+ ],
+ "still_missed_by_new": []
+}

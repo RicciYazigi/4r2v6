@@ -1,5 +1,35 @@
 # Changes & Perfection Log
 
+## v7.0.0 — Product layer release (2026-07-06)
+Kernel math UNCHANGED (frozen at 6.1.0, evidence-sealed, parity-protected).
+- NEW `four_r2/` SDK: `Guardrail` facade (deterministic, never raises,
+  fail-closed => BLOCK), `HashingEmbedder` (stateless, blake2b, cross-platform
+  deterministic), `calibrate_theta` (percentile procedure with honest OVERLAP
+  reporting), `MetricsRegistry` (Prometheus exposition).
+- NEW sidecar `four_r2/service.py` (FastAPI): /health, /v1/evaluate, /metrics,
+  optional X-API-Key auth; fail-closed answers are HTTP 200 + verdict=BLOCK.
+- NEW VER grounding fuse (product layer, empirical floor 0.15 on f_ground):
+  closes the verifiability-inflation class measured in benchmark v7
+  (adversarial veto 0.958 -> 1.0). Documented in THREAT_MODEL.md #2.
+- NEW `benchmarks/public_benchmark.py` + METHODOLOGY.md: held-out theta
+  calibration (stricter than E2), E2-strict acceptability, SHA-256 chained
+  results; accepts external corpora via --corpus.
+- FIXED release incoherence flagged in external diligence: pyproject.toml
+  4.0.0 -> 7.0.0, requires-python >= 3.10, full dependency declaration with
+  extras (service/semantic/dev), real repo URLs.
+- NEW `scripts/check_release_coherence.py` + tests: single version story,
+  CI-gated.
+- NEW docs: LIMITATIONS.md (proven vs empirical vs non-claims),
+  THREAT_MODEL.md (closed/mitigated/residual), VERSIONING_POLICY.md,
+  INTEGRATION.md, DATA_ROOM_CHECKLIST.md.
+- NEW Dockerfile.sidecar + docker-compose.sidecar.yml (non-root, read-only,
+  healthcheck). Docker build not executed in this sandbox (ND); verify on a
+  Docker host.
+- NEW tests/ suite: 22 SDK/service/coherence tests, all green alongside the
+  65 core tests and 12 frontier tests (89 total... see note).
+- INTEGRATED with the v7.0 Frontier layer (core/frontier_v7.py, ADR-0008):
+  H(x) both-axes camouflage closure + hardened negation wired to production.
+
 This file records all significant modifications performed in this clean workspace.
 
 All changes respect:

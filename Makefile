@@ -65,3 +65,12 @@ parity:
 	  4R2-MASTER-DELIVERY/systems/basic/packages/kernel/kernel_1240421.py \
 	  4R2-MASTER-DELIVERY/systems/enhanced/packages/kernel/kernel_1240421.py \
 	  4R2-MASTER-DELIVERY/tests/kernel_1240421.py | awk '{print $$1}' | sort -u | wc -l
+
+# --- v7.0.0 product-layer targets ---
+.PHONY: coherence benchmark sidecar
+coherence:
+	python scripts/check_release_coherence.py
+benchmark:
+	python benchmarks/public_benchmark.py
+sidecar:
+	uvicorn four_r2.service:app --host 0.0.0.0 --port 8472

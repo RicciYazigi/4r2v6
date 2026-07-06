@@ -24,6 +24,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "core"))
 from kernel_1240421 import CoherenceKernel, LayerState, Regime
+from frontier_v7 import verifiability_negation  # v7 hardened negation detector (P1 fix wired to production)
 
 SEED = 1240421
 rng = np.random.default_rng(SEED)
@@ -116,7 +117,7 @@ def get_embedder(texts):
 
 def verifiability(request, response):
     rt, st_ = set(toks(request)), toks(response)
-    neg = bool(NEG.search(response.lower()))
+    neg = verifiability_negation(response)  # v7 hardened (paraphrase-robust); replaces narrow NEG regex
     f_ground = len(rt & set(st_)) / (len(rt) + 1e-9)
     if neg: f_ground *= 0.2                       # asserted control-bypass => low groundedness
     f_num = 1.0 if re.search(r"\d", response) else 0.25

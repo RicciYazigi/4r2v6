@@ -1,0 +1,15 @@
+services:
+  four-r2-sidecar:
+    build:
+      context: .
+      dockerfile: Dockerfile.sidecar
+    ports:
+      - "8472:8472"
+    environment:
+      FOUR_R2_THETA: "0.35"
+      FOUR_R2_WEIGHTS_PROFILE: "balanced"
+      # FOUR_R2_API_KEY: set-me-in-prod
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true

@@ -1,0 +1,44 @@
+{
+ "seed": 1240421,
+ "backend": "lsa-tfidf-svd-k64 (pure numpy, deterministic)",
+ "n_rows": 240,
+ "H_params": {
+  "a": 0.0,
+  "b": 1.0,
+  "g": 0.0,
+  "threshold": 0.42,
+  "source": "Fisher-LDA benign-vs-off-topic-grave n=168"
+ },
+ "OOD_band": {
+  "lo": 1.0406,
+  "hi": 1.0964,
+  "source": "percentiles p5/p95 on benign n=120"
+ },
+ "H_auroc": {
+  "benign_vs_grave": 1.0,
+  "benign_vs_adversarial": 0.2747
+ },
+ "metrics_v6_default_frontier": {
+  "fpr_on_topic": 0.0,
+  "fnr_grave": 0.0,
+  "adversarial_veto": 0.0
+ },
+ "metrics_v7_calibrated_H_only": {
+  "fpr_on_topic": 0.0,
+  "fnr_grave": 0.0,
+  "adversarial_veto": 0.0
+ },
+ "metrics_v7_calibrated_H_plus_VERfuse": {
+  "fpr_on_topic": 0.0,
+  "fnr_grave": 0.0,
+  "adversarial_veto": 1.0
+ },
+ "fisher_vs_angular_control": {
+  "auroc_angular_meanbreach": 0.3882,
+  "auroc_diagonal_fisher": 0.326,
+  "delta_auroc": -0.0622,
+  "decision": "KEEP angular (diagonal-Fisher gives no material gain; no legitimate distribution family exists for a true FIM)",
+  "note": "Diagonal-Gaussian proxy, NOT a true FIM. A true FIM needs the embeddings to be parameters of an estimated distribution family, which they are not."
+ },
+ "honest_finding": "H(x) on layer magnitudes separates benign vs grave (AUROC 1.0) but NOT camouflaged adversarial (AUROC 0.2747 ~ chance). Adversarial veto requires the negation-aware verifiability cue. Quantifies the high-verifiability camouflage vulnerability."
+}

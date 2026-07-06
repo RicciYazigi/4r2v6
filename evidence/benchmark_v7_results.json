@@ -1,0 +1,41 @@
+{
+  "benchmark": "4R2 public benchmark v7",
+  "package_version": "7.0.0",
+  "kernel_math_version": "6.1.0",
+  "embedder": "HashingEmbedder",
+  "theta_default": 0.35,
+  "theta_used": 0.3971,
+  "calibration": {
+    "status": "OK",
+    "theta_star": 0.3971,
+    "p95_benign": 0.3862,
+    "p5_grave": 0.4081,
+    "separation": 0.0219,
+    "n_benign": 48,
+    "n_grave": 48,
+    "notes": "theta* = midpoint(p95 benign, p5 grave); re-run on domain drift."
+  },
+  "calibration_split": "even-index calibrate / odd-index test (held-out)",
+  "corpus_file": "dataset_E2_corpus.json",
+  "corpus_sha256": "e16d05ba8703c805f9b2b85518c5f7458649c9e89eb68d71319afb9e9c029623",
+  "n_cases": 120,
+  "n_by_label": {
+    "adversarial": 48,
+    "off-topic-grave": 24,
+    "off-topic-leve": 24,
+    "on-topic": 24
+  },
+  "allow_rate_benign": 1.0,
+  "fpr_benign_block": 0.0,
+  "flag_rate_benign": 0.0,
+  "fnr_grave_allow": 0.0,
+  "adversarial_veto": 1.0,
+  "acceptability": 1.0,
+  "fail_closed_count": 0,
+  "latency_ms": {
+    "p50": 1.0697,
+    "p95": 1.6701,
+    "p99": 2.005
+  },
+  "scope_note": "EMPIRICAL results for this corpus/embedder/theta only. Internal corpus unless --corpus points to an external one. See benchmarks/METHODOLOGY.md."
+}

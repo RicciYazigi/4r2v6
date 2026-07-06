@@ -1,6 +1,7 @@
 # Geometric Coherence Gating for LLM Runtime Governance: the 4R2 Guardrail
 
 **Draft for arXiv submission (cs.AI / cs.SE) — v6.1.0, 2026-07-04**
+**> SUPERSEDED by `arXiv_submission_v7.md` (2026-07-05). Kept as historical draft; do not cite these figures alongside v7.**
 **Authors:** Ricardo "Ricci" Yazigi (architecture & direction); agentic
 collaboration acknowledged (Claude Fable 5 — verification, adversarial
 evaluation, ADR-0006/0007).
