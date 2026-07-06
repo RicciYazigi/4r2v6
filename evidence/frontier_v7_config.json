@@ -1,10 +1,10 @@
 {
  "h": {
-  "a": 0.0,
-  "b": 1.0,
+  "a": 0.49904473835956625,
+  "b": 0.5009552616404338,
   "g": 0.0,
-  "threshold": 0.42,
-  "source": "Fisher-LDA benign-vs-off-topic-grave n=168"
+  "threshold": 0.453,
+  "source": "weights: Fisher on both-axes camouflage; threshold: Youden on E2"
  },
  "ood": {
   "lo": 1.040648334351317,
@@ -13,5 +13,5 @@
  },
  "lbb_block": 0.75,
  "lbb_flag": 0.6,
- "source": "calibrated on E2 backend=lsa-tfidf-svd-k64 (pure numpy, deterministic)"
+ "source": "both-axes weights + E2 threshold (audit fix 2026-07-06)"
 }
