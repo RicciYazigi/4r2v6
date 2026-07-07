@@ -17,7 +17,11 @@ producen, manteniendo acoplamiento debil.
 """
 from __future__ import annotations
 
+import json
 import math
+import os
+import tempfile
+import time
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
@@ -89,10 +93,27 @@ class ThermalAccumulator:
             arbiter.request_recalibration(req)
     """
 
-    def __init__(self, params: Optional[ThermalParams] = None) -> None:
+    def __init__(
+        self,
+        params: Optional[ThermalParams] = None,
+        snapshot_path: Optional[str] = None,
+        snapshot_every_events: int = 50,
+        snapshot_every_seconds: float = 30.0,
+        load_on_init: bool = True,
+        now_fn=time.time,
+    ) -> None:
         self.params = params or ThermalParams()
         self._paths: Dict[str, _PathState] = {}
         self.log: List[ThermalEvent] = []
+        # V7.8 P1 — persistencia periodica opcional (fail-safe).
+        self.snapshot_path = snapshot_path
+        self.snapshot_every_events = snapshot_every_events
+        self.snapshot_every_seconds = snapshot_every_seconds
+        self._now_fn = now_fn                      # inyectable para tests
+        self._events_since_snapshot = 0
+        self._last_snapshot_wall = now_fn()
+        if snapshot_path and load_on_init:
+            self.load_snapshot()
 
     # -- API principal ----------------------------------------------------
     def record(
@@ -163,12 +184,92 @@ class ThermalAccumulator:
                 trip_mode=trip_mode,
             )
         )
+
+        # V7.8 P1 — snapshot periodico por cadencia (eventos O segundos).
+        self._maybe_snapshot()
         return request
 
     # -- Introspeccion ----------------------------------------------------
     def temperature(self, path: str = "default") -> float:
         st = self._paths.get(path)
         return 0.0 if st is None else st.temperature
+
+    # -- V7.8 P1: persistencia periodica (fail-safe) ----------------------
+    def _maybe_snapshot(self) -> None:
+        if not self.snapshot_path:
+            return
+        self._events_since_snapshot += 1
+        now = self._now_fn()
+        due = (
+            self._events_since_snapshot >= self.snapshot_every_events
+            or (now - self._last_snapshot_wall) >= self.snapshot_every_seconds
+        )
+        if due:
+            self.save_snapshot(now=now)
+
+    def save_snapshot(self, now: Optional[float] = None) -> None:
+        """Escritura atomica del estado {camino -> T, last_t} + wall-clock.
+
+        Guarda el instante wall-clock para poder aplicar decaimiento por tiempo
+        transcurrido al recargar. Escritura atomica (tmp + rename) para que un
+        crash a mitad de escritura no deje un snapshot corrupto.
+        """
+        if not self.snapshot_path:
+            return
+        now = self._now_fn() if now is None else now
+        payload = {
+            "version": 1,
+            "saved_at": now,
+            "tau": self.params.tau,
+            "paths": {
+                name: {"temperature": st.temperature, "last_t": st.last_t}
+                for name, st in self._paths.items()
+            },
+        }
+        d = os.path.dirname(os.path.abspath(self.snapshot_path))
+        os.makedirs(d, exist_ok=True)
+        fd, tmp = tempfile.mkstemp(dir=d, suffix=".tmp")
+        try:
+            with os.fdopen(fd, "w") as fh:
+                json.dump(payload, fh)
+            os.replace(tmp, self.snapshot_path)     # atomico
+        finally:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        self._events_since_snapshot = 0
+        self._last_snapshot_wall = now
+
+    def load_snapshot(self, now: Optional[float] = None) -> bool:
+        """Carga el ultimo snapshot aplicando decaimiento por Δt transcurrido.
+
+        FAIL-SAFE (no fail-closed): si el archivo no existe, esta vacio o
+        corrupto, se arranca en cero SIN lanzar excepcion (perder temperatura no
+        es un riesgo de seguridad inmediato, es perdida de contexto historico).
+        Devuelve True si cargo algo, False si arranco en cero.
+        """
+        if not self.snapshot_path or not os.path.exists(self.snapshot_path):
+            return False
+        try:
+            with open(self.snapshot_path) as fh:
+                payload = json.load(fh)
+            saved_at = float(payload["saved_at"])
+            paths = payload["paths"]
+        except (ValueError, KeyError, TypeError, OSError):
+            # snapshot ausente/corrupto -> cero, sin excepcion no manejada
+            return False
+        now = self._now_fn() if now is None else now
+        dt = max(0.0, now - saved_at)
+        decay = math.exp(-dt / self.params.tau)     # decaimiento por tiempo real
+        for name, rec in paths.items():
+            try:
+                temp = float(rec["temperature"]) * decay
+            except (ValueError, KeyError, TypeError):
+                continue
+            # last_t=None: el proximo evento solo suma energia (el decaimiento por
+            # tiempo transcurrido ya se aplico aqui; no volver a decaer por t logico).
+            self._paths[name] = _PathState(temperature=temp, last_t=None)
+        self._last_snapshot_wall = now
+        return True
 
     def reset(self, path: Optional[str] = None) -> None:
         if path is None:

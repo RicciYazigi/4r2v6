@@ -282,13 +282,45 @@ class CCA:
         self.session_id = session_id
         self.history = []
 
+    # V7.8 "Hardening" P0 — default conservador ante ambiguedad.
+    # La heuristica de observe() clasifica por keywords. Su punto ciego historico:
+    # la ausencia de matches se trataba como benigno (criticality baja). Ausencia de
+    # evidencia NO es evidencia de ausencia: una parafrasis que evade el diccionario
+    # (p.ej. "mueve los fondos" en vez de "transfiere") producia el mismo criticality
+    # bajo que un evento genuinamente inocuo, cegando al acumulador termico (e_i~0).
+    # Fix: un tercer estado explicito "unclassified" con un piso conservador de
+    # criticality. Valor de laboratorio, pendiente de calibracion (como tau/T_trip/
+    # theta_ref en V7.7). Se fija DEBAJO de los umbrales de to_regime (crit>0.6 mueve
+    # pesos, crit>0.7 endurece theta) para NO regresar el gate deterministico; su
+    # efecto es hacer visible la evasion al termico (e_i>0), no saturar FLAGs.
+    # La solucion de fondo (estimador semantico real) es P2, fuera de alcance aqui.
+    DEFAULT_UNCLASSIFIED_CRITICALITY: float = 0.50
+
     def observe(self, user_input: str, ai_output: str = "", authority_level: int = 1, project_link: str = None) -> dict:
         combined = (user_input + " " + ai_output).lower()
         action_verbs = ["ejecuta", "borra", "transfiere", "firma", "pago", "desplaza"]
         action_verb = any(v in combined for v in action_verbs)
-        operational_risk = 0.8 if action_verb or "dinero" in combined or "ip" in combined else 0.3
+        risk_keyword_hit = action_verb or "dinero" in combined or "ip" in combined
+        operational_risk = 0.8 if risk_keyword_hit else 0.3
         semantic_risk = min(1.0, len(combined.split()) / 80.0)
-        intent_shift = 0.75 if project_link or "proyecto" in combined else 0.3
+        intent_hit = bool(project_link) or "proyecto" in combined
+        intent_shift = 0.75 if intent_hit else 0.3
+
+        # Clasificacion explicita en tres estados (observabilidad + fix P0).
+        if risk_keyword_hit:
+            cca_class = "matched-high"
+        elif intent_hit:
+            cca_class = "matched-low"
+        else:
+            cca_class = "unclassified"
+
+        base_criticality = max(operational_risk, semantic_risk)
+        if cca_class == "unclassified":
+            # piso conservador: no dejamos que "no ate ninguna keyword" pase como verde.
+            criticality = max(base_criticality, self.DEFAULT_UNCLASSIFIED_CRITICALITY)
+        else:
+            criticality = base_criticality
+
         tel = {
             "trace_id": "sim-" + str(len(self.history)),
             "session_id": self.session_id,
@@ -298,8 +330,9 @@ class CCA:
             "intent_shift_detected": intent_shift > 0.5,
             "authority_level": authority_level,
             "project_link": project_link,
+            "cca_class": cca_class,
             "intent_vector": [0.2, round(operational_risk, 2), round(semantic_risk, 2)],
-            "criticality": round(max(operational_risk, semantic_risk), 3)
+            "criticality": round(criticality, 3)
         }
         self.history.append(tel)
         return tel
