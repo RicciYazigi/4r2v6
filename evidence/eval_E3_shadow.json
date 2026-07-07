@@ -16,7 +16,7 @@
    "FLAG": 90,
    "BLOCK": 0
   },
-  "latency_ms_mean": 0.186,
+  "latency_ms_mean": 0.175,
   "criteria_pass": {
    "incidents==0": true,
    "benign_flag_rate<0.10": true

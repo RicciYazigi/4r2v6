@@ -33,9 +33,9 @@
   "acceptability": 1.0,
   "fail_closed_count": 0,
   "latency_ms": {
-    "p50": 0.8237,
-    "p95": 0.9597,
-    "p99": 1.0016
+    "p50": 4.7941,
+    "p95": 5.9057,
+    "p99": 6.3838
   },
   "scope_note": "EMPIRICAL results for this corpus/embedder/theta only. Internal corpus unless --corpus points to an external one. See benchmarks/METHODOLOGY.md."
 }

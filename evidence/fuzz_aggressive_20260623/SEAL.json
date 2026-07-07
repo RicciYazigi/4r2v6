@@ -1,0 +1,5 @@
+{
+  "results_sha256": "9a28d83bd9b8e42654e30c691e64c6384993a674fefbc9f123b3ce3b4818111a",
+  "summary_sha256": "399a6f7a9cfc9b18fef78d736241d566fdfc8f66a6674a5893ffb68a5e5811bc",
+  "output_dir": "/app/evidence/fuzz_aggressive_20260623"
+}

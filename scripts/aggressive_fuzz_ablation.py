@@ -67,15 +67,26 @@ def make_layer_state(norm_n=1.0, norm_r=1.0, norm_i=1.0, phys_scale=1.0,
 
 
 def compute_loss(state: LayerState, base_loss: float = 0.5, alpha: float = 1.0, gamma: float = 1.0) -> dict:
-    c_total, breakdown = kernel.compute_coherence_total(state)
-    loss = kernel.compute_loss_4R2(base_loss, c_total, decision_changes=2, alpha=alpha, gamma=gamma)
-    return {
-        "C_NR": breakdown["C_NR"],
-        "C_RI": breakdown["C_RI"],
-        "C_IF": breakdown["C_IF"],
-        "C_total": c_total,
-        "Loss_4R2": loss
-    }
+    try:
+        c_total, breakdown = kernel.compute_coherence_total(state)
+        loss = kernel.compute_loss_4R2(base_loss, c_total, decision_changes=2, alpha=alpha, gamma=gamma)
+        return {
+            "C_NR": breakdown["C_NR"],
+            "C_RI": breakdown["C_RI"],
+            "C_IF": breakdown["C_IF"],
+            "C_total": c_total,
+            "Loss_4R2": loss
+        }
+    except ValueError as e:
+        # Fail-closed expected behavior for zero-norm or malformed vectors
+        return {
+            "C_NR": 1.0,
+            "C_RI": 1.0,
+            "C_IF": 1.0,
+            "C_total": 1.0,
+            "Loss_4R2": base_loss + alpha * 1.0 + gamma * (kernel.lambda_landauer * 2),
+            "error": str(e)
+        }
 
 
 def run_monte_carlo(n: int, base_seed: int) -> list:
@@ -123,7 +134,7 @@ def run_systematic_ablations(base_seed: int) -> list:
                 "type": "layer_ablation",
                 "ablated": layer,
                 "mult": mult,
-                **{k: round(float(v), 8) for k, v in metrics.items()}
+                **{k: (round(float(v), 8) if not isinstance(v, str) else v) for k, v in metrics.items()}
             }
             results.append(rec)
             idx += 1
