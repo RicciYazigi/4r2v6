@@ -123,6 +123,20 @@ class RuntimeDecision(str, Enum):
     STOP = "stop"
     ESCALATE = "escalate"
 
+class RerouteOption(BaseModel):
+    """V7.7 Fusion Fase 2 — ruta alternativa que preserva la intencion original.
+
+    Un fusible que salta no termina necesariamente en STOP: si existe una ruta
+    de reroute registrada para el nodo, se ofrece en vez de cortar en seco.
+    Campo aditivo/opcional; consumidores previos del schema no se rompen.
+    """
+    route_id: str
+    description: str = ""
+    preserves_need: str = ""          # que necesidad original preserva
+    estimated_friction: float = 0.0   # costo/friccion estimada 0..1 (0 = sin costo)
+    target_node: Optional[str] = None
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+
 class RuntimeDecisionResponse(BaseModel):
     trace_id: str
     client_id: str
@@ -134,6 +148,7 @@ class RuntimeDecisionResponse(BaseModel):
     cost_level: str = "low"
     mario_decision: Optional[RuntimeDecision] = None
     luigi_decision: Optional[RuntimeDecision] = None
+    reroute_options: List["RerouteOption"] = Field(default_factory=list)
     meta: Dict[str, Any] = Field(default_factory=dict)
     created_at: datetime = Field(default_factory=datetime.utcnow)
 

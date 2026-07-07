@@ -9,15 +9,17 @@ Operador Dual en caliente (MARIO / LUIGI).
 """
 
 from datetime import datetime
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 from antigravity_wings.api.models import (
     RuntimeDecisionRequest,
     RuntimeDecisionResponse,
     RuntimeDecision,
     ReasonDetail,
     FuseSpec,
+    RerouteOption,
 )
 from antigravity_wings.profiles.client_profile import ClientProfile
+from antigravity_wings.dual_agents.arbiter import ArbiterAuthority
 
 # Integration of concrete 4R2_FUSES guards (ported from SUPERAGENTTESTPILOT pilots for high-value asymmetry/priority/verification breaking)
 try:
@@ -42,8 +44,12 @@ class DualRuntimeOperator:
     - Luigi (Shadow) tiende a GO/ESCALATE/STOP según riesgo.
     """
 
-    def __init__(self, profile: ClientProfile):
+    def __init__(self, profile: ClientProfile, reroute_registry: Optional[Dict[str, List[RerouteOption]]] = None):
         self.profile = profile
+        # V7.7 Fusion Fase 2: registro opt-in de rutas alternativas por node_id.
+        # Vacio por defecto => fail-closed: sin ruta registrada, STOP se mantiene.
+        # El wiring real (Arbitro/Juez) llega en Fases 3-4; aqui es inyectable.
+        self.reroute_registry: Dict[str, List[RerouteOption]] = reroute_registry or {}
 
     # ─────────────────────────────────────────────
     # ENTRYPOINT PRINCIPAL
@@ -76,8 +82,25 @@ class DualRuntimeOperator:
         # 2) Evaluar fusibles
         reasons = self._evaluate_fuses(node_fuses, req.payload, req.context, req.mode)
 
-        # 3) Aplicar Política de Enforcement Canónica (Tabla de Severidad)
-        final_decision = self._apply_enforcement_policy(reasons, req.mode)
+        # 3) Política de Enforcement Canónica = lente PESIMISTA de Luigi (cota
+        #    conservadora). Es la tabla de severidad ya sellada.
+        luigi_decision = self._apply_enforcement_policy(reasons, req.mode)
+
+        # 3a) V7.7 Fase 3: lente OPTIMISTA de Mario (solo reacciona a critical;
+        #     el resto lo lee como zona segura). Es una *posicion*, no la final.
+        mario_decision = self._mario_position(reasons, req.mode)
+
+        # 3b) Árbitro: regla conservadora (el mas restrictivo gana, NUNCA se
+        #     promedia). Por construccion mario_rank <= luigi_rank, asi que el
+        #     final == luigi == política canónica -> cero regresion. El
+        #     desacuerdo se preserva para trazabilidad.
+        record = ArbiterAuthority.arbitrate(mario_decision, luigi_decision)
+        base_decision = record.final
+
+        # 3c) V7.7 Fase 2: si la decisión amerita STOP, consultar reroute ANTES
+        #     de devolver STOP puro. Si hay ruta -> ESCALATE + opciones. Si no,
+        #     STOP se mantiene (fail-closed sigue siendo el default seguro).
+        final_decision, reroute_options = self._consult_reroute(base_decision, req.node_id)
 
         latency = (datetime.utcnow() - t_start).total_seconds() * 1000
 
@@ -99,14 +122,19 @@ class DualRuntimeOperator:
                 "mode": req.mode,
                 "latency_ms": latency,
                 "fallback_used": False,
-                "evidence_ref": f"sessions/{req.client_id}/{req.trace_id}"
+                "evidence_ref": f"sessions/{req.client_id}/{req.trace_id}",
+                "dual_disagreement": record.disagreement,
+                "mario_position": record.mario.value,
+                "luigi_position": record.luigi.value,
+                "arbiter_rule": record.rule,
             },
             client_id=req.client_id,
             node_id=req.node_id,
             state_color=state_color,
             cost_level=cost_level,
-            mario_decision=final_decision, # En este modelo simplificado, el árbitro es directo
-            luigi_decision=final_decision
+            mario_decision=mario_decision,  # Fase 3: posición real de Mario (optimista)
+            luigi_decision=luigi_decision,  # Fase 3: posición real de Luigi (canónica/pesimista)
+            reroute_options=reroute_options,
         )
 
     # ─────────────────────────────────────────────
@@ -327,6 +355,39 @@ class DualRuntimeOperator:
         
         # Low severity
         return RuntimeDecision.GO
+
+    def _mario_position(self, reasons: List[ReasonDetail], mode: str) -> RuntimeDecision:
+        """Fase 3 — lente OPTIMISTA (forward scan). Mario confia en zonas seguras:
+        solo detiene ante severidad critical; lo demas lo lee como GO. Es una
+        posicion de transparencia; el Árbitro siempre toma la cota conservadora,
+        asi que el optimismo de Mario NUNCA reduce la seguridad del resultado.
+        Su desacuerdo señala fusibles potencialmente sobre-restrictivos."""
+        if mode == "shadow":
+            return RuntimeDecision.GO
+        if any(r.severity == "critical" for r in reasons):
+            return RuntimeDecision.STOP
+        return RuntimeDecision.GO
+
+    def _consult_reroute(
+        self, decision: RuntimeDecision, node_id: str
+    ) -> Tuple[RuntimeDecision, List[RerouteOption]]:
+        """V7.7 Fase 2 — capa de reroute sobre la política pura de severidad.
+
+        Se mantiene SEPARADA de _apply_enforcement_policy para que el mapeo
+        severidad->decisión (núcleo fail-closed) siga siendo auditable de forma
+        aislada. Solo actúa cuando la decisión base es STOP.
+
+        - Si hay ruta(s) registrada(s) para el nodo: STOP -> ESCALATE + opciones
+          (la necesidad original se preserva vía ruta alternativa, con decisión
+          humana/escalada, no un corte en seco).
+        - Si no hay ruta: STOP se mantiene (fail-closed).
+        """
+        if decision != RuntimeDecision.STOP:
+            return decision, []
+        options = self.reroute_registry.get(node_id, [])
+        if not options:
+            return RuntimeDecision.STOP, []
+        return RuntimeDecision.ESCALATE, list(options)
 
     def _get_visual_metadata(self, decision: RuntimeDecision) -> Tuple[str, str]:
         if decision == RuntimeDecision.STOP:

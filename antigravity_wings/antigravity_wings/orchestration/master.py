@@ -293,6 +293,27 @@ class OptionalPSC:
         return self.psc
 
     def apply_mosef(self, decision, psc):
-        if psc["gravity"] > 0.8 and not psc["reversibility"]:
-            return "BLOCK"  # Ties to Gate E / 4R2 guards
+        """V7.7 Fase 4 — REESCRITO. El apply_mosef original hacia:
+            if gravity>0.8 and not reversibility: return "BLOCK"
+        Red-team de esa version (ver docstring de Judge en dual_agents.arbiter):
+          - BLOCK duro viola "redirigir, nunca cortar".
+          - `reversibility` binario y default True -> casi nunca disparaba.
+          - Sin umbral de confianza -> recalibraria por ruido.
+          - Usaba una heuristica (context['risk']) en vez del acumulador termico.
+        Ahora NO bloquea: delega en el Juez, que exige confianza minima y consume
+        la RecalibrationRequest del acumulador termico (Fase 1). Devuelve un
+        JudgeVerdict; la escritura real de FuseSpec solo ocurre via
+        ArbiterAuthority.write_fuse con el token del veredicto.
+        """
+        from antigravity_wings.dual_agents.arbiter import ArbiterAuthority, Judge
+        authority = ArbiterAuthority()
+        judge = Judge(authority)
+        # `decision` puede portar una RecalibrationRequest (thermal) en .context
+        # o el llamador pasarla directamente; se acepta el objeto request tal cual.
+        request = psc.get("recal_request") if isinstance(psc, dict) else None
+        if request is None:
+            # Sin senal termica no hay recalibracion (fail-safe: no ruido).
+            return {"authorized": False, "reason": "sin RecalibrationRequest termica"}
+        verdict = judge.assess(request, luigi_corroborates=bool(psc.get("luigi_corroborates", False)))
+        return verdict
         return decision
