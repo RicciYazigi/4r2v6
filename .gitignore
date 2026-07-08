@@ -17,3 +17,4 @@ sessions/
 build/
 *.egg-link
 .eggs/
+evidence/_datasets_cache/
