@@ -38,6 +38,7 @@ VER_GROUND_FLOOR_DEFAULT = 0.15  # F[0] (grounding) below floor => ALLOW downgra
 # floor is defense in depth analogous to LBB's per-layer cap. Floor value is
 # EMPIRICAL (E2 corpus: benign min f_ground 0.214 vs adversarial min 0.057);
 # recalibrate alongside theta when changing embedder or F pipeline.
+GOVERNANCE_FLAG_BUFFER_DEFAULT = 0.15  # banda de C_NI por encima de theta => FLAG
 @dataclass(frozen=True)
 class Decision:
     verdict: str                 # ALLOW | FLAG | BLOCK
@@ -83,6 +84,7 @@ class Guardrail:
         ver_fuse_floor: Optional[float] = VER_FUSE_FLOOR_DEFAULT,
         ver_ground_floor: Optional[float] = VER_GROUND_FLOOR_DEFAULT,
         governance_mode: bool = False,
+        governance_flag_buffer: float = GOVERNANCE_FLAG_BUFFER_DEFAULT,
     ):
         self._kmod = load_kernel_module()
         kernel_cls = self._kmod.CoherenceKernel
@@ -99,6 +101,7 @@ class Guardrail:
         self.ver_ground_floor = ver_ground_floor
         self.embedder = embedder or HashingEmbedder()
         self.governance_mode = governance_mode
+        self.governance_flag_buffer = float(governance_flag_buffer)
         f = np.asarray(default_verifiability, dtype=np.float64)
         if f.shape != (4,) or np.any(f < 0) or np.any(f > 1):
             raise ValueError("default_verifiability must be in [0,1]^4")
@@ -141,40 +144,51 @@ class Guardrail:
             c_total, res = kernel.compute_with_regime(state, regime)
             verdict = res["verdict"]
             ver_fuse = None
-            if verdict == "ALLOW":
-                if self.ver_fuse_floor is not None and float(np.mean(f)) < self.ver_fuse_floor:
-                    verdict, ver_fuse = "FLAG", "VER_FUSE_FLAG"
-                elif self.ver_ground_floor is not None and float(f[0]) < self.ver_ground_floor:
-                    verdict, ver_fuse = "FLAG", "VER_FUSE_GROUND"
 
-            if self.governance_mode:
-                # Calculate angular distance C_NI
-                norm_a = state.normative
-                norm_b = state.informational
-                n_a = np.linalg.norm(norm_a)
-                n_b = np.linalg.norm(norm_b)
+            if not self.governance_mode:
+                # MODO DEFAULT — comportamiento sin cambios (bit-idéntico).
+                if verdict == "ALLOW":
+                    if self.ver_fuse_floor is not None and float(np.mean(f)) < self.ver_fuse_floor:
+                        verdict, ver_fuse = "FLAG", "VER_FUSE_FLAG"
+                    elif self.ver_ground_floor is not None and float(f[0]) < self.ver_ground_floor:
+                        verdict, ver_fuse = "FLAG", "VER_FUSE_GROUND"
+            else:
+                # MODO GOBERNANZA — veredicto por coherencia directa policy<->response
+                # (C_NI), pero NUNCA más débil que las señales de seguridad del
+                # kernel/fusible (defensa en profundidad preservada).
+                norm_a = state.normative       # E(policy)
+                norm_b = state.informational   # E(response)
+                n_a = float(np.linalg.norm(norm_a))
+                n_b = float(np.linalg.norm(norm_b))
                 if n_a < 1e-12 or n_b < 1e-12:
                     raise ValueError("zero-norm vector: refusing to score (fail-closed)")
-                unit_a = norm_a / n_a
-                unit_b = norm_b / n_b
-                cos = float(np.clip(np.dot(unit_a, unit_b), -1.0, 1.0))
+                cos = float(np.clip(np.dot(norm_a / n_a, norm_b / n_b), -1.0, 1.0))
                 c_ni = math.acos(cos) / math.pi
-                
                 c_total = c_ni
-                
-                # Verdict based on governance score C_NI and regime.theta
+
                 if c_ni <= regime.theta:
                     verdict = "ALLOW"
-                elif c_ni <= regime.theta + 0.15:
+                elif c_ni <= regime.theta + self.governance_flag_buffer:
                     verdict = "FLAG"
                 else:
                     verdict = "BLOCK"
-                
-                # Enforce safety overrides (fail-closed and LBB_BLOCK)
-                if bool(res.get("fail_closed", False)):
-                    verdict = "BLOCK"
-                elif res.get("lbb_trigger") == "LBB_BLOCK":
-                    verdict = "BLOCK"
+
+                # El fusible de verificabilidad también aplica en gobernanza.
+                if self.ver_fuse_floor is not None and float(np.mean(f)) < self.ver_fuse_floor:
+                    ver_fuse = "VER_FUSE_FLAG"
+                elif self.ver_ground_floor is not None and float(f[0]) < self.ver_ground_floor:
+                    ver_fuse = "VER_FUSE_GROUND"
+
+                # Escalado monótono de seguridad: gobernanza solo puede hacer el
+                # veredicto MÁS estricto que kernel/fusible, nunca más débil.
+                _RANK = {"ALLOW": 0, "FLAG": 1, "BLOCK": 2}
+                floor = "ALLOW"
+                if ver_fuse is not None or res.get("lbb_trigger") == "LBB_FLAG":
+                    floor = "FLAG"
+                if res.get("lbb_trigger") == "LBB_BLOCK" or bool(res.get("fail_closed", False)):
+                    floor = "BLOCK"
+                if _RANK[floor] > _RANK[verdict]:
+                    verdict = floor
 
             breakdown = dict(res.get("breakdown", {})) if isinstance(res.get("breakdown"), dict) else {}
             if self.governance_mode and breakdown:

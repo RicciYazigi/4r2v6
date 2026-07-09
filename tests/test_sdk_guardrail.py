@@ -196,3 +196,24 @@ def test_governance_mode_improves_auroc():
     assert auroc_gov > auroc_default
     assert auroc_gov == pytest.approx(1.0, abs=1e-6)
 
+
+def test_governance_preserves_ver_fuse_defense_in_depth():
+    """En gobernanza, baja verificabilidad debe escalar aunque C_NI diga ALLOW."""
+    from four_r2 import Guardrail
+    g = Guardrail(governance_mode=True)
+    # policy == response => C_NI ~ 0 => veredicto de gobernanza ALLOW...
+    d_low = g.evaluate(policy="Be safe.", request="hi", response="Be safe.",
+                       verifiability=(0.1, 0.1, 0.1, 0.1))
+    assert d_low.verdict in ("FLAG", "BLOCK")   # ...pero el fusible lo escala
+    assert d_low.ver_fuse is not None
+    d_ok = g.evaluate(policy="Be safe.", request="hi", response="Be safe.",
+                      verifiability=(0.9, 0.9, 0.9, 0.9))
+    assert d_ok.verdict == "ALLOW"
+
+
+def test_governance_flag_buffer_configurable():
+    from four_r2 import Guardrail
+    g = Guardrail(governance_mode=True, governance_flag_buffer=0.0)
+    assert g.governance_flag_buffer == 0.0
+
+
