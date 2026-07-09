@@ -30,6 +30,7 @@ import numpy as np
 from ._kernel_loader import load_kernel_module
 from ._version import KERNEL_MATH_VERSION, __version__
 from .embedders import HashingEmbedder
+from .anticamo import NLIBackend, anticamo_score
 DEFAULT_VERIFIABILITY = (0.5, 0.5, 0.5, 0.5)
 VER_FUSE_FLOOR_DEFAULT = 0.15   # mean(F) below floor => ALLOW downgraded to FLAG
 VER_GROUND_FLOOR_DEFAULT = 0.15  # F[0] (grounding) below floor => ALLOW downgraded
@@ -85,6 +86,8 @@ class Guardrail:
         ver_ground_floor: Optional[float] = VER_GROUND_FLOOR_DEFAULT,
         governance_mode: bool = False,
         governance_flag_buffer: float = GOVERNANCE_FLAG_BUFFER_DEFAULT,
+        governance_anticamo: bool = False,
+        governance_nli_backend: Optional[NLIBackend] = None,
     ):
         self._kmod = load_kernel_module()
         kernel_cls = self._kmod.CoherenceKernel
@@ -102,6 +105,10 @@ class Guardrail:
         self.embedder = embedder or HashingEmbedder()
         self.governance_mode = governance_mode
         self.governance_flag_buffer = float(governance_flag_buffer)
+        if governance_anticamo and not governance_mode:
+            raise ValueError("governance_anticamo requires governance_mode=True")
+        self.governance_anticamo = bool(governance_anticamo)
+        self.governance_nli_backend = governance_nli_backend
         f = np.asarray(default_verifiability, dtype=np.float64)
         if f.shape != (4,) or np.any(f < 0) or np.any(f > 1):
             raise ValueError("default_verifiability must be in [0,1]^4")
@@ -164,6 +171,13 @@ class Guardrail:
                     raise ValueError("zero-norm vector: refusing to score (fail-closed)")
                 cos = float(np.clip(np.dot(norm_a / n_a, norm_b / n_b), -1.0, 1.0))
                 c_ni = math.acos(cos) / math.pi
+                if self.governance_anticamo:
+                    # Defensa anti-camuflaje (SDK): fusión postura + NLI opt-in
+                    # + C_NI, normalizada a [0,1]. Ver four_r2/anticamo.py.
+                    c_ni = anticamo_score(
+                        c_ni, response, policy,
+                        nli_backend=self.governance_nli_backend,
+                    )
                 c_total = c_ni
 
                 if c_ni <= regime.theta:
