@@ -23,7 +23,8 @@ real F signals in production; that is what E2/T3 measured.
 """
 from __future__ import annotations
 import time
-from dataclasses import dataclass, field
+import math
+from dataclasses import dataclass
 from typing import Optional, Sequence
 import numpy as np
 from ._kernel_loader import load_kernel_module
@@ -81,6 +82,7 @@ class Guardrail:
         intent_level: str = "EXPLORATORY",
         ver_fuse_floor: Optional[float] = VER_FUSE_FLOOR_DEFAULT,
         ver_ground_floor: Optional[float] = VER_GROUND_FLOOR_DEFAULT,
+        governance_mode: bool = False,
     ):
         self._kmod = load_kernel_module()
         kernel_cls = self._kmod.CoherenceKernel
@@ -96,6 +98,7 @@ class Guardrail:
         self.ver_fuse_floor = ver_fuse_floor
         self.ver_ground_floor = ver_ground_floor
         self.embedder = embedder or HashingEmbedder()
+        self.governance_mode = governance_mode
         f = np.asarray(default_verifiability, dtype=np.float64)
         if f.shape != (4,) or np.any(f < 0) or np.any(f > 1):
             raise ValueError("default_verifiability must be in [0,1]^4")
@@ -143,10 +146,45 @@ class Guardrail:
                     verdict, ver_fuse = "FLAG", "VER_FUSE_FLAG"
                 elif self.ver_ground_floor is not None and float(f[0]) < self.ver_ground_floor:
                     verdict, ver_fuse = "FLAG", "VER_FUSE_GROUND"
+
+            if self.governance_mode:
+                # Calculate angular distance C_NI
+                norm_a = state.normative
+                norm_b = state.informational
+                n_a = np.linalg.norm(norm_a)
+                n_b = np.linalg.norm(norm_b)
+                if n_a < 1e-12 or n_b < 1e-12:
+                    raise ValueError("zero-norm vector: refusing to score (fail-closed)")
+                unit_a = norm_a / n_a
+                unit_b = norm_b / n_b
+                cos = float(np.clip(np.dot(unit_a, unit_b), -1.0, 1.0))
+                c_ni = math.acos(cos) / math.pi
+                
+                c_total = c_ni
+                
+                # Verdict based on governance score C_NI and regime.theta
+                if c_ni <= regime.theta:
+                    verdict = "ALLOW"
+                elif c_ni <= regime.theta + 0.15:
+                    verdict = "FLAG"
+                else:
+                    verdict = "BLOCK"
+                
+                # Enforce safety overrides (fail-closed and LBB_BLOCK)
+                if bool(res.get("fail_closed", False)):
+                    verdict = "BLOCK"
+                elif res.get("lbb_trigger") == "LBB_BLOCK":
+                    verdict = "BLOCK"
+
+            breakdown = dict(res.get("breakdown", {})) if isinstance(res.get("breakdown"), dict) else {}
+            if self.governance_mode and breakdown:
+                breakdown["C_NI"] = c_ni
+                breakdown["C_total"] = c_ni
+
             return Decision(
                 verdict=verdict,
                 c_total=float(c_total),
-                breakdown=res.get("breakdown", {}) or {},
+                breakdown=breakdown,
                 lbb_trigger=res.get("lbb_trigger"),
                 ver_fuse=ver_fuse,
                 theta=regime.theta,
