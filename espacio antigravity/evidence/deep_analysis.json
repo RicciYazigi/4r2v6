@@ -1,0 +1,134 @@
+{
+  "timestamp": "2026-07-08T02:34:58.104444Z",
+  "total_cases": 2547,
+  "correlations": {
+    "C_total_vs_Loss": 0.984123,
+    "C_NR_vs_C_total": 0.584694,
+    "C_RI_vs_C_total": 0.591916,
+    "C_IF_vs_C_total": 0.586242,
+    "C_NR_vs_Loss": 0.576771,
+    "C_RI_vs_Loss": 0.578676,
+    "C_IF_vs_Loss": 0.579562
+  },
+  "by_type": {
+    "monte_carlo": {
+      "count": 2500,
+      "mean_C_total": 0.497845746868,
+      "std_C_total": 0.10293798562498468,
+      "min": 0.19711217,
+      "max": 0.81314817
+    },
+    "layer_ablation": {
+      "count": 12,
+      "mean_C_total": 0.8912448058333333,
+      "std_C_total": 0.19563461855031736,
+      "min": 0.46501719,
+      "max": 1.0
+    },
+    "noise_informational": {
+      "count": 20,
+      "mean_C_total": 0.5014905100000001,
+      "std_C_total": 0.11010809584602624,
+      "min": 0.33621129,
+      "max": 0.74434374
+    },
+    "noise_physical": {
+      "count": 15,
+      "mean_C_total": 0.49763429999999986,
+      "std_C_total": 0.09788543349668377,
+      "min": 0.32184726,
+      "max": 0.75784692
+    }
+  },
+  "extremes": {
+    "best_5_lowest_C_total": [
+      {
+        "case_id": "mc_00833",
+        "C_total": 0.19711217,
+        "type": "monte_carlo",
+        "params": {
+          "scale": 2.2973,
+          "noise_i": 0.0281,
+          "noise_f": 0.1267
+        }
+      },
+      {
+        "case_id": "mc_01900",
+        "C_total": 0.21423385,
+        "type": "monte_carlo",
+        "params": {
+          "scale": 4.7761,
+          "noise_i": 0.0948,
+          "noise_f": 0.1922
+        }
+      },
+      {
+        "case_id": "mc_02377",
+        "C_total": 0.21701563,
+        "type": "monte_carlo",
+        "params": {
+          "scale": 1.6412,
+          "noise_i": 0.1826,
+          "noise_f": 0.025
+        }
+      },
+      {
+        "case_id": "mc_02262",
+        "C_total": 0.22236811,
+        "type": "monte_carlo",
+        "params": {
+          "scale": 0.8265,
+          "noise_i": 0.2477,
+          "noise_f": 0.0463
+        }
+      },
+      {
+        "case_id": "mc_02497",
+        "C_total": 0.22393029,
+        "type": "monte_carlo",
+        "params": {
+          "scale": 4.4749,
+          "noise_i": 0.1316,
+          "noise_f": 0.2724
+        }
+      }
+    ],
+    "worst_5_highest_C_total": [
+      {
+        "case_id": "sys_abl_00008",
+        "C_total": 1.0,
+        "type": "layer_ablation",
+        "params": null
+      },
+      {
+        "case_id": "sys_abl_00007",
+        "C_total": 1.0,
+        "type": "layer_ablation",
+        "params": null
+      },
+      {
+        "case_id": "sys_abl_00006",
+        "C_total": 1.0,
+        "type": "layer_ablation",
+        "params": null
+      },
+      {
+        "case_id": "sys_abl_00005",
+        "C_total": 1.0,
+        "type": "layer_ablation",
+        "params": null
+      },
+      {
+        "case_id": "sys_abl_00004",
+        "C_total": 1.0,
+        "type": "layer_ablation",
+        "params": null
+      }
+    ]
+  },
+  "key_insights": [
+    "C_total correlates strongly with Loss (as expected from C**2).",
+    "C_IF often has high variance in physical_scale and layer_ablation cases.",
+    "Physical layer ablations produce the widest range in C_total."
+  ]
+}

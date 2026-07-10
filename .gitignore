@@ -18,3 +18,10 @@ build/
 *.egg-link
 .eggs/
 evidence/_datasets_cache/
+
+INSTRUCCIONES_ANTIGRAVITY*
+PROMPT_FABLE5_*
+*_wsl.sh
+COMMIT_*.sh
+PUSH_*.sh
+__pycache__/

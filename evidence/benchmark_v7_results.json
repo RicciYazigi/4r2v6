@@ -17,7 +17,7 @@
   },
   "calibration_split": "even-index calibrate / odd-index test (held-out)",
   "corpus_file": "dataset_E2_corpus.json",
-  "corpus_sha256": "e16d05ba8703c805f9b2b85518c5f7458649c9e89eb68d71319afb9e9c029623",
+  "corpus_sha256": "36cb2fc233494b155909935f54c44827fbb5d0bf41eec64118dd930e32bf3517",
   "n_cases": 120,
   "n_by_label": {
     "adversarial": 48,
@@ -33,9 +33,9 @@
   "acceptability": 1.0,
   "fail_closed_count": 0,
   "latency_ms": {
-    "p50": 0.8237,
-    "p95": 0.9597,
-    "p99": 1.0016
+    "p50": 1.0259,
+    "p95": 1.6862,
+    "p99": 2.1424
   },
   "scope_note": "EMPIRICAL results for this corpus/embedder/theta only. Internal corpus unless --corpus points to an external one. See benchmarks/METHODOLOGY.md."
 }

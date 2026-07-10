@@ -677,3 +677,43 @@ docker-compose.sidecar.yml, evidence_index.json, self_test.py, PUSH_v7_wsl.sh.
 ```
 **Confianza:** alta. Tercer hallazgo simetrico cazado en auditoria y cerrado con
 el artefacto real re-sellado y atado por tests que corren el pipeline de produccion.
+
+---
+---
+
+# CICLO 5 — TRACE_ID: ARS-20260710-F5-0005 | Estado: OK
+
+**Mandato:** cerrar gaps de ambos workspaces (4r2v6 + Benchmark2026) sin
+mezclarlos; benchmark imparcial; que 4R2 sobresalga por mérito.
+
+## Hallazgo central: el SDK de 4R2 queda VINDICADO
+La corrida oficial de AegisBench daba AUROC 0.394 para governance — contradecía
+la validación Fase 3 (0.773). Diagnóstico ejecutado (no asumido): el C_NI del
+SDK medido directo da 0.7732 (fórmula y HashingEmbedder correctos). El bug era
+del ADAPTER en Benchmark2026: exponía c_total (riesgo) como `confidence`, pero
+el contrato de AegisBench define confidence = confianza en la decisión (con
+flip 1−conf en ALLOW), lo que destrozaba el ranking. **Cero cambios necesarios
+en 4R2** (kernel y SDK intactos; suite 162/162 verde verificada hoy).
+
+## Resultados oficiales por CLI (dataset policy_compliance, seed 42)
+- layer1: AUROC 0.358 (hallazgo negativo del kernel Capa-1 se mantiene — el
+  fix del adapter no maquilló nada).
+- governance: **AUROC 0.7732** — reproduce exacto la validación independiente.
+- governance θ=0.38: ASR 33.3% / ORR 23.8% (reproduce Fase 3: 33%/24%).
+- held-out incluido (n=50): **AUROC 0.8016** — generaliza.
+- anticamo en datos limpios: AUROC 0.687 pero ASR 0% — es defensa para
+  camuflaje, no para ranking limpio; documentado como guía de despliegue.
+
+## Cambios (SOLO en Benchmark2026; 4r2v6 sin diffs de código)
+1. `adapters_external/fourr2_adapter.py`: mapeo de confidence conforme al
+   contrato (conf = riesgo al bloquear, 1−riesgo al permitir).
+2. `src/aegisbench/cli/main.py`: `--param clave=valor` genérico (los modos
+   opt-in de cualquier adapter eran inaccesibles desde el CLI oficial).
+3. `docs/ADAPTER_GUIDE.md`: semántica de confidence + uso de --param.
+4. `RESULTADOS_4R2_OFICIAL_CLI.md`: informe oficial completo con límites.
+5. Suite del benchmark: 50/50 verde tras los cambios.
+
+## Cadena de validación cerrada
+spec Fase 3 → validación independiente (0.773) → SDK real por CLI oficial
+(0.7732) → held-out (0.802). Tres mediciones, dos implementaciones, mismo
+número. Esto es exactamente lo que un auditor de Big Tech querrá ver.

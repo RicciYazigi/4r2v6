@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-07-08T02:34:58.063810Z",
+  "total_cases": 2547,
+  "C_total": {
+    "mean": 0.49972659188849633,
+    "std": 0.10704375385818897,
+    "min": 0.19711217,
+    "p25": 0.428885855,
+    "median": 0.50102392,
+    "p75": 0.567373355,
+    "max": 1.0
+  },
+  "Loss_4R2": {
+    "mean": 0.8611850318138987,
+    "std": 0.11201615626701378,
+    "min": 0.63885321,
+    "max": 1.6
+  },
+  "notes": "Aggressive fuzz + systematic ablations. Kernel direct only. (Run in espacio antigravity)"
+}
