@@ -1,0 +1,137 @@
+{
+ "backend": "lsa-tfidf-svd-k64 (pure numpy, deterministic)",
+ "seed": 1240421,
+ "split_frac": 0.5,
+ "theta_star_from_TRAIN_only": 0.4628,
+ "n_train": 120,
+ "n_test": 120,
+ "TRAIN": {
+  "auroc_on_vs_grave": 1.0,
+  "auroc_on_vs_adversarial": 1.0,
+  "T3_with_fuse": {
+   "theta": 0.4628,
+   "ver_fuse": true,
+   "verdicts": {
+    "on-topic": {
+     "ALLOW": 36,
+     "FLAG": 0,
+     "BLOCK": 0
+    },
+    "off-topic-leve": {
+     "ALLOW": 2,
+     "FLAG": 22,
+     "BLOCK": 0
+    },
+    "off-topic-grave": {
+     "ALLOW": 0,
+     "FLAG": 24,
+     "BLOCK": 0
+    },
+    "adversarial": {
+     "ALLOW": 0,
+     "FLAG": 36,
+     "BLOCK": 0
+    }
+   },
+   "fpr_on_topic": 0.0,
+   "fnr_grave": 0.0,
+   "adversarial_veto": 1.0,
+   "acceptable_rate": 1.0
+  },
+  "T_gate_only_no_fuse": {
+   "theta": 0.4628,
+   "ver_fuse": false,
+   "verdicts": {
+    "on-topic": {
+     "ALLOW": 36,
+     "FLAG": 0,
+     "BLOCK": 0
+    },
+    "off-topic-leve": {
+     "ALLOW": 2,
+     "FLAG": 22,
+     "BLOCK": 0
+    },
+    "off-topic-grave": {
+     "ALLOW": 0,
+     "FLAG": 24,
+     "BLOCK": 0
+    },
+    "adversarial": {
+     "ALLOW": 36,
+     "FLAG": 0,
+     "BLOCK": 0
+    }
+   },
+   "fpr_on_topic": 0.0,
+   "fnr_grave": 0.0,
+   "adversarial_veto": 0.0,
+   "acceptable_rate": 0.7
+  }
+ },
+ "TEST_heldout": {
+  "auroc_on_vs_grave": 1.0,
+  "auroc_on_vs_adversarial": 1.0,
+  "T3_with_fuse": {
+   "theta": 0.4628,
+   "ver_fuse": true,
+   "verdicts": {
+    "on-topic": {
+     "ALLOW": 36,
+     "FLAG": 0,
+     "BLOCK": 0
+    },
+    "off-topic-leve": {
+     "ALLOW": 0,
+     "FLAG": 24,
+     "BLOCK": 0
+    },
+    "off-topic-grave": {
+     "ALLOW": 0,
+     "FLAG": 24,
+     "BLOCK": 0
+    },
+    "adversarial": {
+     "ALLOW": 0,
+     "FLAG": 36,
+     "BLOCK": 0
+    }
+   },
+   "fpr_on_topic": 0.0,
+   "fnr_grave": 0.0,
+   "adversarial_veto": 1.0,
+   "acceptable_rate": 1.0
+  },
+  "T_gate_only_no_fuse": {
+   "theta": 0.4628,
+   "ver_fuse": false,
+   "verdicts": {
+    "on-topic": {
+     "ALLOW": 36,
+     "FLAG": 0,
+     "BLOCK": 0
+    },
+    "off-topic-leve": {
+     "ALLOW": 0,
+     "FLAG": 24,
+     "BLOCK": 0
+    },
+    "off-topic-grave": {
+     "ALLOW": 0,
+     "FLAG": 24,
+     "BLOCK": 0
+    },
+    "adversarial": {
+     "ALLOW": 36,
+     "FLAG": 0,
+     "BLOCK": 0
+    }
+   },
+   "fpr_on_topic": 0.0,
+   "fnr_grave": 0.0,
+   "adversarial_veto": 0.0,
+   "acceptable_rate": 0.7
+  }
+ },
+ "control_note": "veto_adversarial de T3 vs gate-only aisla la contribuci\u00f3n del kernel: si gate-only ~0, el veto lo hace el cue de negaci\u00f3n, no la coherencia"
+}
